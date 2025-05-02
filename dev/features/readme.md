@@ -1,0 +1,2 @@
+
+All features of **ProjectZero** are contained within this folder. Since the project is relatively lightweight, you can easily update to the latest version by simply replacing this folder with the updated one.

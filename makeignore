@@ -1,0 +1,6 @@
+tmp
+backend/test
+frontend/mobile/src/sass
+
+# this will be ignored because will be copyied by minifying process
+frontend/mobile/src/js

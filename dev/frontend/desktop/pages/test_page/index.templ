@@ -1,0 +1,21 @@
+package test_page_desktop
+
+templ TestPage(name string) {
+    <!DOCTYPE html>
+    <html>
+    @head()
+    <body>
+        <h1>Wecome to test page</h1>
+        <p>I'm just testing</p>
+    </body>
+    </html>
+}
+
+templ head() {
+    <head>
+        <base href="/frontend/desktop/src/">
+        
+        <title>Test page</title>
+        <link rel="stylesheet" type="text/css" href="/static/main.css">
+    </head>
+}
