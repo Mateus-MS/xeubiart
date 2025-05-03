@@ -1,0 +1,48 @@
+package landingpage
+
+import "placeholder/dev/frontend/components"
+
+templ LandingPage() {
+    <!DOCTYPE html>
+    <html>
+    @head()
+    <body>
+        @components.Navbar()
+        <section id="hero">
+
+        </section>
+        <section id="shop">
+
+        </section>
+        <section id="cta">
+
+        </section>
+        <section id="promos">
+
+        </section>
+        
+        @components.Footer()
+    </body>
+    </html>
+}
+
+templ head() {
+    <head>
+        <base href="/frontend/mobile/src/">
+        
+        <title>Xeubiart</title>
+        
+        // Base
+        <link rel="stylesheet" type="text/css" href="css/main.css">
+        
+        // Components
+        <link rel="stylesheet" type="text/css" href="css/components/navbar.css">
+        <link rel="stylesheet" type="text/css" href="css/components/footer.css">
+
+        // Page elements
+        <link rel="stylesheet" type="text/css" href="css/pages/landing/hero.css">
+        <link rel="stylesheet" type="text/css" href="css/pages/landing/shop.css">
+        <link rel="stylesheet" type="text/css" href="css/pages/landing/cta.css">
+        <link rel="stylesheet" type="text/css" href="css/pages/landing/promos.css">
+    </head>
+}

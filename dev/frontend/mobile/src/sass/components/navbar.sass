@@ -1,0 +1,35 @@
+@use "../_globals" as g;
+    
+$navbar-spacing: 40px
+    
+#navbar
+    width: 100dvw
+    height: 10dvh
+    background-color: g.$primary
+    padding: $navbar-spacing
+
+    display: flex
+    align-items: center
+    justify-content: space-between
+
+    #logo
+        width: 240px
+        height: 100%
+        background-color: g.$contrast
+
+    #pages
+        width: fit-content
+        height: fit-content
+        margin-left: auto
+
+        .page
+            display: inline
+            text-align: center
+            font-size: 3em
+            color: g.$white
+            margin-right: $navbar-spacing
+
+    #menu
+        height: 100%
+        aspect-ratio: 1/1
+        background-color: g.$white

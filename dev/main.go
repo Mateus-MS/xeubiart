@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 	routes_pages "placeholder/dev/backend/routes/pages"
-	projectzero_app "placeholder/dev/projectZero/app"
+	projectzero_app "placeholder/dev/features/app"
 )
 
 func main() {
