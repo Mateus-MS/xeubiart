@@ -1,8 +1,29 @@
+// This is the margins on the sides of the screen
+$side-margin: 7dvw;
+$rounded-corner: 35px;
+    
 $primary: #4C585B
 $secondary: #F8EEDF
 $contrast: #8E1616
 $background: #E8C999
+
+$temporary: #88b3d8
 // Do not make any sense this be a variable,
 // but can make easier to change the variable
 // name or value in future
 $white: #ffffff
+$black: #202020
+
+@mixin rounded 
+    border-radius: $rounded-corner
+
+@mixin hide-scroll-bar
+    &::-webkit-scrollbar 
+        display: none
+    
+    -ms-overflow-style: none // IE and Edge
+    scrollbar-width: none  // Firefox
+
+@mixin remove-from-last($property, $value)
+    &:last-child
+        #{$property}: $value

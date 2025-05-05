@@ -1,0 +1,52 @@
+package shoppage
+
+import "placeholder/dev/frontend/components"
+import frags_shop "placeholder/dev/frontend/mobile/pages/shop/frags"
+
+templ ShopPage(){
+    <!DOCTYPE html>
+    <html>
+    @head()
+    <body>
+        @components.Navbar()
+
+        @frags_shop.Banner()
+
+        @frags_shop.CategorySection(
+            frags_shop.CategoryObject{
+                Name: "Mais populares",
+            },
+        ) {
+            // Pass all cards as an "HTML piece" to be rendered in the category section
+            
+            @components.ProductCard()
+            @components.ProductCard()
+            @components.ProductCard()
+            @components.ProductCard()
+            @components.ProductCard()
+        }
+        
+        @components.Footer()
+    </body>
+    </html>
+}
+
+templ head() {
+    <head>
+        <base href="/frontend/mobile/src/">
+        
+        <title>Xeubiart</title>
+        
+        // Base
+        <link rel="stylesheet" type="text/css" href="css/main.css">
+        
+        // Components
+        <link rel="stylesheet" type="text/css" href="css/components/navbar.css">
+        <link rel="stylesheet" type="text/css" href="css/components/footer.css">
+        <link rel="stylesheet" type="text/css" href="css/components/product_card.css">
+    
+        // Page elements
+        <link rel="stylesheet" type="text/css" href="css/pages/shop/banner.css">
+        <link rel="stylesheet" type="text/css" href="css/pages/shop/category.css">
+    </head>
+}

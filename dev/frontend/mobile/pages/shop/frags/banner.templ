@@ -1,0 +1,49 @@
+package frags_shop
+
+templ Banner(){
+    <section id="banner">
+        @carroussel()
+        @categories([]string{
+            "Populares",
+            "Cuidados", 
+            "Roupas", 
+            "Lorem", 
+            "Lorem", 
+            "Lorem", 
+            "Lorem", 
+        })
+    </section>
+}
+
+// This create the carroussel to the banner
+templ carroussel(){
+    // I guess that it doesn't is spelled like that :p
+    <div id="carroussel">
+        <div id="holder">
+            <div class="part" style="background-color: red;"></div>
+            <div class="part" style="background-color: green;"></div>
+            <div class="part" style="background-color: blue;"></div>
+        </div>
+
+        <div id="display">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+}
+
+// This create the icon and the tag name of the category to be displayed on the banner.
+templ categories(categoriesNames []string){
+    <section id="categories">
+        for _, name := range(categoriesNames) {
+            <div class="categorie">
+                // TODO: Change to image
+                <div class="image_holder">
+                    <img>
+                </div>
+                <p class="title"> { name } </p>
+            </div>
+        }
+    </section>
+}

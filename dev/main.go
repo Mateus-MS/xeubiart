@@ -18,7 +18,7 @@ func startServer(router *http.ServeMux, env string) {
 	if env == "dev" {
 		println("Starting SERVER in DEV mode")
 		go func() {
-			if err := http.ListenAndServe("localhost:3000", router); err != nil {
+			if err := http.ListenAndServe("0.0.0.0:3000", router); err != nil {
 				println("HTTP server error:", err)
 			}
 		}()

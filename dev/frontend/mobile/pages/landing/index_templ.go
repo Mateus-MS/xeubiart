@@ -47,7 +47,7 @@ func LandingPage() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<section id=\"hero\"></section><section id=\"shop\"></section><section id=\"cta\"></section><section id=\"promos\"></section>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<section id=\"hero\"><h1 id=\"title\">Express your <br>uniqueness</h1><p>Deus é bom e o diabo é otario, deus é diabo e o otário é bom.</p><button>I want</button></section><section id=\"shop\"></section><section id=\"cta\"></section><section id=\"promos\"></section>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

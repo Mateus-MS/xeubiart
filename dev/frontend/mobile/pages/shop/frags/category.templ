@@ -1,0 +1,18 @@
+package frags_shop
+
+type CategoryObject struct {
+    Name string
+} 
+
+// This create a peek to each category at the main shop page
+templ CategorySection(cat CategoryObject) {
+    <section id={ cat.Name } class="category">
+        <h2>{ cat.Name }</h2>
+        
+        <div class="holder">
+            { children... }
+        </div>
+
+        <button>Ver mais</button>
+    </section>
+}

@@ -14,9 +14,14 @@ type RoutesPages struct {
 func RegisterRoutes(app *projectzero_app.Application) {
 	pagesRoutes := &RoutesPages{App: app}
 
-	// Register a route with a middleware
 	app.Router.Handle("/", projectzero_middlewares.Chain(
 		http.HandlerFunc(pagesRoutes.LandingPageRoute),
+
+		projectzero_middlewares.CorsMiddleware("GET"),
+	))
+
+	app.Router.Handle("/shop", projectzero_middlewares.Chain(
+		http.HandlerFunc(pagesRoutes.ShopPageRoute),
 
 		projectzero_middlewares.CorsMiddleware("GET"),
 	))
