@@ -1,20 +1,23 @@
 @use "../../_globals" as g;
     
 .category
-    width: 100dvw
-    height: 45dvh
+    width: 100vw
+    height: 55vh // TESTING THE SIZE
     background-color: g.$secondary
 
     display: flex
     flex-direction: column
 
-    padding: 0 g.$side-margin
+    // padding: 0 g.$side-margin
+
+    &:nth-child(odd)
+        background-color: g.$background
 
     h2
         font-size: 3.2em
         font-weight: bolder
         color: g.$black
-        margin: 40px 0
+        margin: 40px 0 40px g.$side-margin
 
     .holder
         @include g.hide-scroll-bar
@@ -25,8 +28,8 @@
         display: flex
         overflow-x: scroll
 
-        box-sizing: content-box
-        padding-right: g.$side-margin
+        // box-sizing: content-box
+        // padding-right: g.$side-margin
 
         // BEIGN TESTED
         scroll-snap-type: x mandatory
@@ -36,13 +39,12 @@
         width: fit-content
         height: fit-content
 
-        font-size: 2.4em
+        font-size: 2.3em
         font-weight: bolder
         color: g.$white
-        background-color: g.$black
+        background-color: g.$primary
 
-        margin: 40px 0 
-        margin-left: auto
+        margin: 40px g.$side-margin 40px auto
 
-        padding: 10px 20px
+        padding: 15px 30px
         border-radius: 300px

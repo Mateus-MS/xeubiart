@@ -8,7 +8,7 @@ package components
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-func Footer() templ.Component {
+func Hotbar() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -29,7 +29,7 @@ func Footer() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<footer id=\"footer\"><div id=\"head\"><h2>Xeubiart</h2><h3>Express your uniqueness</h3></div><div id=\"container\"><div id=\"left\"><h4>Links uteis</h4><ul id=\"link_holder\"><li class=\"links\"><a href=\"#\">About</a></li><li class=\"links\"><a href=\"#\">Contact</a></li><li class=\"links\"><a href=\"#\">Privacy Policy</a></li><li class=\"links\"><a href=\"#\">Terms of Service</a></li></ul></div><div id=\"right\"><div id=\"map\"></div><div id=\"address\"><span>Rua teste de são teste</span> <button><img src=\"/frontend/static/svg/copy.svg\" alt=\"Copy\"></button></div></div></div><div id=\"social_links\"><a href=\"#\"><img src=\"/frontend/static/svg/tiktok.svg\" alt=\"Tiktok icon\"></a> <a href=\"#\"><img src=\"/frontend/static/svg/facebook.svg\" alt=\"Facebook icon\"></a> <a href=\"#\"><img src=\"/frontend/static/svg/whatsapp.svg\" alt=\"Whatsapp icon\"></a> <a href=\"#\"><img src=\"/frontend/static/svg/twitter.svg\" alt=\"Twitter icon\"></a> <a href=\"#\"><img src=\"/frontend/static/svg/instagram.svg\" alt=\"Instagram iconx\"></a></div></footer>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"hotbar\"><div id=\"holder\"><div class=\"icon active\"></div><div class=\"icon\"></div><div class=\"icon\"></div><div class=\"icon\"></div><div class=\"icon\"></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

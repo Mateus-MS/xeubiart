@@ -8,18 +8,18 @@ templ LandingPage() {
     @head()
     <body>
         @components.Navbar()
-        <section id="hero">
+        <section class="section" id="hero">
             <h1 id="title">Express your <br> uniqueness</h1>
             <p>Deus é bom e o diabo é otario, deus é diabo e o otário é bom.</p>
             <button>I want</button>
         </section>
-        <section id="shop">
+        <section class="section" id="shop">
 
         </section>
-        <section id="cta">
+        <section class="section" id="cta">
 
         </section>
-        <section id="promos">
+        <section class="section" id="promos">
 
         </section>
         @components.Footer()
@@ -41,6 +41,8 @@ templ head() {
         <link rel="stylesheet" type="text/css" href="css/components/footer.css">
 
         // Page elements
+        <link rel="stylesheet" type="text/css" href="css/pages/landing/main.css">
+
         <link rel="stylesheet" type="text/css" href="css/pages/landing/hero.css">
         <link rel="stylesheet" type="text/css" href="css/pages/landing/shop.css">
         <link rel="stylesheet" type="text/css" href="css/pages/landing/cta.css">

@@ -1,5 +1,5 @@
 // This is the margins on the sides of the screen
-$side-margin: 7dvw;
+$side-margin: 7vw;
 $rounded-corner: 35px;
     
 $primary: #4C585B
@@ -24,6 +24,10 @@ $black: #202020
     -ms-overflow-style: none // IE and Edge
     scrollbar-width: none  // Firefox
 
-@mixin remove-from-last($property, $value)
+@mixin property-to-last-instance($property, $value)
     &:last-child
+        #{$property}: $value
+
+@mixin property-to-first-instance($property, $value)
+    &:first-child
         #{$property}: $value

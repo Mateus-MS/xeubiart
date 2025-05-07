@@ -1,6 +1,143 @@
 @use "../_globals" as g;
 
 #footer
-    width: 100dvw
-    height: 40dvh
+    width: 100vw
+    height: 50vh
     background-color: g.$primary
+
+    padding: g.$side-margin
+
+    // Chlidren placement
+    display: flex
+    flex-direction: column
+
+    #head
+        // This element will have his height defined by his content
+        width: 100%
+        height: fit-content
+        flex-shrink: 0
+
+        h2
+            font-size: 2.7em
+            font-weight: bolder
+            color: g.$white
+            margin-bottom: 10px
+
+        h3
+            font-size: 2em
+            font-weight: normal
+            color: rgba(180, 180, 180, 1)
+            max-width: 50%
+
+    #container
+        width: 100%
+
+        // This element will have his height defined by the space left by his siblings
+        flex-grow: 1
+        min-height: 0 // Prevents the element from growing more than the parent size
+
+        padding: g.$side-margin 0
+
+        // Children placement
+        display: flex
+        justify-content: space-between
+
+        #left
+            width: 40%
+
+            h4
+                font-size: 2.6em
+                font-weight: bolder
+                color: g.$white
+                margin-bottom: 35px
+
+            #link_holder
+                list-style: none
+
+                .links
+
+                    font-size: 2.3em
+                    font-weight: normal
+                    margin-bottom: 25px
+
+                    a
+                        color: rgba(180, 180, 180, 1)
+                        text-decoration: none
+
+        #right
+            width: 50%
+            display: flex
+            flex-direction: column
+
+            #map
+                // TODO: this is not beign squared, probablu because of the flex-grow or somthing related to flexbox
+                // if it began to be really ugly, fix it.
+
+                // this element will have his height defined by the space left by his sbling
+                background-color: g.$secondary
+                aspect-ratio: 1/1
+                min-height: 0 // Prevents the element from growing more than the parent size
+
+    
+            #address
+                // this element will have his height defined by his content
+                height: fit-content
+                flex-shrink: 0
+
+                margin-top: 20px
+                width: 100%
+
+                // children placement
+                display: flex
+                justify-content: space-between
+                align-items: center
+
+                span
+                    font-size: 2.4em
+                    font-weight: bold
+                    color: g.$white
+                    white-space: nowrap
+                    overflow: hidden
+                    text-overflow: ellipsis
+                    display: block
+                    width: 75%
+
+                button
+                    width: 15%
+                    padding: 12px
+
+                    background-color: g.$white
+                    border-radius: 15px
+
+                    border: none
+
+                    img 
+                        width: 100%
+                        aspect-ratio: 1/1
+                        filter: invert(13%) sepia(52%) saturate(4809%) hue-rotate(351deg) brightness(94%) contrast(94%)
+
+    #social_links
+        // This element will have his height defined by his content
+        width: 100%
+        height: fit-content
+        flex-shrink: 0
+
+        display: flex
+        justify-content: space-between
+        align-items: center
+
+        a
+            width: 60px
+            height: 60px
+            border-radius: 50%
+
+            // Add a padding including the width
+            box-sizing: content-box
+            padding: 20px
+
+            background-color: g.$contrast
+
+            img
+                width: 100%
+                height: 100%
+                filter: invert(89%) sepia(17%) saturate(207%) hue-rotate(343deg) brightness(105%) contrast(94%)

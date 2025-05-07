@@ -1,6 +1,7 @@
 package shoppage
 
 import "placeholder/dev/frontend/components"
+import "placeholder/dev/backend/models"
 import frags_shop "placeholder/dev/frontend/mobile/pages/shop/frags"
 
 templ ShopPage(){
@@ -8,6 +9,8 @@ templ ShopPage(){
     <html>
     @head()
     <body>
+        @components.Hotbar()
+
         @components.Navbar()
 
         @frags_shop.Banner()
@@ -18,12 +21,67 @@ templ ShopPage(){
             },
         ) {
             // Pass all cards as an "HTML piece" to be rendered in the category section
-            
-            @components.ProductCard()
-            @components.ProductCard()
-            @components.ProductCard()
-            @components.ProductCard()
-            @components.ProductCard()
+            @components.ProductCard(
+                models.ProductCard{
+                    Name: "Pereco :3",
+                    Price: "$14,99",
+                    Rating: "5",
+                    RatingCount: "5.000.000",
+                },
+            )
+
+            @components.ProductCard(
+                models.ProductCard{
+                    Name: "Pumadinha :3",
+                    Price: "$10,00",
+                    Rating: "4.7",
+                    RatingCount: "500",
+                },
+            )
+
+            @components.ProductCard(
+                models.ProductCard{
+                    Name: "Fake tattoo o.o",
+                    Price: "$4,95",
+                    Rating: "4.95",
+                    RatingCount: "23",
+                },
+            )
+
+        }
+
+        @frags_shop.CategorySection(
+            frags_shop.CategoryObject{
+                Name: "Cuidados",
+            },
+        ) {
+            // Pass all cards as an "HTML piece" to be rendered in the category section
+            @components.ProductCard(
+                models.ProductCard{
+                    Name: "Pumadinha :3",
+                    Price: "$10,00",
+                    Rating: "4.7",
+                    RatingCount: "500",
+                },
+            )
+
+            @components.ProductCard(
+                models.ProductCard{
+                    Name: "Regenerador >:c",
+                    Price: "$15,00",
+                    Rating: "4.2",
+                    RatingCount: "150",
+                },
+            )
+
+            @components.ProductCard(
+                models.ProductCard{
+                    Name: "Protetor solar O:3",
+                    Price: "$9,95",
+                    Rating: "4.6",
+                    RatingCount: "76",
+                },
+            )
         }
         
         @components.Footer()
@@ -43,6 +101,7 @@ templ head() {
         // Components
         <link rel="stylesheet" type="text/css" href="css/components/navbar.css">
         <link rel="stylesheet" type="text/css" href="css/components/footer.css">
+        <link rel="stylesheet" type="text/css" href="css/components/hotbar.css">
         <link rel="stylesheet" type="text/css" href="css/components/product_card.css">
     
         // Page elements

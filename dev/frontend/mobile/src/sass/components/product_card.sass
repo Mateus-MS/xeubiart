@@ -1,8 +1,8 @@
 @use "../_globals" as g;
     
 .productCard
-    // BEIGN TESTED
-    scroll-snap-align: start
+    // BEIGN TESTED, TEST ALSO THE SNAP ALIGN MODE
+    scroll-snap-align: center
     scroll-snap-stop: always
 
     height: 100%
@@ -18,7 +18,19 @@
     // This will apply the sended property only 
     // to the last child of the parent
     // of this class
-    @include g.remove-from-last(margin-right, 0)
+    @include g.property-to-last-instance(margin-right, g.$side-margin)
+    @include g.property-to-first-instance(margin-left, g.$side-margin)
+
+    // Every odd child will have a different background color
+    &:nth-child(odd)
+        .image
+            background-color: g.$temporary
+            .actions
+                .action
+                    img
+                        filter: invert(33%) sepia(9%) saturate(562%) hue-rotate(145deg) brightness(92%) contrast(87%)
+
+        
 
     .image
         @include g.rounded

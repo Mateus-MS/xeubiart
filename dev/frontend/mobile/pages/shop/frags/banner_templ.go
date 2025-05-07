@@ -79,7 +79,7 @@ func carroussel() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div id=\"carroussel\"><div id=\"holder\"><div class=\"part\" style=\"background-color: red;\"></div><div class=\"part\" style=\"background-color: green;\"></div><div class=\"part\" style=\"background-color: blue;\"></div></div><div id=\"display\"><div class=\"dot active\"></div><div class=\"dot\"></div><div class=\"dot\"></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div id=\"carroussel\"><div id=\"holder\"><div class=\"part\" style=\"background-color: rgb(192, 192, 192);\"></div><div class=\"part\" style=\"background-color: rgb(116, 116, 116);\"></div><div class=\"part\" style=\"background-color: rgb(192, 192, 192);\"></div></div><div id=\"display\"><div class=\"dot active\"></div><div class=\"dot\"></div><div class=\"dot\"></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -121,7 +121,7 @@ func categories(categoriesNames []string) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `dev/frontend/mobile/pages/shop/frags/banner.templ`, Line: 45, Col: 40}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `dev/frontend/mobile/pages/shop/frags/banner.templ`, Line: 44, Col: 40}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {

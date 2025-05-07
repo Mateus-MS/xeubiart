@@ -47,7 +47,7 @@ func LandingPage() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<section id=\"hero\"><h1 id=\"title\">Express your <br>uniqueness</h1><p>Deus é bom e o diabo é otario, deus é diabo e o otário é bom.</p><button>I want</button></section><section id=\"shop\"></section><section id=\"cta\"></section><section id=\"promos\"></section>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<section class=\"section\" id=\"hero\"><h1 id=\"title\">Express your <br>uniqueness</h1><p>Deus é bom e o diabo é otario, deus é diabo e o otário é bom.</p><button>I want</button></section><section class=\"section\" id=\"shop\"></section><section class=\"section\" id=\"cta\"></section><section class=\"section\" id=\"promos\"></section>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -84,7 +84,7 @@ func head() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<head><base href=\"/frontend/mobile/src/\"><title>Xeubiart</title><link rel=\"stylesheet\" type=\"text/css\" href=\"css/main.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/components/navbar.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/components/footer.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/pages/landing/hero.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/pages/landing/shop.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/pages/landing/cta.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/pages/landing/promos.css\"></head>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<head><base href=\"/frontend/mobile/src/\"><title>Xeubiart</title><link rel=\"stylesheet\" type=\"text/css\" href=\"css/main.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/components/navbar.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/components/footer.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/pages/landing/main.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/pages/landing/hero.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/pages/landing/shop.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/pages/landing/cta.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/pages/landing/promos.css\"></head>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

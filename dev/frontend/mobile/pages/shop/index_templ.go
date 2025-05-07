@@ -9,6 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import "placeholder/dev/frontend/components"
+import "placeholder/dev/backend/models"
 import frags_shop "placeholder/dev/frontend/mobile/pages/shop/frags"
 
 func ShopPage() templ.Component {
@@ -44,6 +45,10 @@ func ShopPage() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
+		templ_7745c5c3_Err = components.Hotbar().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
 		templ_7745c5c3_Err = components.Navbar().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -68,7 +73,14 @@ func ShopPage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.ProductCard().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = components.ProductCard(
+				models.ProductCard{
+					Name:        "Pereco :3",
+					Price:       "$14,99",
+					Rating:      "5",
+					RatingCount: "5.000.000",
+				},
+			).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -76,7 +88,14 @@ func ShopPage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.ProductCard().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = components.ProductCard(
+				models.ProductCard{
+					Name:        "Pumadinha :3",
+					Price:       "$10,00",
+					Rating:      "4.7",
+					RatingCount: "500",
+				},
+			).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -84,23 +103,14 @@ func ShopPage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.ProductCard().Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, " ")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = components.ProductCard().Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, " ")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = components.ProductCard().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = components.ProductCard(
+				models.ProductCard{
+					Name:        "Fake tattoo o.o",
+					Price:       "$4,95",
+					Rating:      "4.95",
+					RatingCount: "23",
+				},
+			).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -114,11 +124,78 @@ func ShopPage() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
+		templ_7745c5c3_Var3 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+			if !templ_7745c5c3_IsBuffer {
+				defer func() {
+					templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err == nil {
+						templ_7745c5c3_Err = templ_7745c5c3_BufErr
+					}
+				}()
+			}
+			ctx = templ.InitializeContext(ctx)
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, " ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = components.ProductCard(
+				models.ProductCard{
+					Name:        "Pumadinha :3",
+					Price:       "$10,00",
+					Rating:      "4.7",
+					RatingCount: "500",
+				},
+			).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, " ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = components.ProductCard(
+				models.ProductCard{
+					Name:        "Regenerador >:c",
+					Price:       "$15,00",
+					Rating:      "4.2",
+					RatingCount: "150",
+				},
+			).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, " ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = components.ProductCard(
+				models.ProductCard{
+					Name:        "Protetor solar O:3",
+					Price:       "$9,95",
+					Rating:      "4.6",
+					RatingCount: "76",
+				},
+			).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			return nil
+		})
+		templ_7745c5c3_Err = frags_shop.CategorySection(
+			frags_shop.CategoryObject{
+				Name: "Cuidados",
+			},
+		).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
 		templ_7745c5c3_Err = components.Footer().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -142,12 +219,12 @@ func head() templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var3 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var3 == nil {
-			templ_7745c5c3_Var3 = templ.NopComponent
+		templ_7745c5c3_Var4 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var4 == nil {
+			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<head><base href=\"/frontend/mobile/src/\"><title>Xeubiart</title><link rel=\"stylesheet\" type=\"text/css\" href=\"css/main.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/components/navbar.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/components/footer.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/components/product_card.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/pages/shop/banner.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/pages/shop/category.css\"></head>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<head><base href=\"/frontend/mobile/src/\"><title>Xeubiart</title><link rel=\"stylesheet\" type=\"text/css\" href=\"css/main.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/components/navbar.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/components/footer.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/components/hotbar.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/components/product_card.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/pages/shop/banner.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"css/pages/shop/category.css\"></head>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

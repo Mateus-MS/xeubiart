@@ -1,0 +1,47 @@
+@use "../_globals" as g;
+@use "sass:color";
+
+#hotbar
+    width: 100vw
+    height: 12vh
+
+    position: fixed
+    bottom: 0
+    left: 0
+    z-index: 1000
+
+    &::before
+        // The shadow effect is made with this pseudo-element
+        content: ""
+        position: absolute
+        bottom: 0
+        left: 0
+        width: 100%
+        height: 130%
+        background-image: linear-gradient(to top, rgba(0, 0, 0, 0.3) 30%, transparent)
+
+    #holder
+        width: calc(100vw - g.$side-margin * 2)
+        height: inherit
+        background-color: color.adjust(g.$primary, $lightness: -10%)
+        @include g.rounded
+
+        // Self positionate relative to the parent
+        position: absolute
+        bottom: 2.5vh
+        left: g.$side-margin
+
+        // Organize the icons
+        display: flex
+        justify-content: space-between
+        align-items: center
+        padding: 50px
+
+        .icon
+            height: 80%
+            aspect-ratio: 1/1
+            background-color: g.$secondary
+
+            &.active
+                background-color: g.$temporary
+                height: 100%
