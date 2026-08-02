@@ -1,0 +1,28 @@
+package pages
+
+import "com.xeubiart/templates"
+import "com.xeubiart/app"
+import "com.xeubiart/utils"
+// import "com.xeubiart/atoms"
+// import "com.xeubiart/pages/landing/frags"
+
+func init(){
+    app.GetInstance().Router.GET("/", utils.Render(landing()))
+}
+
+templ landing(){
+    @templates.Base(templates.BaseProps{
+        HeadTitle: "Xeubiart Studio | Fine-line & Blackwork Tattoos in Porto",
+        HeadImports: head(),
+        IncludeNavigation: true,
+        IncludeFooter: true,
+        IncludeFooterCTA: true,
+    }){
+        <div class="text-red-500">Test</div>
+    }
+}
+
+templ head(){
+    // <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
+    // <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+}

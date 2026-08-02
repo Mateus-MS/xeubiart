@@ -1,0 +1,25 @@
+version: '3'
+
+tasks:
+  caddy:
+    dir: ../infra
+    cmds:
+      - caddy run
+
+  angular:
+    dir: ../../frontend/angular
+    cmds:
+      - npm start
+
+  templ:
+    dir: ../../frontend/templ
+    cmds:
+      - go tool templ generate --watch --cmd="go run main.go"
+
+  tailwind:
+    dir: ../../frontend/tailwind
+    cmds:
+      - npx @tailwindcss/cli -i ./input.css -o ./dist/tailwind.css --watch
+
+  dev:
+    deps: [caddy, angular, templ, tailwind]

@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @source "../angular/src";
+@source "../templ";
 
 @theme {
   --color-primary: #2563eb;
