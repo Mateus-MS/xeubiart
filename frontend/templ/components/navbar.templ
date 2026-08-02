@@ -1,0 +1,95 @@
+package components
+
+// import "xeubiart.com/atoms"
+import "fmt"
+
+templ NavBar(){
+    <div 
+        class="h-(--spacing-header) lg:px-14 px-8 py-4 flex lg:flex-row flex-row-reverse justify-between border-b-1 border-cherry/30 bg-cream/85 relative sticky top-0 z-200 backdrop-blur-md"
+        x-data="{
+            selectedText: 'PT',
+            selectedFlag: '/static/svg/flags/br.svg',
+        }"
+    >
+        @lenguageSelector()
+
+        <a class="font-brand text-3xl text-cherry lg:absolute lg:left-1/2 lg:-translate-1/2 lg:top-1/2 lg:-transate-1/2" href="/">Xeubiart</a>
+
+        <div class="hidden lg:flex"></div>
+        // <div class="gap-3 hidden lg:flex">
+        //     @atoms.Button_Light("py-2 px-4", templ.Attributes{
+        //         "onclick":"window.location.href = '/login'",
+        //     }){Entrar}
+        //     @atoms.Button_Heavy("py-2 px-4", templ.Attributes{
+        //         "onclick":"window.location.href = '/register'",
+        //     }){Crie uma conta}
+        // </div>
+    </div>
+}
+
+templ lenguageSelector(){
+    <atom-dropdown 
+        x-data="{
+            open: false
+        }"
+        @click="open = !open"
+        @click.outside="open = false"
+        class="border border-cherry/30 relative flex items-center px-3 rounded-full"
+    >
+        <dropdown-selected 
+            class="flex gap-2 cursor-pointer text-muted items-center"
+        >
+            <img class="w-[20px] h-[20px] rounded-sm" :src="selectedFlag">
+            <span x-text="selectedText" class="font-semibold"></span>
+            <icon 
+                class="transition-all duration-300"
+                :class="{ 'rotate-180': open }"
+            >&#xE800;</icon>
+        </dropdown-selected>
+
+        <dropdown-holder 
+            x-show="open"
+            x-cloack
+
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
+            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95"
+            :class="{ 'opacity-100': open }"
+            class="opacity-0 origin-top-right lg:origin-top-left w-[150px] absolute top-[calc(100%+10px)] right-0 lg:left-0 border-cherry/30 border flex flex-col gap-3 p-3 rounded-2xl bg-cream"
+        >
+            {{
+                type opt struct {
+                    data string
+                    src  string
+                    text string
+                }
+
+                data := []opt{
+                    opt{
+                        data: "PT",
+                        src:  "/static/svg/flags/br.svg",
+                        text: "Português",
+                    },
+                    opt{
+                        data: "ES",
+                        src:  "/static/svg/flags/es.svg",
+                        text: "Espanhol",
+                    },
+                }
+            }}
+            for _, d := range(data){
+                <dropdown-option 
+                    data-value={d.data}
+                    class="w-full transition-colors flex items-center gap-3 cursor-pointer py-2 px-2 hover:bg-cherry/15 rounded-lg"
+                    @click.stop={fmt.Sprintf("selectedText = '%s'; selectedFlag = '%s'; open = false", d.data, d.src)}
+                >
+                    <img class="w-[20px] h-[20px] rounded-sm" src={d.src}>
+                    <span class="text-black/75">{d.text}</span>
+                </dropdown-option>
+            }
+        </dropdown-holder>
+    </atom-dropdown>
+}

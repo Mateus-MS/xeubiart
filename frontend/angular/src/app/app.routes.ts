@@ -4,6 +4,7 @@ export const routes: Routes = [
     {
         path: 'admin/dashboard',
         loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard),
+        title: 'Xeubiart | Painel de administrador',
     },
     {
         path: 'profile',

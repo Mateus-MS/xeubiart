@@ -3,6 +3,13 @@
 }
 
 :80 {
+    # Reverse proxy Angular WebSocket requests
+    @angular_ws {
+        header Connection *Upgrade*
+        header Upgrade    websocket
+    }
+    reverse_proxy @angular_ws localhost:4200
+
     @tailwind {
         path /tailwind.css
     }

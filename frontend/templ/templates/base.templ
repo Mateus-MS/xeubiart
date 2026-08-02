@@ -1,6 +1,6 @@
 package templates
 
-// import "com.xeubiart/components"
+import "com.xeubiart/components"
 
 type BaseProps struct{
     HeadTitle   string
@@ -28,19 +28,19 @@ templ Base(props BaseProps){
         @props.HeadImports
     </head>
     <body class="min-h-[100dvh] h-fit">
-        // if props.IncludeNavigation {
-        //     @components.NavBar()
-        // }
+        if props.IncludeNavigation {
+            @components.NavBar()
+        }
 
         { children... }
 
-        // if props.IncludeFooter {
-        //     @components.Footer(components.FooterProps{IncludeCTA: props.IncludeFooterCTA})
-        // }
+        if props.IncludeFooter {
+            @components.Footer(components.FooterProps{IncludeCTA: props.IncludeFooterCTA})
+        }
 
-        // if props.IncludeNavigation {
-        //     @components.HotBar()
-        // }
+        if props.IncludeNavigation {
+            @components.HotBar()
+        }
     </body>
     </html>    
 }
