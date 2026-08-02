@@ -10,6 +10,7 @@ require (
 )
 
 require (
+	github.com/Oudwins/tailwind-merge-go v0.2.3 // indirect
 	github.com/a-h/parse v0.0.0-20250122154542-74294addb73e // indirect
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/bytedance/gopkg v0.1.3 // indirect

@@ -1,0 +1,27 @@
+package atoms
+
+import "github.com/Oudwins/tailwind-merge-go/pkg/twmerge"
+
+type TitleProps struct{
+    Level      string
+    ClassNames string
+}
+
+templ Title(props TitleProps){
+    {{ classNames := twmerge.Merge("font-contrast [&_em]:text-cherry", props.ClassNames) }}
+
+    switch props.Level {
+        case "h1":
+            <h1 class={ classNames }>{ children... }</h1>
+        case "h2":
+            <h2 class={ classNames }>{ children... }</h2>
+        case "h3":
+            <h3 class={ classNames }>{ children... }</h3>
+        case "h4":
+            <h4 class={ classNames }>{ children... }</h4>
+        case "h5":
+            <h5 class={ classNames }>{ children... }</h5>
+        case "h6":
+            <h6 class={ classNames }>{ children... }</h6>
+    }
+}

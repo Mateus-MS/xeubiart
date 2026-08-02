@@ -1,0 +1,46 @@
+package frags
+
+import "com.xeubiart/atoms"
+
+templ Hero(){
+    <section-hero class="flex lg:grid lg:grid-cols-2 lg:place-items-center lg:py-15 lg:px-35 lg:gap-[20%] flex-col-reverse gap-8 p-10 h-fit bg-cream">
+        <div class="h-fit flex flex-col gap-4">
+            @atoms.Eyebrown_Sparkly(""){Tatuadora artística}
+            @atoms.Title(atoms.TitleProps{
+                Level: "h2",
+                ClassNames: "text-[clamp(2.6rem,10vw,3.5rem)]/12 mt-5 text-cherry [&>em]:text-cherry/50",
+            }){Delicadeza<br> <em>que marca.</em>}
+            <p class="text-muted lg:mb-0 mb-5">Do traço leve ao marcante, cada tatuagem feita para refletir quem você é. Arte na pele, identidade para sempre.</p>
+            <div class="lg:flex lg:items-center lg:gap-5 lg:mt-5 lg:mb-5">
+                @atoms.Button_Heavy("lg:w-fit w-full flex justify-center mb-4 lg:mb-0", templ.Attributes{}){Agende já}
+                @atoms.Link(atoms.LinkProps{
+                    RedirectTo: "/gallery",
+                    AditionalClassenames: "text-muted font-normal text-sm",
+                }){Ver portifólio}
+            </div>
+            <div class="w-fill flex items-center border-t-1 border-t-cherry pt-5 mt-3">
+                <div class="w-full flex flex-col gap-2 items-center">
+                    <span class="text-cherry text-3xl font-contrast">7+</span>
+                    <span class="uppercase text-muted text-[.65rem] tracking-widest">Anos de Exp.</span>
+                </div>
+                <div class="w-[1px] h-[30px] bg-cherry"></div>
+                <div class="w-full flex flex-col gap-2 items-center">
+                    <span class="text-cherry text-3xl font-contrast">500+</span>
+                    <span class="uppercase text-muted text-[.65rem] tracking-widest">Tatuagens</span>
+                </div>
+                <div class="w-[1px] h-[30px] bg-cherry"></div>
+                <div class="w-full flex flex-col gap-2 items-center">
+                    <span class="text-cherry text-3xl font-contrast">5★</span>
+                    <span class="uppercase text-muted text-[.65rem] tracking-widest">Avaliação</span>
+                </div>
+            </div>
+        </div>
+        <div class="flex w-full h-fit p-10">
+            <div class="bg-green-500 w-full aspect-[3/4] max-w-[430px] relative">
+
+                // Spinning disk
+                <div class="grid place-items-center w-[75px] aspect-square rounded-full bg-cherry text-white text-center uppercase text-[.65rem] tracking-widest absolute -right-[20px] -bottom-[20px] animate-[spin_15s_linear_infinite]">Arte<br>na<br>pele ✦</div>
+            </div>
+        </div>
+    </section-hero>
+}

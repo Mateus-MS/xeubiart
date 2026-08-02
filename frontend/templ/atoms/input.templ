@@ -1,0 +1,90 @@
+package atoms
+
+import "github.com/Oudwins/tailwind-merge-go/pkg/twmerge"
+
+type InputType string
+const (
+    DefaultInput = "default_input"
+    AreaInput = "area_input"
+    PasswordInput = "password_input"
+)
+
+type InputAditionalClasses struct {
+    Wrapper string
+    Input   string
+}
+
+type InputProps struct {
+    Type  InputType
+    Label string
+    Icon  string
+    AditionalClassenames string
+    Aditional InputAditionalClasses
+}
+
+templ Input(props InputProps, attrs templ.Attributes){
+    <atom-input class={twmerge.Merge("w-full block shrink", props.Aditional.Wrapper)}>
+        if props.Label != "" {
+            <span class="block text-sm mb-1">{props.Label}</span>
+        }
+        <div class={ 
+            twmerge.Merge(
+                `
+                    bg-white px-4 py-2 border-1 border-cherry/15 rounded-xl text-sm flex transition-colors relative
+                    
+                    focus-within:[&_icon]:text-cherry
+                    
+                    has-[input[data-valid=false]]:!border-red-900
+                    has-[input[data-valid=false]]:!shadow-[0_0_5px_3px] 
+                    has-[input[data-valid=false]]:!shadow-cherry-dark/15 
+                    
+                    has-[input[data-valid=true]]:!border-green-900
+                    has-[input[data-valid=true]]:!shadow-[0_0_5px_3px] 
+                    has-[input[data-valid=true]]:!shadow-green-500/15 
+
+                    focus-within:border-blue-900
+                    focus-within:shadow-[0_0_5px_3px] 
+                    focus-within:shadow-blue-500/15 
+                `, 
+                props.AditionalClassenames,
+                props.Aditional.Input,
+            )
+        }
+        if props.Type == PasswordInput {
+            x-data="{
+                shown: false,
+                icon: '\uE807',
+                toggleIcon(){
+                    this.shown = !this.shown;
+                }
+            }"
+        }
+        >
+            if props.Icon != "" {
+                <icon class="flex items-center text-muted mr-3">{props.Icon}</icon>
+            }
+            switch props.Type {
+                case AreaInput:
+                    <textarea  class="w-full" rows="3" { attrs... }></textarea>
+                default:
+                    <input 
+                        class="w-full" 
+                        { attrs... } 
+
+                        if props.Type == PasswordInput {
+                            :type="shown ? 'text' : 'password'"
+                            autocomplete="new-password"
+                        }
+                    >
+            }
+
+            if props.Type == PasswordInput {
+                <icon 
+                    class="text-sm/1 text-muted mr-3 cursor-pointer absolute right-0 top-1/2 -translate-y-1/2 p-3"
+                    x-text="shown ? '\uE807' : '\uE806'"
+                    @click="toggleIcon()"
+                ></icon>
+            }
+        </div>
+    </atom-input>
+}

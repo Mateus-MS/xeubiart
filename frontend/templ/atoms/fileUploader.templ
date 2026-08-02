@@ -1,0 +1,149 @@
+package atoms
+
+templ FileUploader(bindTo string){
+    <file-uploader
+        x-data="{
+            _files: [],
+            dragging: null,
+            handleFiles(fileList){
+                if (!this.$el._fileMap) this.$el._fileMap = new Map();
+
+                const incoming = Array.from(fileList)
+                    .filter(file => file instanceof File)
+                    .map(file => ({
+                        remote: false,
+                        preview: URL.createObjectURL(file),
+                        file: file
+                    }));
+
+                this._files = [...this._files, ...incoming];
+                this.syncInput();
+            },
+            removeFile(index){
+                const f = this._files[index];
+                if (f && !f.remote) this.$el._fileMap?.delete(f.preview);
+                this._files.splice(index, 1);
+                this.syncInput();
+            },
+            syncInput() {
+                const dt = new DataTransfer();
+
+                this._files
+                    .filter(f => !f.remote && f.file instanceof File)
+                    .forEach(f => dt.items.add(f.file));
+
+                this.$refs.fileInput.files = dt.files;
+
+                this.$dispatch('file-uploader:updated', {
+                    files: Array.from(dt.files),
+                    gallery: this._files
+                });
+            },
+
+            getFiles() {
+                return Array.from(this.$refs.fileInput.files);
+            },
+
+            getGallery() {
+                return this._files;
+            },
+        }"
+        x-modelable="_files"
+        x-model={bindTo}
+        @drop.prevent="if (dragging === null) handleFiles($event.dataTransfer.files)"
+        @click="$refs.fileInput.click()"
+        class="flex flex-col gap-4"
+        >
+        <file-input
+            class="group p-6 flex items-center flex-col justify-center gap-2 rounded-2xl border-cherry/20 border-2 border-dashed bg-cream hover:bg-cherry/10 hover: border-cherry cursor-pointer transition-colors duration-[.15s]"
+            x-show="_files.length === 0"
+        >
+            <input type="file"
+                name="uploads[]"
+                x-ref="fileInput"
+                class="hidden"
+                multiple
+                accept=".png,.jpg"
+                @change="handleFiles($event.target.files)">
+            <icon class="grid place-items-center w-[50px] h-[50px] bg-cherry/15 rounded-xl text-cherry group-hover:bg-cherry/50">&#xF02E;</icon>
+            <h6 class="text-sm">Arraste ou clique para fazer upload</h6>
+            <p class="text-muted text-xs">PNG, JPG, PDF · até 20MB</p>
+        </file-input>
+        <file-preview
+            @click.stop
+            class="grid grid-cols-3 gap-4"
+            x-cloak
+            x-show="_files !== null"
+            x-data="{
+                reorder(from, to) {
+                    if (from === null || from === to) return
+                    const item = this._files.splice(from, 1)[0]
+                    this._files.splice(to, 0, item)
+                    this.dragging = to
+                    this.syncInput()
+                }
+            }"
+        >
+            <template
+                x-for="(photo, index) in _files" :key="photo.preview"
+            >
+                @photoPreview()
+            </template>
+
+            // Add new files btn
+            <div
+                class="hover:shadow-[0_8px_22px_rgba(139,26,43,0.18)] hover:scale-103 w-full aspect-square border-dashed border-2 border-cherry/25 rounded-lg grid cursor-pointer hover:bg-cherry/15 duration-300 transition-all"
+                @click="$refs.fileInput.click()"
+                x-show="_files.length > 0"
+                x-cloak
+            >
+                <icon class="place-self-center text-lg text-cherry">&#xE820;</icon>
+            </div>
+        </file-preview>
+    </file-uploader>
+}
+
+templ photoPreview(){
+    <div
+        class="hover:shadow-[0_8px_22px_rgba(139,26,43,0.18)] hover:scale-103 transition-all duration-300 cursor-pointer group w-full aspect-square overflow-hidden rounded-lg relative"
+        :class="index === 0 ? 'border-2 border-cherry' : 'border-1 border-cherry/15'"
+        draggable="true"
+        :data-dragging="dragging === index"
+
+        @dragstart="dragging = index"
+        @dragover.prevent="reorder(dragging, index)"
+        @dragend="dragging = null"
+    >
+        <img class="w-full h-full" :src="photo.preview">
+
+        // Overlay
+        <div class="inset-0 absolute w-full h-full">
+            // Photo index displayer
+            <div x-cloak x-show="index === 0" class="absolute w-[20px] w-fit px-2 py-1 left-2 text-[.6rem] top-2 rounded-full bg-cherry text-white font-bold uppercase">Capa</div>
+            <div x-cloak x-show="index !== 0" class="absolute w-[20px] aspect-square right-2 top-2 rounded-full bg-black/50 grid place-content-center text-white font-bold" x-text="index + 1"></div>
+
+            // Hover part
+            <div class="absolute w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                // shadow
+                <div class="absolute bottom-0 w-full h-[100px] bg-linear-to-t from-black/25 to-transparent"></div>
+
+                // Set as cover button
+                <div
+                    x-cloak x-show="index !== 0" class="absolute left-2 bottom-2 bg-white rounded-full px-[7px] py-[3px] flex gap-1"
+                    @click="reorder(index, 0)"
+                >
+                    <icon>&#xF25B;</icon> Capa
+                </div>
+
+                // Delete button
+                <div
+                    class="absolute right-2 bottom-2 bg-cherry rounded-full px-[7px] py-[3px] flex gap-1 text-white"
+                    @click="removeFile(index)"
+                >
+                    <icon>&#xF1F8;</icon> Delete
+                </div>
+            </div>
+        </div>
+
+    </div>
+}

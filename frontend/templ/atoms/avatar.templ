@@ -1,0 +1,39 @@
+package atoms
+
+import "fmt"
+
+type AvatarProps struct {
+    UserProfilePath     string
+    UserName            string
+    AditionalClassnames string
+    Alpine *AvatarAlpine
+}
+
+type AvatarAlpine struct {
+    Photo string
+    Name  string
+}
+
+templ Avatar(props AvatarProps){
+    if props.Alpine != nil {
+        <atom-avatar class={"w-[40px] h-[40px] rounded-full overflow-hidden", props.AditionalClassnames}
+            x-data={fmt.Sprintf(`{ get _photo() { return %s }, get _name() { return %s } }`, props.Alpine.Photo, props.Alpine.Name)}
+        >
+            <img x-show="_photo" :src="_photo">
+            <div x-show="!_photo" class="w-full h-full grid place-items-center bg-cherry font-contrast text-white" x-text="_name?.charAt(0)"></div>
+        </atom-avatar>
+    } else {
+        {{ usePhoto := props.UserProfilePath != "" }}
+        <atom-avatar class={"w-[40px] h-[40px] rounded-full overflow-hidden", props.AditionalClassnames}>
+            if usePhoto {
+                <img src={props.UserProfilePath}>
+            } else {
+                {{
+                    runes := []rune(props.UserName)
+                    firstChar := runes[0]
+                }}
+                <div class="w-full h-full grid place-items-center bg-cherry font-contrast text-white">{string(firstChar)}</div>
+            }
+        </atom-avatar>
+    }
+}

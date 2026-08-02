@@ -13,7 +13,7 @@
     }
 
     @templ {
-        path / /static
+        path / /static*
     }
 
     reverse_proxy @templ localhost:8081
