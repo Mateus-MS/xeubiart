@@ -1,0 +1,46 @@
+package templates
+
+import "xeubiart.com/components"
+
+type BaseProps struct{
+    HeadTitle   string
+    HeadImports templ.Component
+
+    IncludeNavigation bool
+    IncludeFooter     bool
+    IncludeFooterCTA  bool
+
+    AditionalClasses string
+}
+
+templ Base(props BaseProps){
+	<!DOCTYPE html>
+    <html lang="en" class={props.AditionalClasses}>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{props.HeadTitle}</title>
+
+        <link href="/static/css/main.css" rel="stylesheet">
+
+        <link rel="icon" type="image/x-icon" href="/static/svg/xeubiart.svg">
+
+        @props.HeadImports
+    </head>
+    <body class="min-h-[100dvh] h-fit">
+        if props.IncludeNavigation {
+            @components.NavBar()
+        }
+
+        { children... }
+
+        if props.IncludeFooter {
+            @components.Footer(components.FooterProps{IncludeCTA: props.IncludeFooterCTA})
+        }
+
+        // if props.IncludeNavigation {
+        //     @components.HotBar()
+        // }
+    </body>
+    </html>    
+}

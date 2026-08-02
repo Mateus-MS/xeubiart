@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@source "../angular/src";
+
+@theme {
+  --color-primary: #2563eb;
+  --color-secondary: #7c3aed;
+  --color-accent: #f97316;
+
+  --color-surface: #ffffff;
+  --color-background: #f8fafc;
+
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+}
