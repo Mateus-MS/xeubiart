@@ -2,6 +2,26 @@
     <a class="font-brand text-white text-3xl" href="/">Xeubiart</a>
 </header>
 <section class="block w-full h-full bg-red-500 grid grid-cols-[250px_1fr]">
-    <aside class="w-full h-full bg-text-dark"></aside>
-    <main class="w-full h-full bg-cream"></main>
+    <aside class="w-full h-full bg-text-dark py-10">
+        @for(category of categories; track category[0]){
+            <div class="category">
+                <h3 class="mb-3 ml-6 text-[.7rem] uppercase text-white/30">{{ category[0] }}</h3>
+                <ul>
+                    @for(item of category[1]; track item){
+                        <li>
+                            <a 
+                                class="px-6 py-1.5 w-full block text-white text-sm"
+                                [class]="selectedCategory === category[0] ? 'bg-cherry/20 relative before:content-[\'\'] before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-cherry' : ''"
+                            >{{ item.title }}</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    </aside>
+    <main class="w-full h-full bg-cream">
+        @if (getSelectedPanel) {
+            <ng-container *ngComponentOutlet="getSelectedPanel"></ng-container>
+        }
+    </main>
 </section>
