@@ -87,8 +87,8 @@ export class UiFooter extends LitElement {
                     (link) => html`
                     <li class="mb-2">
                         <a
-                        class="ml-4 text-muted relative text-sm/1 transition-colors before:transition-opacity before:opacity-0 before:absolute before:left-[-15px] before:top-1/2 before:-translate-y-1/2 before:w-[7px] before:aspect-square before:bg-cherry before:rounded-full hover:before:opacity-100 hover:text-white"
-                        href=${link.RedirectTo}
+                            class="ml-4 text-muted relative text-sm/1 transition-colors before:transition-opacity before:opacity-0 before:absolute before:left-[-15px] before:top-1/2 before:-translate-y-1/2 before:w-[7px] before:aspect-square before:bg-cherry before:rounded-full hover:before:opacity-100 hover:text-white"
+                            href=${link.RedirectTo}
                         >
                         ${link.Label}
                         </a>
@@ -164,15 +164,15 @@ export class UiFooter extends LitElement {
 
                     <div class="flex flex-col lg:flex-row lg:justify-between gap-3 pt-7 border-t-cherry/50 border-t">
                         <p class="text-muted text-xs text-center">
-                        © 2026 <strong class="text-cherry">Xeubiart</strong> — Todos os direitos reservados. Feito com
-                        <strong class="animate-pulse">🍒</strong> em Santo-Tirso - Porto.
+                            © 2026 <strong class="text-cherry">Xeubiart</strong> — Todos os direitos reservados. Feito com
+                            <strong class="animate-pulse">🍒</strong> em Santo-Tirso - Porto.
                         </p>
                         <div class="text-white flex items-center justify-center gap-2">
-                        <a href="/legal/privacy" class="text-sm text-muted hover:text-white transition-colors">Privacidade</a>
-                        <span class="text-cherry text-sm">✦</span>
-                        <a href="/legal/terms" class="text-sm text-muted hover:text-white transition-colors">Termos</a>
-                        <span class="text-cherry text-sm">✦</span>
-                        <a href="/legal/cookies" class="text-sm text-muted hover:text-white transition-colors">Cookies</a>
+                            <a href="/legal/privacy" class="text-sm text-muted hover:text-white transition-colors">Privacidade</a>
+                            <span class="text-cherry text-sm">✦</span>
+                            <a href="/legal/terms" class="text-sm text-muted hover:text-white transition-colors">Termos</a>
+                            <span class="text-cherry text-sm">✦</span>
+                            <a href="/legal/cookies" class="text-sm text-muted hover:text-white transition-colors">Cookies</a>
                         </div>
                     </div>
                 </div>

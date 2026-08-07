@@ -30,8 +30,14 @@
         file_server
     }
 
-    handle / {
-        reverse_proxy localhost:8081
+    @templ {
+        method GET
+        path /
+        not header Upgrade *websocket*
+        not query token=*
+    }
+    handle @templ {
+        reverse_proxy 127.0.0.1:8081
     }
 
     handle {
