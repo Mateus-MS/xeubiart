@@ -9,6 +9,11 @@
         file_server
     }
 
+    handle_path /static/* {
+        root * ../frontend/static
+        file_server
+    }
+
     # Reverse proxy Angular WebSocket requests
     @angular_ws {
         header Connection *Upgrade*
@@ -25,11 +30,11 @@
         file_server
     }
 
-    @templ {
-        path / /static*
+    handle / {
+        reverse_proxy localhost:8081
     }
 
-    reverse_proxy @templ localhost:8081
-
-    reverse_proxy localhost:4200
+    handle {
+        reverse_proxy localhost:4200
+    }
 }

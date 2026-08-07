@@ -18,8 +18,6 @@ type application struct {
 func new() *application {
 	router := gin.Default()
 
-	router.Static("/static", "./static")
-
 	return &application{
 		Router: router,
 	}

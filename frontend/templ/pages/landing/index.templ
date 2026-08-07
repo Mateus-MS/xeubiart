@@ -1,7 +1,6 @@
 package pages
 
 import "com.xeubiart/templates"
-import "com.xeubiart/atoms"
 import "com.xeubiart/pages/landing/frags"
 import "com.xeubiart/app"
 import "com.xeubiart/utils"
@@ -19,7 +18,7 @@ templ landing(){
         IncludeFooterCTA: true,
     }){
         @frags.Hero()
-        @atoms.CherryDivider("bg-cream py-3 px-8")
+        <ui-divider class="block bg-cream py-3 px-8"></ui-divider>
         @frags.About()
         @frags.Gallery()
         @frags.Social()
