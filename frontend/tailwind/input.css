@@ -2,6 +2,7 @@
 
 @source "../angular/src";
 @source "../templ";
+@source "../ui/components";
 
 @theme {
   --color-cherry: #8B1A2B;

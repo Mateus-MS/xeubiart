@@ -3,6 +3,12 @@
 }
 
 :80 {
+    # Shared UI library bundle
+    handle_path /static/ui/* {
+        root * ../frontend/ui/dist
+        file_server
+    }
+
     # Reverse proxy Angular WebSocket requests
     @angular_ws {
         header Connection *Upgrade*

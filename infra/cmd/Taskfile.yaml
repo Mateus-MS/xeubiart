@@ -21,8 +21,14 @@ tasks:
     cmds:
       - npx @tailwindcss/cli -i ./input.css -o ./dist/tailwind.css --watch
 
+  # --- Shared Web Components Watcher ---
+  ui:
+    dir: '../../frontend/ui'
+    cmds:
+      - npx vite build --watch
+
   dev:
-    deps: [caddy, angular, templ, tailwind]
+    deps: [caddy, angular, templ, tailwind, ui]
 
   # Main command to run on a fresh clone
   init:
@@ -31,8 +37,10 @@ tasks:
       - task: init:go
       - task: init:angular
       - task: init:tailwind
+      - task: init:ui
       - task: generate:templ
       - task: build:tailwind
+      - task: build:ui
       - cmd: echo "Init complete! You can now run 'task dev'."
         silent: true
 
@@ -56,6 +64,12 @@ tasks:
     cmds:
       - npm install
 
+  init:ui:
+    desc: Install Shared UI Web Component dependencies
+    dir: '../../frontend/ui'
+    cmds:
+      - npm install
+
   # --- Build / Prep Tasks ---
 
   generate:templ:
@@ -69,3 +83,9 @@ tasks:
     dir: '../../frontend/tailwind'
     cmds:
       - npx @tailwindcss/cli -i ./input.css -o ./dist/tailwind.css
+
+  build:ui:
+    desc: Initial Shared UI build
+    dir: '../../frontend/ui'
+    cmds:
+      - npx vite build
