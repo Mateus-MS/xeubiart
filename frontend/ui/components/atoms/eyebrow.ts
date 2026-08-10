@@ -17,7 +17,7 @@ export class UiEyebrow extends LitElement {
     @property({ type: String }) text = '';
 
     private styles = new StyleController<string>(this, {
-        base: ['inline-flex', 'items-center', 'rounded-full', 'px-3', 'py-1.5', 'text-[.7rem]', 'font-semibold', 'uppercase', 'tracking-widest'],
+        base: ['w-fit', 'inline-flex', 'items-center', 'rounded-full', 'px-3', 'py-1.5', 'text-[.7rem]', 'font-semibold', 'uppercase', 'tracking-widest'],
         presets: {
             default: 'bg-gray-100 text-gray-800',
             cherry: 'bg-cherry/20 text-cherry',

@@ -11,10 +11,10 @@ export class StyleController<PresetKey extends string = string> implements React
 	private config: StyleConfig<PresetKey>;
 
 	constructor(host: ReactiveControllerHost & HTMLElement, config: StyleConfig<PresetKey>) {
-	this.host = host;
-	this.config = config;
+		this.host = host;
+		this.config = config;
 
-	this.host.addController(this);
+		this.host.addController(this);
 	}
 
 	hostUpdated() {
