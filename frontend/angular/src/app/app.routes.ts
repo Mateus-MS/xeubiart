@@ -7,7 +7,7 @@ export const routes: Routes = [
         title: 'Xeubiart | Painel de administrador',
     },
     {
-        path: 'profile',
-        loadComponent: () => import('./pages/profile/profile').then(m => m.Profile),
+        path: 'tools/stencil-optimizer',
+        loadComponent: () => import('./pages/tools/stencil-optimizer/stencil-optimizer').then(m => m.StencilOptimizer),
     },
 ];

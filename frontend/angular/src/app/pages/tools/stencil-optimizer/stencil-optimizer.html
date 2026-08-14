@@ -1,0 +1,68 @@
+<div class="w-full min-h-screen lg:h-screen bg-cream flex flex-col lg:overflow-hidden">
+    <a class="p-6 font-brand text-text text-3xl" href="/">Xeubiart</a>
+    <header class="w-full flex flex-col lg:items-end lg:pr-30 gap-4 px-5 box-border shrink-0">
+        <ui-eyebrow type="cherry">Ferramentas para tatuadores</ui-eyebrow>
+        <ui-title class="text-center" level="h1">Otimizador de stencils em <em>A4</em></ui-title>
+        <p class="lg:max-w-[40%] text-center text-muted lg:text-end">Faz upload das tuas artes, define os tamanhos desejados e otimiza a folha A4 com o mínimo de desperdício.</p>
+    </header>
+    
+    <div class="w-full flex justify-center sticky top-0 z-10 py-4 bg-cream lg:static lg:hidden lg:py-4 lg:border-b-0 border-b-1 border-cherry/25 shrink-0">
+        <ui-tab-switcher 
+            class="lg:hidden"
+            (tab-change)="handleTabChange($event)" 
+            [tabs]="['Imagens', 'Pré-visualização']">
+        </ui-tab-switcher>
+    </div>
+
+    <div class="w-full h-full px-4 py-4 
+                lg:grow lg:min-h-0 lg:grid lg:grid-cols-2 lg:gap-10 lg:px-30">
+
+        <div [class.hidden]="selectedTab !== 'Imagens'" 
+             class="h-fit lg:block lg:h-full lg:overflow-y-auto px-2 grid-cards">
+            @for (i of [].constructor(10); track $index) {
+                <ui-card additionalClasses="w-full h-[200px] mb-7 last:mb-0 grid grid-cols-[30%_1fr] p-4 gap-3">
+                    <div class="w-full aspect-square bg-gray-200 rounded-lg"></div>
+
+                    <div class="w-full h-dull bg-green-500">
+
+                    </div>
+                </ui-card>
+            }
+        </div>
+
+        <div [class.hidden]="selectedTab !== 'Pré-visualização'" class="h-full lg:block">
+            <ui-card additionalClasses="w-full h-full flex flex-col gap-4 p-6">
+                <!-- Preview Header -->
+                <div class="w-full h-[50px] bg-red-500">
+                    
+                </div>
+                
+                <!-- Preview Body -->
+                <div class="w-full grow bg-cream rounded-3xl">
+
+                </div>
+                
+                <!-- Preview Footer -->
+                <div class="w-full h-[25px] bg-green-500">
+                </div>
+            </ui-card>
+        </div>
+
+        
+    </div>
+
+    <div class="lg:flex hidden gap-5 w-full h-[80px] bg-cream px-30 py-4 mb-7">
+        <ui-button additionalClasses="py-2 px-3 w-fit h-full justify-center items-center" type="light">
+            <i class="icon-plus text-text"></i>
+            <span>Adicionar outra imagem</span>
+        </ui-button>
+        <ui-button additionalClasses="py-2 px-4 w-full h-full justify-center items-center" type="heavy">Gerar folha A4</ui-button>
+    </div>
+
+    <ui-footer></ui-footer>
+
+    <div class="sticky bottom-0 w-full h-[80px] bg-cream border-t-1 border-cherry/25 lg:hidden grid grid-cols-[100px_1fr] px-6 py-4 z-100">
+        <ui-button additionalClasses="py-2 px-3 w-fit h-full justify-center items-center" type="light"><i class="icon-plus text-text"></i></ui-button>
+        <ui-button additionalClasses="py-2 px-4 w-full h-full justify-center items-center" type="heavy">Gerar folha A4</ui-button>
+    </div>
+</div>
