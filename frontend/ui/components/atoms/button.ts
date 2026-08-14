@@ -1,13 +1,13 @@
 import { LitElement, html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { StyleController } from '../particles/styleController.js';
+import { LightDomMixin } from '../particles/LightDomMixin.js';
 
 export type ButtonType = 'heavy' | 'light';
 
 @customElement('ui-button')
-export class UiButton extends LitElement {
+export class UiButton extends LightDomMixin(LitElement) {
     @property({ type: String }) type: ButtonType = 'heavy';
-    @property({ type: String }) text = '';
 
     private styles = new StyleController<string>(this, {
         base: ['flex font-contrast', 'rounded-full', 'px-7', 'py-2', 'text-nowrap', 'hover:-translate-y-0.5', 'cursor-pointer', 'transition-all'],
@@ -18,13 +18,13 @@ export class UiButton extends LitElement {
         defaultPreset: 'heavy',
     });
 
-    protected createRenderRoot() {
-        return this;
-    }
-
     render() {
         return html`
-            <button>${this.text}</button>
+            <button class="flex items-center gap-2">
+                ${this.slottedChildren.length > 0 
+                    ? this.renderSlottedChildren()
+                    : ''}
+            </button>
         `;
     }
 }
