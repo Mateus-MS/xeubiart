@@ -19,11 +19,22 @@
         class="w-full h-full px-4 py-4 
             lg:grow lg:min-h-0 lg:grid lg:grid-cols-[55%_auto] lg:gap-10 lg:px-30">
 
+        <!-- Hidden file input that listens to changes -->
+        <input 
+            type="file" 
+            #fileInput 
+            class="hidden" 
+            multiple 
+            accept="image/*" 
+            (change)="onFilesSelected($event)">
+
         <div [class.hidden]="selectedTab !== 'Imagens'" 
-             class="h-fit lg:block lg:h-full lg:overflow-y-auto px-2 grid-cards">
-            @for (i of [].constructor(10); track $index) {
+             class="h-fit lg:block lg:h-full lg:overflow-y-auto py-1 px-2 grid-cards">
+            @for (img of uploadedImages; track img.id) {
                 <ui-card additionalClasses="w-full h-[200px] mb-7 last:mb-0 grid grid-cols-[30%_1fr] p-4 gap-3">
-                    <div class="w-full aspect-square bg-gray-200 rounded-lg"></div>
+                    <div class="w-full aspect-square rounded-lg overflow-hidden">
+                        <img [src]="img.url" [alt]="img.name" class="w-full h-full object-fit">
+                    </div>
 
                     <div class="w-full h-dull bg-green-500">
 
@@ -32,7 +43,7 @@
             }
         </div>
 
-        <div [class.hidden]="selectedTab !== 'Pré-visualização'" class="h-full lg:block">
+        <div [class.hidden]="selectedTab !== 'Pré-visualização'" class="py-1 h-full lg:block">
             <ui-card additionalClasses="w-full h-full flex flex-col gap-4 p-6">
                 <!-- Preview Header -->
                 <div class="w-full place-content-end flex gap-2">
@@ -62,7 +73,7 @@
     </main>
 
     <div class="lg:flex hidden gap-5 w-full h-[80px] bg-cream px-30 py-4 mb-7">
-        <ui-button additionalClasses="py-2 px-3 w-fit h-full justify-center items-center" type="light">
+        <ui-button (click)="fileInput.click()" additionalClasses="py-2 px-3 w-fit h-full justify-center items-center" type="light">
             <i class="icon-plus text-text"></i>
             <span>Adicionar outra imagem</span>
         </ui-button>
