@@ -5,3 +5,5 @@ export * from './components/organisms/hotbar';
 export * from './components/atoms/eyebrow';
 export * from './components/atoms/title';
 export * from './components/atoms/button';
+export * from './components/atoms/tab-switcher';
+export * from './components/atoms/card';

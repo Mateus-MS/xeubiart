@@ -13,7 +13,7 @@ export class UiButton extends LightDomMixin(LitElement) {
         base: ['flex font-contrast', 'rounded-full', 'px-7', 'py-2', 'text-nowrap', 'hover:-translate-y-0.5', 'cursor-pointer', 'transition-all'],
         presets: {
             heavy: 'bg-cherry text-white hover:bg-cherry-dark shadow-[0_10px_28px_rgba(139,26,43,0.45)]',
-            light: 'bg-transparent text-primary',
+            light: 'bg-white text-primary border-1 border-cherry/15',
         },
         defaultPreset: 'heavy',
     });

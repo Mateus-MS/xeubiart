@@ -1,10 +1,10 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @Component({
-  selector: 'app-stencil-optimizer',
-  imports: [],
-  templateUrl: './stencil-optimizer.html',
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+	selector: 'app-stencil-optimizer',
+	imports: [],
+	templateUrl: './stencil-optimizer.html',
+	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class StencilOptimizer {
     selectedTab: string = 'Imagens';
@@ -15,5 +15,10 @@ export class StencilOptimizer {
 		console.log('Selected Tab:', customEvent.detail.activeTab);
 
 		this.selectedTab = customEvent.detail.activeTab;
+
+		window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
     }
 }

@@ -1,6 +1,6 @@
 <div class="w-full min-h-screen lg:h-screen bg-cream flex flex-col lg:overflow-hidden">
     <a class="p-6 font-brand text-text text-3xl" href="/">Xeubiart</a>
-    <header class="w-full flex flex-col lg:items-end lg:pr-30 gap-4 px-5 box-border shrink-0">
+    <header class="w-full flex flex-col items-center lg:items-end lg:pr-30 gap-4 px-5 box-border shrink-0">
         <ui-eyebrow type="cherry">Ferramentas para tatuadores</ui-eyebrow>
         <ui-title class="text-center" level="h1">Otimizador de stencils em <em>A4</em></ui-title>
         <p class="lg:max-w-[40%] text-center text-muted lg:text-end">Faz upload das tuas artes, define os tamanhos desejados e otimiza a folha A4 com o mínimo de desperdício.</p>
@@ -14,8 +14,10 @@
         </ui-tab-switcher>
     </div>
 
-    <div class="w-full h-full px-4 py-4 
-                lg:grow lg:min-h-0 lg:grid lg:grid-cols-2 lg:gap-10 lg:px-30">
+    <main
+        id="content"
+        class="w-full h-full px-4 py-4 
+            lg:grow lg:min-h-0 lg:grid lg:grid-cols-[55%_auto] lg:gap-10 lg:px-30">
 
         <div [class.hidden]="selectedTab !== 'Imagens'" 
              class="h-fit lg:block lg:h-full lg:overflow-y-auto px-2 grid-cards">
@@ -33,23 +35,31 @@
         <div [class.hidden]="selectedTab !== 'Pré-visualização'" class="h-full lg:block">
             <ui-card additionalClasses="w-full h-full flex flex-col gap-4 p-6">
                 <!-- Preview Header -->
-                <div class="w-full h-[50px] bg-red-500">
-                    
+                <div class="w-full place-content-end flex gap-2">
+                    <ui-button additionalClasses="w-fit !p-0 aspect-square" type="light"><i class="icon-left"></i></ui-button>
+                    <span>Folha 1 de 2</span>
+                    <ui-button additionalClasses="w-fit !p-0 aspect-square" type="light"><i class="icon-right"></i></ui-button>
                 </div>
                 
                 <!-- Preview Body -->
-                <div class="w-full grow bg-cream rounded-3xl">
+                <div class="w-full grow bg-cream rounded-3xl flex items-center justify-center">
+                    <!-- Page simulate -->
+                    <div class="h-[90%] aspect-[210/297] rounded-lg bg-white shadow-[0_10px_40px_-12px_rgba(107,29,47,0.35)] ring-1 ring-cherry/15">
 
+                    </div>
                 </div>
                 
                 <!-- Preview Footer -->
-                <div class="w-full h-[25px] bg-green-500">
+                <div class="w-full flex place-content-between text-[.70rem] [&_strong]:text-cherry text-muted [&_strong]:font-black">
+                    <span class="block">Aproveitamento: <strong>52%</strong></span>
+                    <span class="block"><strong>7</strong> artes empacotadas</span>
+                    <span class="block">Formato A4 · 210 × 297mm</span>
                 </div>
             </ui-card>
         </div>
 
         
-    </div>
+    </main>
 
     <div class="lg:flex hidden gap-5 w-full h-[80px] bg-cream px-30 py-4 mb-7">
         <ui-button additionalClasses="py-2 px-3 w-fit h-full justify-center items-center" type="light">
@@ -59,10 +69,10 @@
         <ui-button additionalClasses="py-2 px-4 w-full h-full justify-center items-center" type="heavy">Gerar folha A4</ui-button>
     </div>
 
-    <ui-footer></ui-footer>
+</div>
+<ui-footer></ui-footer>
 
-    <div class="sticky bottom-0 w-full h-[80px] bg-cream border-t-1 border-cherry/25 lg:hidden grid grid-cols-[100px_1fr] px-6 py-4 z-100">
-        <ui-button additionalClasses="py-2 px-3 w-fit h-full justify-center items-center" type="light"><i class="icon-plus text-text"></i></ui-button>
-        <ui-button additionalClasses="py-2 px-4 w-full h-full justify-center items-center" type="heavy">Gerar folha A4</ui-button>
-    </div>
+<div class="sticky bottom-0 w-full h-[80px] bg-cream border-t-1 border-cherry/25 lg:hidden grid grid-cols-[100px_1fr] px-6 py-4 z-100">
+    <ui-button additionalClasses="py-2 px-3 w-fit h-full justify-center items-center" type="light"><i class="icon-plus text-text"></i></ui-button>
+    <ui-button additionalClasses="py-2 px-4 w-full h-full justify-center items-center" type="heavy">Gerar folha A4</ui-button>
 </div>
