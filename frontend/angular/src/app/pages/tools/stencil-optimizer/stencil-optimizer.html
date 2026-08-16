@@ -106,7 +106,7 @@
                 </div>
                 
                 <!-- A4 Canvas Area -->
-                <div #a4Canvas class="relative lg:w-[unset] flex-1 min-h-0 aspect-[210/297] rounded-lg bg-white shadow-xl ring-1 ring-cherry/15 overflow-hidden w-full max-h-full">
+                <div #previewContainer class="relative lg:w-[unset] flex-1 min-h-0 aspect-[210/297] rounded-lg bg-white shadow-xl ring-1 ring-cherry/15 overflow-hidden w-full max-h-full">
                     @for (item of currentPageItems; track item.id) {
                         <div 
                             class="absolute border border-dashed border-red-500/70 overflow-hidden flex items-center justify-center"
@@ -119,8 +119,8 @@
                                 <img 
                                     [src]="item.url" 
                                     class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 object-contain max-w-none"
-                                    [style.width.px]="item.height * (a4Canvas.clientWidth / 210)"
-                                    [style.height.px]="item.width * (a4Canvas.clientWidth / 210)"
+                                    [style.width.px]="item.height * (previewContainer.clientWidth / 210)"
+                                    [style.height.px]="item.width * (previewContainer.clientWidth / 210)"
                                 />
                             } @else {
                                 <img 
@@ -129,7 +129,6 @@
                                 />
                             }
 
-                            <!-- Size Badge -->
                             <span class="absolute bottom-0.5 right-0.5 bg-cherry text-white text-[10px] px-1 py-0.5 rounded font-bold z-10 scale-75 origin-bottom-right lg:scale-100">
                                 {{ item.sizeCm }}cm
                             </span>
@@ -146,7 +145,7 @@
         </div>
     </main>
 
-    <div class="lg:mx-auto w-full lg:max-w-[55%] lg:flex hidden gap-5 h-[80px] bg-cream py-4 mb-7">
+    <div class="lg:mx-auto w-full lg:max-w-[55%] lg:flex justify-center hidden gap-5 h-[80px] bg-cream py-4 mb-7">
         <ui-button (click)="fileInput.click()" additionalClasses="py-2 px-3 w-fit h-full justify-center items-center" type="light">
             <i class="icon-plus text-text"></i>
             @if (uploadedImages.length === 0) {
@@ -155,14 +154,20 @@
                 <span>Adicionar outra imagem</span>
             }
         </ui-button>
-        <ui-button additionalClasses="py-2 px-4 w-full h-full justify-center items-center" type="heavy">Gerar folha A4</ui-button>
+        @if(uploadedImagesMap.size !== 0){
+            <ui-button (click)="downloadA4Sheet()" additionalClasses="py-2 px-4 w-fit h-full justify-center items-center" type="heavy">
+                <strong class="ml-3 text-lg">
+                    {{ pages.length === 1 ? 'Baixar página' : 'Baixar páginas' }}
+                </strong>
+            </ui-button>
+        }
     </div>
 
 </div>
 <ui-footer></ui-footer>
 
 <!-- Mobile Action Bar -->
-<div class="sticky bottom-0 w-full h-[70px] bg-cream border-t border-cherry/25 lg:hidden flex gap-3 px-6 py-3 z-50">
+<div class="sticky bottom-0 w-full h-[70px] bg-cream border-t border-cherry/25 lg:hidden flex justify-center gap-3 px-6 py-3 z-50">
     <div class="relative w-fit h-full">
         <input 
             type="file" 
@@ -172,7 +177,19 @@
             (change)="onFilesSelected($event)">
         <ui-button additionalClasses="py-2 px-4 w-fit h-full justify-center items-center pointer-events-none" type="light">
             <i class="icon-plus text-text"></i>
+            @if(uploadedImagesMap.size === 0){
+                <span>Adicionar uma imagem</span>
+            }
         </ui-button>
     </div>
-    <ui-button additionalClasses="py-2 px-4 w-full h-full justify-center items-center" type="heavy">Gerar folha A4</ui-button>
+
+    @if(uploadedImagesMap.size !== 0){
+        <ui-button 
+            (click)="downloadA4Sheet()" 
+            additionalClasses="py-2 px-3 w-fit h-full justify-center items-center"
+            type="heavy"
+        >
+            Baixar página <strong class="ml-3 text-lg">{{currentPageIndex + 1}}</strong>
+        </ui-button>
+    }
 </div>

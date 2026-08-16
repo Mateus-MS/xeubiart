@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, inject, NgZone } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, inject, NgZone, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MaxRectsPacker, PackedItem, PackingItem } from './maxRectsPacker';
 
@@ -21,10 +21,157 @@ export class StencilOptimizer {
     selectedTab: string = 'Imagens';
     currentPageIndex: number = 0;
     
-    private uploadedImagesMap = new Map<string, UploadedImage>();
+    uploadedImagesMap = new Map<string, UploadedImage>();
     private packer = new MaxRectsPacker(210, 297, 5, true);
 
     private ngZone = inject(NgZone);
+
+    @ViewChild('previewContainer') previewContainer!: ElementRef;
+    downloadA4Sheet() {
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+
+        if (isMobile) {
+            // --- MOBILE: Download ONLY the current preview page ---
+            const items = this.currentPageItems;
+            if (!items || items.length === 0) {
+                alert('Não há itens nesta página para gerar.');
+                return;
+            }
+
+            const scale = 10;
+            const canvasWidth = 210;  // mm
+            const canvasHeight = 297; // mm
+
+            const canvas = document.createElement('canvas');
+            canvas.width = canvasWidth * scale;
+            canvas.height = canvasHeight * scale;
+            const ctx = canvas.getContext('2d');
+
+            if (!ctx) {
+                alert('Erro ao inicializar o gerador de imagem.');
+                return;
+            }
+
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const imagePromises = items.map((item: any) => {
+                return new Promise<void>((resolve) => {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+
+                    img.onload = () => {
+                        ctx.save();
+                        const x = item.x * scale;
+                        const y = item.y * scale;
+                        const w = item.width * scale;
+                        const h = item.height * scale;
+
+                        ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)';
+                        ctx.lineWidth = 2 * (scale / 4);
+                        ctx.setLineDash([6 * (scale / 4), 6 * (scale / 4)]);
+                        ctx.strokeRect(x, y, w, h);
+                        ctx.setLineDash([]);
+
+                        if (item.rotated) {
+                            ctx.translate(x + w / 2, y + h / 2);
+                            ctx.rotate((90 * Math.PI) / 180);
+                            ctx.drawImage(img, -h / 2, -w / 2, h, w);
+                        } else {
+                            ctx.drawImage(img, x, y, w, h);
+                        }
+
+                        ctx.restore();
+                        resolve();
+                    };
+
+                    img.onerror = () => resolve();
+                    img.src = item.url;
+                });
+            });
+
+            Promise.all(imagePromises).then(() => {
+                const dataUrl = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = `stencil-folha-${(this.currentPageIndex ?? 0) + 1}.png`;
+                link.href = dataUrl;
+                link.click();
+            }).catch((err) => {
+                console.error('Erro ao gerar canvas:', err);
+                alert('Não foi possível gerar a imagem da folha.');
+            });
+
+        } else {
+            // --- DESKTOP: Multi-download all pages ---
+            if (!this.pages || this.pages.length === 0) {
+                alert('Não há páginas para gerar.');
+                return;
+            }
+
+            this.pages.forEach((pageItems: any, pageIndex: number) => {
+                if (!pageItems || pageItems.length === 0) return;
+
+                const scale = 10;
+                const canvasWidth = 210;
+                const canvasHeight = 297;
+
+                const canvas = document.createElement('canvas');
+                canvas.width = canvasWidth * scale;
+                canvas.height = canvasHeight * scale;
+                const ctx = canvas.getContext('2d');
+
+                if (!ctx) return;
+
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                const imagePromises = pageItems.map((item: any) => {
+                    return new Promise<void>((resolve) => {
+                        const img = new Image();
+                        img.crossOrigin = 'anonymous';
+
+                        img.onload = () => {
+                            ctx.save();
+                            const x = item.x * scale;
+                            const y = item.y * scale;
+                            const w = item.width * scale;
+                            const h = item.height * scale;
+
+                            ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)';
+                            ctx.lineWidth = 2 * (scale / 4);
+                            ctx.setLineDash([6 * (scale / 4), 6 * (scale / 4)]);
+                            ctx.strokeRect(x, y, w, h);
+                            ctx.setLineDash([]);
+
+                            if (item.rotated) {
+                                ctx.translate(x + w / 2, y + h / 2);
+                                ctx.rotate((90 * Math.PI) / 180);
+                                ctx.drawImage(img, -h / 2, -w / 2, h, w);
+                            } else {
+                                ctx.drawImage(img, x, y, w, h);
+                            }
+
+                            ctx.restore();
+                            resolve();
+                        };
+
+                        img.onerror = () => resolve();
+                        img.src = item.url;
+                    });
+                });
+
+                Promise.all(imagePromises).then(() => {
+                    const dataUrl = canvas.toDataURL('image/png');
+                    setTimeout(() => {
+                        const link = document.createElement('a');
+                        link.download = `stencil-folha-${pageIndex + 1}.png`;
+                        link.href = dataUrl;
+                        link.click();
+                    }, pageIndex * 400);
+                });
+            });
+        }
+    }
 
     get uploadedImages(): [string, UploadedImage][] {
         return Array.from(this.uploadedImagesMap.entries());
