@@ -1,20 +1,12 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, inject, computed, signal } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MaxRectsPacker, PackedItem, PackingItem } from './maxRectsPacker';
 
 interface UploadedImage {
     file: File;
     url: string;
     sizes: number[];
-}
-
-export interface StencilItem {
-    id: string;
-    url: string;
-    fileName: string;
-    sizeCm: number;
-
-    heightMm: number;
-    widthMm: number; 
+    aspectRatio: number;
 }
 
 @Component({
@@ -30,86 +22,67 @@ export class StencilOptimizer {
     currentPageIndex: number = 0;
     
     private uploadedImagesMap = new Map<string, UploadedImage>();
+    private packer = new MaxRectsPacker(210, 297, 5, true);
 
     get uploadedImages(): [string, UploadedImage][] {
         return Array.from(this.uploadedImagesMap.entries());
     }
 
-    get allItems(): StencilItem[] {
-        const items: StencilItem[] = [];
+    get allItems(): PackingItem[] {
+        const items: PackingItem[] = [];
+
         for (const [id, data] of this.uploadedImagesMap.entries()) {
             data.sizes.forEach((size, idx) => {
                 const numericSize = Number(size);
                 if (numericSize > 0) {
-                    const heightMm = numericSize * 10;
-                    const widthMm = heightMm;
+                    const targetMm = numericSize * 10; // Selected size in mm
+                    let widthMm: number;
+                    let heightMm: number;
+
+                    // Scale based on the longest dimension
+                    if (data.aspectRatio >= 1) {
+                        // Wide / Landscape Image: 'sizeCm' sets the Target Width
+                        widthMm = targetMm;
+                        heightMm = targetMm / data.aspectRatio;
+                    } else {
+                        // Tall / Portrait Image: 'sizeCm' sets the Target Height
+                        heightMm = targetMm;
+                        widthMm = targetMm * data.aspectRatio;
+                    }
+
                     items.push({
                         id: `${id}-${idx}-${numericSize}`,
                         url: data.url,
                         fileName: data.file.name,
                         sizeCm: numericSize,
-                        heightMm,
-                        widthMm
+                        width: Math.round(widthMm),
+                        height: Math.round(heightMm),
                     });
                 }
             });
         }
+
         return items;
     }
 
-    get pages(): StencilItem[][] {
-        const A4_WIDTH = 210;
-        const A4_HEIGHT = 297;
-        const PADDING = 10;
-        const GAP = 5;
-        
-        const usableWidth = A4_WIDTH - (PADDING * 2);
-        const usableHeight = A4_HEIGHT - (PADDING * 2);
+    get packedResult() {
+        return this.packer.pack(this.allItems);
+    }
 
-        const pages: StencilItem[][] = [];
-        let currentPage: StencilItem[] = [];
-        let currentX = 0;
-        let currentY = 0;
-        let rowMaxHeight = 0;
-
-        for (const item of this.allItems) {
-            const w = Math.min(item.widthMm, usableWidth);
-            const h = Math.min(item.heightMm, usableHeight);
-
-            if (currentX + w > usableWidth) {
-                currentX = 0;
-                currentY += rowMaxHeight + GAP;
-                rowMaxHeight = 0;
-            }
-
-            if (currentY + h > usableHeight) {
-                if (currentPage.length > 0) {
-                    pages.push(currentPage);
-                }
-                currentPage = [];
-                currentX = 0;
-                currentY = 0;
-                rowMaxHeight = 0;
-            }
-
-            currentPage.push(item);
-            currentX += w + GAP;
-            rowMaxHeight = Math.max(rowMaxHeight, h);
-        }
-
-        if (currentPage.length > 0) {
-            pages.push(currentPage);
-        }
-
+    get pages(): PackedItem[][] {
+        const pages = this.packedResult.pages;
         if (this.currentPageIndex >= pages.length && pages.length > 0) {
             this.currentPageIndex = pages.length - 1;
         }
-
         return pages.length > 0 ? pages : [[]];
     }
 
-    get currentPageItems(): StencilItem[] {
+    get currentPageItems(): PackedItem[] {
         return this.pages[this.currentPageIndex] || [];
+    }
+
+    get currentEfficiency(): number {
+        return this.packedResult.efficiency[this.currentPageIndex] || 0;
     }
 
     nextPage() {
@@ -140,15 +113,23 @@ export class StencilOptimizer {
             const reader = new FileReader();
             reader.onload = (e: ProgressEvent<FileReader>) => {
                 const result = e.target?.result as string;
-                if (result) {
+                if (!result) return;
+
+                const img = new Image();
+                img.onload = () => {
+                    const aspectRatio = img.naturalWidth / img.naturalHeight || 1;
                     const id = crypto.randomUUID();
+
                     this.uploadedImagesMap.set(id, {
                         file,
                         url: result,
                         sizes: [10],
+                        aspectRatio
                     });
+
                     this.cdr.detectChanges();
-                }
+                };
+                img.src = result;
             };
             reader.readAsDataURL(file);
         });
@@ -170,8 +151,15 @@ export class StencilOptimizer {
     addNewSize(id: string, size: number = 5) {
         const imageData = this.uploadedImagesMap.get(id);
         if (imageData) {
-
             imageData.sizes = [...imageData.sizes, size];
+            this.cdr.detectChanges();
+        }
+    }
+
+    deleteSize(id: string, index: number) {
+        const imageData = this.uploadedImagesMap.get(id);
+        if (imageData && index >= 0 && index < imageData.sizes.length) {
+            imageData.sizes = imageData.sizes.filter((_, i) => i !== index);
             this.cdr.detectChanges();
         }
     }

@@ -17,9 +17,8 @@
     <main
         id="content"
         class="lg:mx-auto w-full lg:max-w-[55%] h-full lg:px-0 px-4 py-4 
-            lg:grow lg:min-h-0 lg:grid lg:grid-cols-[55%_auto] lg:gap-10">
+            lg:grow lg:min-h-0 lg:grid lg:grid-cols-[auto_50%] lg:gap-10">
 
-        <!-- Hidden file input that listens to changes -->
         <input 
             type="file" 
             #fileInput 
@@ -49,16 +48,27 @@
                                 </div>
                             </div>
 
-                            <div class="flex flex-wrap gap-1 items-center">
-                               @for (size of entry[1].sizes; track $index) {
-                                    <input 
-                                        type="number" 
-                                        [(ngModel)]="entry[1].sizes[$index]"
-                                        (ngModelChange)="onSizeChange()"
-                                        class="bg-cherry w-12 text-white text-sm px-4 py-1 rounded-full font-bold text-center focus:outline-none"
-                                    />
+                            <div class="flex flex-wrap gap-1.5 items-center">
+                                @for (size of entry[1].sizes; track $index) {
+                                    <div class="inline-flex items-center bg-cherry text-white rounded-full px-2 py-1 font-bold">
+                                        <input 
+                                            type="number" 
+                                            [(ngModel)]="entry[1].sizes[$index]"
+                                            (ngModelChange)="onSizeChange()"
+                                            class="bg-transparent w-8 text-white text-sm text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                        />
+                                        <button 
+                                            type="button"
+                                            (click)="deleteSize(entry[0], $index)" 
+                                            class="w-4 h-4 rounded-full bg-black/20 hover:bg-black/40 text-white flex items-center justify-center text-xs font-bold leading-none cursor-pointer transition-colors"
+                                        >
+                                            &times;
+                                        </button>
+                                    </div>
                                 }
-                                <ui-button (click)="addNewSize(entry[0])" type="light" additionalClasses="w-fit !px-2 !py-1 text-sm"><i class="icon-plus"></i></ui-button>
+                                <ui-button (click)="addNewSize(entry[0])" type="light" additionalClasses="w-fit !px-2 !py-1 text-sm">
+                                    <i class="icon-plus"></i>
+                                </ui-button>
                             </div>
                         </div>
                     </div>
@@ -67,7 +77,7 @@
         </div>
 
         <div [class.hidden]="selectedTab !== 'Pré-visualização'" class="py-1 h-full lg:block">
-            <ui-card additionalClasses="w-full h-full flex flex-col gap-4 p-6">
+            <ui-card additionalClasses="w-full h-full flex flex-col gap-4 p-6 items-center">
                 
                 <!-- Preview Header with Active Pagination -->
                 <div class="w-full place-content-end flex gap-2 items-center">
@@ -92,26 +102,26 @@
                     </ui-button>
                 </div>
                 
-                <!-- Preview Body -->
-                <div class="w-full h-fit p-4 lg:p-0 lg:grow bg-cream rounded-3xl flex items-center justify-center">
-                    <!-- Simulated A4 Sheet -->
-                    <div class="relative w-[80%] lg:h-[90%] aspect-[210/297] rounded-lg bg-white shadow-[0_10px_40px_-12px_rgba(107,29,47,0.35)] ring-1 ring-cherry/15 overflow-hidden p-3 flex flex-wrap content-start gap-2">
-                        @for (item of currentPageItems; track item.id) {
-                            <div 
-                                class="relative border border-dashed border-cherry/40 rounded overflow-hidden flex items-center justify-center bg-cream/30"
-                                [style.height.%]="(item.sizeCm / 29.7) * 100"
-                            >
-                                <img 
-                                    [src]="item.url" 
-                                    [alt]="item.fileName" 
-                                    class="h-full w-auto object-contain"
-                                />
-                                <span class="absolute bottom-0.5 right-0.5 bg-cherry text-white text-[0.5rem] font-bold px-1 rounded opacity-80">
-                                    {{ item.sizeCm }}cm
-                                </span>
-                            </div>
-                        }
-                    </div>
+                <div class="relative w-[80%] lg:h-[90%] aspect-[210/297] rounded-lg bg-white shadow-xl ring-1 ring-cherry/15 overflow-hidden">
+                    @for (item of currentPageItems; track item.id) {
+                        <div 
+                            class="absolute border border-dashed border-cherry/60 rounded flex items-center justify-center bg-cream/40 transition-all duration-300"
+                            [style.left.%]="(item.x / 210) * 100"
+                            [style.top.%]="(item.y / 297) * 100"
+                            [style.width.%]="(item.width / 210) * 100"
+                            [style.height.%]="(item.height / 297) * 100"
+                        >
+                            <img 
+                                [src]="item.url" 
+                                [alt]="item.fileName" 
+                                class="w-full h-full object-contain"
+                                [class.rotate-90]="item.rotated"
+                            />
+                            <span class="absolute bottom-0.5 right-0.5 bg-cherry text-white text-[0.5rem] font-bold px-1 rounded opacity-90">
+                                {{ item.sizeCm }}cm
+                            </span>
+                        </div>
+                    }
                 </div>
                 
                 <!-- Preview Footer -->
@@ -126,7 +136,11 @@
     <div class="lg:mx-auto w-full lg:max-w-[55%] lg:flex hidden gap-5 h-[80px] bg-cream py-4 mb-7">
         <ui-button (click)="fileInput.click()" additionalClasses="py-2 px-3 w-fit h-full justify-center items-center" type="light">
             <i class="icon-plus text-text"></i>
-            <span>Adicionar outra imagem</span>
+            @if (uploadedImages.length === 0) {
+                <span>Adicionar uma imagem</span>
+            } @else {
+                <span>Adicionar outra imagem</span>
+            }
         </ui-button>
         <ui-button additionalClasses="py-2 px-4 w-full h-full justify-center items-center" type="heavy">Gerar folha A4</ui-button>
     </div>
