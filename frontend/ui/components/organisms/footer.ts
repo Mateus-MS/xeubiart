@@ -46,6 +46,15 @@ export class UiFooter extends LitElement {
                 },
             ],
         },
+        {
+            Title: 'Ferramentas',
+            Links: [
+                { 
+                    Label: 'Gerador de decalque', 
+                    RedirectTo: '/tools/stencil-optimizer' 
+                },
+            ],
+        },
     ];
 
     private contacts: Contact[] = [

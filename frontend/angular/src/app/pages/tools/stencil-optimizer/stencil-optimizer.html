@@ -43,7 +43,6 @@
                                     <span class="ml-2 bg-muted/50 text-white text-[.6rem] px-2 py-.5 rounded-full">{{entry[1].sizes.length}}</span>
                                 </div>
                                 <div class="flex gap-2">
-                                    <ui-button type="light" additionalClasses="w-fit !p-1 aspect-square text-sm"><i class="icon-clone"></i></ui-button>
                                     <ui-button (click)="deleteFile(entry[0])" type="light" additionalClasses="w-fit !p-1 aspect-square text-sm"><i class="icon-trash"></i></ui-button>
                                 </div>
                             </div>
@@ -80,29 +79,33 @@
             <ui-card additionalClasses="w-full h-full flex flex-col gap-4 p-6 items-center">
                 
                 <!-- Preview Header with Active Pagination -->
-                <div class="w-full place-content-end flex gap-2 items-center">
-                    <ui-button 
-                        (click)="prevPage()" 
-                        [disabled]="currentPageIndex === 0"
-                        additionalClasses="w-fit !p-0 aspect-square disabled:opacity-30" 
-                        type="light">
-                        <i class="icon-left"></i>
-                    </ui-button>
+                <div class="w-full justify-between flex gap-2 items-center">
+                    <span class="text-sm text-muted text-[.60rem]">Formato A4 · 210 × 297mm</span>
 
-                    <span class="text-xs font-semibold">
-                        Folha {{ currentPageIndex + 1 }} de {{ pages.length }}
-                    </span>
+                    <div class="flex gap-2 items-center">
+                        <ui-button 
+                            (click)="prevPage()" 
+                            [disabled]="currentPageIndex === 0"
+                            additionalClasses="w-fit !p-0 aspect-square disabled:opacity-30" 
+                            type="light">
+                            <i class="icon-left"></i>
+                        </ui-button>
 
-                    <ui-button 
-                        (click)="nextPage()" 
-                        [disabled]="currentPageIndex >= pages.length - 1"
-                        additionalClasses="w-fit !p-0 aspect-square disabled:opacity-30" 
-                        type="light">
-                        <i class="icon-right"></i>
-                    </ui-button>
+                        <span class="text-xs font-semibold">
+                            Folha {{ currentPageIndex + 1 }} de {{ pages.length }}
+                        </span>
+
+                        <ui-button 
+                            (click)="nextPage()" 
+                            [disabled]="currentPageIndex >= pages.length - 1"
+                            additionalClasses="w-fit !p-0 aspect-square disabled:opacity-30" 
+                            type="light">
+                            <i class="icon-right"></i>
+                        </ui-button>
+                    </div>
                 </div>
                 
-                <div class="relative w-[80%] lg:h-[90%] aspect-[210/297] rounded-lg bg-white shadow-xl ring-1 ring-cherry/15 overflow-hidden">
+                <div class="relative w-[80%] lg:w-[unset] lg:h-[90%] aspect-[210/297] rounded-lg bg-white shadow-xl ring-1 ring-cherry/15 overflow-hidden">
                     @for (item of currentPageItems; track item.id) {
                         <div 
                             class="absolute border border-dashed border-cherry/60 rounded flex items-center justify-center bg-cream/40 transition-all duration-300"
@@ -126,8 +129,8 @@
                 
                 <!-- Preview Footer -->
                 <div class="w-full flex place-content-between text-[.70rem] [&_strong]:text-cherry text-muted [&_strong]:font-black">
+                    <span class="block">Aproveitamento: <strong>{{ currentEfficiency }}%</strong></span>
                     <span class="block"><strong>{{ allItems.length }}</strong> artes empacotadas</span>
-                    <span class="block">Formato A4 · 210 × 297mm</span>
                 </div>
             </ui-card>
         </div>
