@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, inject, NgZone } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MaxRectsPacker, PackedItem, PackingItem } from './maxRectsPacker';
 
@@ -23,6 +23,8 @@ export class StencilOptimizer {
     
     private uploadedImagesMap = new Map<string, UploadedImage>();
     private packer = new MaxRectsPacker(210, 297, 5, true);
+
+    private ngZone = inject(NgZone);
 
     get uploadedImages(): [string, UploadedImage][] {
         return Array.from(this.uploadedImagesMap.entries());
@@ -108,30 +110,38 @@ export class StencilOptimizer {
         if (!input.files || input.files.length === 0) return;
 
         Array.from(input.files).forEach(file => {
-            if (!file.type.startsWith('image/')) return;
+            if (!file.type.startsWith('image/') && !file.name.toLowerCase().endsWith('.heic')) return;
 
-            const reader = new FileReader();
-            reader.onload = (e: ProgressEvent<FileReader>) => {
-                const result = e.target?.result as string;
-                if (!result) return;
+            const url = URL.createObjectURL(file);
+            const img = new Image();
 
-                const img = new Image();
-                img.onload = () => {
-                    const aspectRatio = img.naturalWidth / img.naturalHeight || 1;
-                    const id = crypto.randomUUID();
+            img.onload = () => {
+                const aspectRatio = img.naturalWidth / img.naturalHeight || 1;
 
+                // Safe ID generator that won't crash on mobile HTTP local IPs
+                const id = (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function')
+                    ? crypto.randomUUID()
+                    : 'img_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+
+                this.ngZone.run(() => {
                     this.uploadedImagesMap.set(id, {
                         file,
-                        url: result,
+                        url,
                         sizes: [10],
                         aspectRatio
                     });
-
+                    this.selectedTab = 'Imagens';
+                    this.cdr.markForCheck();
                     this.cdr.detectChanges();
-                };
-                img.src = result;
+                });
             };
-            reader.readAsDataURL(file);
+
+            img.onerror = (err) => {
+                console.error('Failed to load image on iOS', err);
+                URL.revokeObjectURL(url);
+            };
+
+            img.src = url;
         });
 
         input.value = '';

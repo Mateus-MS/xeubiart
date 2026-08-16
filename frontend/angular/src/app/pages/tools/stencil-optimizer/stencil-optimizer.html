@@ -24,7 +24,7 @@
             #fileInput 
             class="hidden" 
             multiple 
-            accept="image/*" 
+            accept="image/png, image/jpeg, image/webp, image/heic, image/*" 
             (change)="onFilesSelected($event)">
 
         <div [class.hidden]="selectedTab !== 'Imagens'" 
@@ -54,7 +54,7 @@
                                             type="number" 
                                             [(ngModel)]="entry[1].sizes[$index]"
                                             (ngModelChange)="onSizeChange()"
-                                            class="bg-transparent w-8 text-white text-sm text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                            class="bg-transparent w-8 text-white text-[16px] text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                         />
                                         <button 
                                             type="button"
@@ -105,22 +105,32 @@
                     </div>
                 </div>
                 
-                <div class="relative w-[80%] lg:w-[unset] lg:h-[90%] aspect-[210/297] rounded-lg bg-white shadow-xl ring-1 ring-cherry/15 overflow-hidden">
+                <!-- A4 Canvas Area -->
+                <div #a4Canvas class="relative lg:w-[unset] flex-1 min-h-0 aspect-[210/297] rounded-lg bg-white shadow-xl ring-1 ring-cherry/15 overflow-hidden w-full max-h-full">
                     @for (item of currentPageItems; track item.id) {
                         <div 
-                            class="absolute border border-dashed border-cherry/60 rounded flex items-center justify-center bg-cream/40 transition-all duration-300"
+                            class="absolute border border-dashed border-red-500/70 overflow-hidden flex items-center justify-center"
                             [style.left.%]="(item.x / 210) * 100"
                             [style.top.%]="(item.y / 297) * 100"
                             [style.width.%]="(item.width / 210) * 100"
                             [style.height.%]="(item.height / 297) * 100"
                         >
-                            <img 
-                                [src]="item.url" 
-                                [alt]="item.fileName" 
-                                class="w-full h-full object-contain"
-                                [class.rotate-90]="item.rotated"
-                            />
-                            <span class="absolute bottom-0.5 right-0.5 bg-cherry text-white text-[0.5rem] font-bold px-1 rounded opacity-90">
+                            @if (item.rotated) {
+                                <img 
+                                    [src]="item.url" 
+                                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 object-contain max-w-none"
+                                    [style.width.px]="item.height * (a4Canvas.clientWidth / 210)"
+                                    [style.height.px]="item.width * (a4Canvas.clientWidth / 210)"
+                                />
+                            } @else {
+                                <img 
+                                    [src]="item.url" 
+                                    class="w-full h-full object-contain pointer-events-none" 
+                                />
+                            }
+
+                            <!-- Size Badge -->
+                            <span class="absolute bottom-0.5 right-0.5 bg-cherry text-white text-[10px] px-1 py-0.5 rounded font-bold z-10 scale-75 origin-bottom-right lg:scale-100">
                                 {{ item.sizeCm }}cm
                             </span>
                         </div>
@@ -151,7 +161,18 @@
 </div>
 <ui-footer></ui-footer>
 
-<div class="sticky bottom-0 w-full h-[80px] bg-cream border-t-1 border-cherry/25 lg:hidden grid grid-cols-[100px_1fr] px-6 py-4 z-100">
-    <ui-button (click)="fileInput.click()" additionalClasses="py-2 px-3 w-fit h-full justify-center items-center" type="light"><i class="icon-plus text-text"></i></ui-button>
+<!-- Mobile Action Bar -->
+<div class="sticky bottom-0 w-full h-[70px] bg-cream border-t border-cherry/25 lg:hidden flex gap-3 px-6 py-3 z-50">
+    <div class="relative w-fit h-full">
+        <input 
+            type="file" 
+            class="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-20" 
+            multiple 
+            accept="image/*" 
+            (change)="onFilesSelected($event)">
+        <ui-button additionalClasses="py-2 px-4 w-fit h-full justify-center items-center pointer-events-none" type="light">
+            <i class="icon-plus text-text"></i>
+        </ui-button>
+    </div>
     <ui-button additionalClasses="py-2 px-4 w-full h-full justify-center items-center" type="heavy">Gerar folha A4</ui-button>
 </div>
