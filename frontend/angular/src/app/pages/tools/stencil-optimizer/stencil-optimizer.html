@@ -1,6 +1,6 @@
 <div class="w-full min-h-screen lg:h-screen bg-cream flex flex-col lg:overflow-hidden">
     <a class="p-6 font-brand text-text text-3xl" href="/">Xeubiart</a>
-    <header class="w-full flex flex-col items-center lg:items-end lg:pr-30 gap-4 px-5 box-border shrink-0">
+    <header class="w-full lg:mx-auto lg:max-w-[55%] lg:px-0 flex flex-col items-center lg:items-end gap-4 px-5 box-border shrink-0">
         <ui-eyebrow type="cherry">Ferramentas para tatuadores</ui-eyebrow>
         <ui-title class="text-center" level="h1">Otimizador de stencils em <em>A4</em></ui-title>
         <p class="lg:max-w-[40%] text-center text-muted lg:text-end">Faz upload das tuas artes, define os tamanhos desejados e otimiza a folha A4 com o mínimo de desperdício.</p>
@@ -16,8 +16,8 @@
 
     <main
         id="content"
-        class="w-full h-full px-4 py-4 
-            lg:grow lg:min-h-0 lg:grid lg:grid-cols-[55%_auto] lg:gap-10 lg:px-30">
+        class="lg:mx-auto w-full lg:max-w-[55%] h-full lg:px-0 px-4 py-4 
+            lg:grow lg:min-h-0 lg:grid lg:grid-cols-[55%_auto] lg:gap-10">
 
         <!-- Hidden file input that listens to changes -->
         <input 
@@ -30,23 +30,37 @@
 
         <div [class.hidden]="selectedTab !== 'Imagens'" 
              class="h-fit lg:block lg:h-full lg:overflow-y-auto py-1 px-2 grid-cards">
-            @for (img of uploadedImages; track img.id) {
-                <ui-card additionalClasses="w-full h-[200px] mb-7 last:mb-0 grid grid-cols-[30%_1fr] p-4 gap-3">
+            @for (entry of uploadedImages; track entry[0]) {
+                <ui-card additionalClasses="w-full h-fit mb-7 last:mb-0 grid grid-cols-[30%_1fr] p-4 gap-3">
                     <div class="w-full aspect-square rounded-lg overflow-hidden">
-                        <img [src]="img.url" [alt]="img.name" class="w-full h-full object-fit">
+                        <img [src]="entry[1].url" class="w-full h-full object-cover">
                     </div>
 
-                    <div class="w-full h-full">
-                        <div class="flex justify-between items-center font-bold text-text mb-2">
-                            <span>Tamanhos</span>
-                            <div class="flex gap-2">
-                                <ui-button type="light" additionalClasses="w-fit !p-1 aspect-square"><i class="icon-clone"></i></ui-button>
-                                <ui-button type="light" additionalClasses="w-fit !p-1 aspect-square"><i class="icon-trash"></i></ui-button>
+                    <div class="w-full h-full flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center font-bold text-text mb-2">
+                                <div class="flex items-center">
+                                    <span class="text-md">Tamanhos</span>
+                                    <span class="ml-2 bg-muted/50 text-white text-[.6rem] px-2 py-.5 rounded-full">{{entry[1].sizes.length}}</span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <ui-button type="light" additionalClasses="w-fit !p-1 aspect-square text-sm"><i class="icon-clone"></i></ui-button>
+                                    <ui-button (click)="deleteFile(entry[0])" type="light" additionalClasses="w-fit !p-1 aspect-square text-sm"><i class="icon-trash"></i></ui-button>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap gap-1 items-center">
+                               @for (size of entry[1].sizes; track $index) {
+                                    <input 
+                                        type="number" 
+                                        [(ngModel)]="entry[1].sizes[$index]"
+                                        (ngModelChange)="onSizeChange()"
+                                        class="bg-cherry w-12 text-white text-sm px-4 py-1 rounded-full font-bold text-center focus:outline-none"
+                                    />
+                                }
+                                <ui-button (click)="addNewSize(entry[0])" type="light" additionalClasses="w-fit !px-2 !py-1 text-sm"><i class="icon-plus"></i></ui-button>
                             </div>
                         </div>
-                        <span class="text-sm text-muted">Escolha o tamanho vertical, o tamanho horizontal é calculado automáticamente para manter as proporções.</span>
-
-                        <div></div>
                     </div>
                 </ui-card>
             }
@@ -54,34 +68,62 @@
 
         <div [class.hidden]="selectedTab !== 'Pré-visualização'" class="py-1 h-full lg:block">
             <ui-card additionalClasses="w-full h-full flex flex-col gap-4 p-6">
-                <!-- Preview Header -->
-                <div class="w-full place-content-end flex gap-2">
-                    <ui-button additionalClasses="w-fit !p-0 aspect-square" type="light"><i class="icon-left"></i></ui-button>
-                    <span>Folha 1 de 2</span>
-                    <ui-button additionalClasses="w-fit !p-0 aspect-square" type="light"><i class="icon-right"></i></ui-button>
+                
+                <!-- Preview Header with Active Pagination -->
+                <div class="w-full place-content-end flex gap-2 items-center">
+                    <ui-button 
+                        (click)="prevPage()" 
+                        [disabled]="currentPageIndex === 0"
+                        additionalClasses="w-fit !p-0 aspect-square disabled:opacity-30" 
+                        type="light">
+                        <i class="icon-left"></i>
+                    </ui-button>
+
+                    <span class="text-xs font-semibold">
+                        Folha {{ currentPageIndex + 1 }} de {{ pages.length }}
+                    </span>
+
+                    <ui-button 
+                        (click)="nextPage()" 
+                        [disabled]="currentPageIndex >= pages.length - 1"
+                        additionalClasses="w-fit !p-0 aspect-square disabled:opacity-30" 
+                        type="light">
+                        <i class="icon-right"></i>
+                    </ui-button>
                 </div>
                 
                 <!-- Preview Body -->
-                <div class="w-full grow bg-cream rounded-3xl flex items-center justify-center">
-                    <!-- Page simulate -->
-                    <div class="h-[90%] aspect-[210/297] rounded-lg bg-white shadow-[0_10px_40px_-12px_rgba(107,29,47,0.35)] ring-1 ring-cherry/15">
-
+                <div class="w-full h-fit p-4 lg:p-0 lg:grow bg-cream rounded-3xl flex items-center justify-center">
+                    <!-- Simulated A4 Sheet -->
+                    <div class="relative w-[80%] lg:h-[90%] aspect-[210/297] rounded-lg bg-white shadow-[0_10px_40px_-12px_rgba(107,29,47,0.35)] ring-1 ring-cherry/15 overflow-hidden p-3 flex flex-wrap content-start gap-2">
+                        @for (item of currentPageItems; track item.id) {
+                            <div 
+                                class="relative border border-dashed border-cherry/40 rounded overflow-hidden flex items-center justify-center bg-cream/30"
+                                [style.height.%]="(item.sizeCm / 29.7) * 100"
+                            >
+                                <img 
+                                    [src]="item.url" 
+                                    [alt]="item.fileName" 
+                                    class="h-full w-auto object-contain"
+                                />
+                                <span class="absolute bottom-0.5 right-0.5 bg-cherry text-white text-[0.5rem] font-bold px-1 rounded opacity-80">
+                                    {{ item.sizeCm }}cm
+                                </span>
+                            </div>
+                        }
                     </div>
                 </div>
                 
                 <!-- Preview Footer -->
                 <div class="w-full flex place-content-between text-[.70rem] [&_strong]:text-cherry text-muted [&_strong]:font-black">
-                    <span class="block">Aproveitamento: <strong>52%</strong></span>
-                    <span class="block"><strong>7</strong> artes empacotadas</span>
+                    <span class="block"><strong>{{ allItems.length }}</strong> artes empacotadas</span>
                     <span class="block">Formato A4 · 210 × 297mm</span>
                 </div>
             </ui-card>
         </div>
-
-        
     </main>
 
-    <div class="lg:flex hidden gap-5 w-full h-[80px] bg-cream px-30 py-4 mb-7">
+    <div class="lg:mx-auto w-full lg:max-w-[55%] lg:flex hidden gap-5 h-[80px] bg-cream py-4 mb-7">
         <ui-button (click)="fileInput.click()" additionalClasses="py-2 px-3 w-fit h-full justify-center items-center" type="light">
             <i class="icon-plus text-text"></i>
             <span>Adicionar outra imagem</span>
@@ -93,6 +135,6 @@
 <ui-footer></ui-footer>
 
 <div class="sticky bottom-0 w-full h-[80px] bg-cream border-t-1 border-cherry/25 lg:hidden grid grid-cols-[100px_1fr] px-6 py-4 z-100">
-    <ui-button additionalClasses="py-2 px-3 w-fit h-full justify-center items-center" type="light"><i class="icon-plus text-text"></i></ui-button>
+    <ui-button (click)="fileInput.click()" additionalClasses="py-2 px-3 w-fit h-full justify-center items-center" type="light"><i class="icon-plus text-text"></i></ui-button>
     <ui-button additionalClasses="py-2 px-4 w-full h-full justify-center items-center" type="heavy">Gerar folha A4</ui-button>
 </div>
