@@ -53,6 +53,10 @@ export class UiFooter extends LitElement {
                     Label: 'Otimizador de decalque', 
                     RedirectTo: '/tools/stencil-optimizer' 
                 },
+                { 
+                    Label: 'Decalque em multiplas páginas', 
+                    RedirectTo: '/tools/multipage-stencil' 
+                },
             ],
         },
     ];

@@ -259,11 +259,31 @@ export class StencilOptimizer implements OnInit {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    onFilesSelected(event: Event) {
-        const input = event.target as HTMLInputElement;
-        if (!input.files || input.files.length === 0) return;
+    onFilesSelected(event: any) {
+        let fileList: FileList | File[] | null = null;
 
-        Array.from(input.files).forEach(file => {
+        // 1. Check native input event
+        if (event?.target?.files && event.target.files.length > 0) {
+            fileList = event.target.files;
+        } 
+        // 2. Check custom component event detail (e.g., ui-file-uploader)
+        else if (event?.detail) {
+            if (event.detail.files) {
+                fileList = event.detail.files;
+            } else if (Array.isArray(event.detail) || event.detail instanceof FileList) {
+                fileList = event.detail;
+            } else if (event.detail instanceof File) {
+                fileList = [event.detail];
+            }
+        } 
+        // 3. Direct array or FileList fallback
+        else if (Array.isArray(event) || event instanceof FileList) {
+            fileList = event;
+        }
+
+        if (!fileList || fileList.length === 0) return;
+
+        Array.from(fileList).forEach(file => {
             if (!file.type.startsWith('image/') && !file.name.toLowerCase().endsWith('.heic')) return;
 
             const url = URL.createObjectURL(file);
@@ -272,7 +292,6 @@ export class StencilOptimizer implements OnInit {
             img.onload = () => {
                 const aspectRatio = img.naturalWidth / img.naturalHeight || 1;
 
-                // Safe ID generator that won't crash on mobile HTTP local IPs
                 const id = (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function')
                     ? crypto.randomUUID()
                     : 'img_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
@@ -291,14 +310,16 @@ export class StencilOptimizer implements OnInit {
             };
 
             img.onerror = (err) => {
-                console.error('Failed to load image on iOS', err);
+                console.error('Failed to load image', err);
                 URL.revokeObjectURL(url);
             };
 
             img.src = url;
         });
 
-        input.value = '';
+        if (event?.target && 'value' in event.target) {
+            event.target.value = '';
+        }
     }
 
     deleteFile(id: string) {
