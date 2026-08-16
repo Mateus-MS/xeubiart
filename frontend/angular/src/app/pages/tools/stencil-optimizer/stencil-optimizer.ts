@@ -1,6 +1,7 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, inject, NgZone, ViewChild, ElementRef } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, inject, NgZone, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MaxRectsPacker, PackedItem, PackingItem } from './maxRectsPacker';
+import { Title } from '@angular/platform-browser';
 
 interface UploadedImage {
     file: File;
@@ -15,8 +16,14 @@ interface UploadedImage {
     templateUrl: './stencil-optimizer.html',
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class StencilOptimizer {
+export class StencilOptimizer implements OnInit {
     private cdr = inject(ChangeDetectorRef);
+
+    constructor(private titleService: Title) {}
+
+    ngOnInit(): void {
+        this.titleService.setTitle('Xeubiart — Otimizador de stencils em A4');
+    }
 
     selectedTab: string = 'Imagens';
     currentPageIndex: number = 0;
