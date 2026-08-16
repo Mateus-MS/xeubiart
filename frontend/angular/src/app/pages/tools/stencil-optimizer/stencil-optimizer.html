@@ -36,8 +36,17 @@
                         <img [src]="img.url" [alt]="img.name" class="w-full h-full object-fit">
                     </div>
 
-                    <div class="w-full h-dull bg-green-500">
+                    <div class="w-full h-full">
+                        <div class="flex justify-between items-center font-bold text-text mb-2">
+                            <span>Tamanhos</span>
+                            <div class="flex gap-2">
+                                <ui-button type="light" additionalClasses="w-fit !p-1 aspect-square"><i class="icon-clone"></i></ui-button>
+                                <ui-button type="light" additionalClasses="w-fit !p-1 aspect-square"><i class="icon-trash"></i></ui-button>
+                            </div>
+                        </div>
+                        <span class="text-sm text-muted">Escolha o tamanho vertical, o tamanho horizontal é calculado automáticamente para manter as proporções.</span>
 
+                        <div></div>
                     </div>
                 </ui-card>
             }
