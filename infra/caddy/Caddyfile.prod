@@ -9,35 +9,35 @@
         file_server
     }
 
-    # Static assets (css, fonts)
+    # Static assets (images, fonts, etc.)
     handle_path /static/* {
         root * /app/static
         file_server
     }
 
+    # Tailwind CSS bundle
     @tailwind {
         path /tailwind.css
     }
-
     handle @tailwind {
         root * /app/tailwind/dist
         file_server
     }
 
+    # Backend API / Templ routes
     @templ {
         method GET
         path /
-        not header Upgrade *websocket*
         not query token=*
     }
     handle @templ {
         reverse_proxy templ:8081
     }
 
-    # Serve Compiled Angular Static Files with SPA Fallback
+    # Fallback: Serve the pre-compiled Angular SPA static files
     handle {
         root * /app/angular
-        try_files {path} /index.html
         file_server
+        try_files {path} /index.html
     }
 }

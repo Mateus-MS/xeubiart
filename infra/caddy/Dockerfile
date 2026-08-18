@@ -1,21 +1,31 @@
-# Stage 1: Build Dependencies and Assets
+# Stage 1: Build all frontend assets
 FROM node:24-alpine AS builder
 WORKDIR /app
 
-# 1. Build Tailwind CSS first
-WORKDIR /app/tailwind
-COPY frontend/tailwind/package*.json ./
+# Copy the entire frontend folder structure so relative @source paths match
+COPY frontend/ ./frontend/
+
+# 1. Build Tailwind CSS
+WORKDIR /app/frontend/tailwind
 RUN npm install
-COPY frontend/tailwind/ ./
 RUN npx @tailwindcss/cli -i ./input.css -o ./dist/tailwind.css --minify
 
-# 2. Build Angular application
-WORKDIR /app/angular
-COPY frontend/angular/package*.json ./
+# 2. Build Shared UI Library
+WORKDIR /app/frontend/ui
 RUN npm install
-COPY frontend/angular/ ./
+RUN npx vite build
+
+# 3. Build Angular Application
+WORKDIR /app/frontend/angular
+RUN npm install
 RUN npm run build
 
-# Stage 2: Caddy with baked-in Angular static files
+# Stage 2: Caddy with all static assets baked in
 FROM caddy:latest
-COPY --from=builder /app/angular/dist/angular/browser /app/angular
+WORKDIR /app
+
+# Copy built artifacts from their respective nested directories
+COPY --from=builder /app/frontend/angular/dist/angular/browser /app/angular
+COPY --from=builder /app/frontend/tailwind/dist /app/tailwind/dist
+COPY --from=builder /app/frontend/ui/dist /app/ui/dist
+COPY frontend/static /app/static
