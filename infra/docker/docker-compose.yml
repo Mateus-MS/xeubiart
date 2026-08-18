@@ -18,7 +18,7 @@ services:
       context: ../../
       dockerfile: infra/caddy/Dockerfile
     ports:
-      - "80:80"
+      - "${PORT:-80}:80"
     volumes:
       - ../caddy/Caddyfile.${APP_ENV:-dev}:/etc/caddy/Caddyfile
       - ../../frontend/ui/dist:/app/ui/dist
