@@ -20,10 +20,8 @@ services:
     ports:
       - "${PORT:-80}:80"
     volumes:
-      - ../caddy/Caddyfile.${APP_ENV:-dev}:/etc/caddy/Caddyfile
-      - ../../frontend/ui/dist:/app/ui/dist
+      - ../caddy/Caddyfile.${APP_ENV:-prod}:/etc/caddy/Caddyfile
       - ../../frontend/static:/app/static
-      - ../../frontend/tailwind/dist:/app/tailwind/dist
     depends_on:
       - templ
     networks:
