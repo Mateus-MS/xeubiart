@@ -5,28 +5,22 @@
 :80 {
     # Shared UI library bundle
     handle_path /static/ui/* {
-        root * ../frontend/ui/dist
+        root * /app/ui/dist
         file_server
     }
 
+    # Static assets (css, fonts)
     handle_path /static/* {
-        root * ../frontend/static
+        root * /app/static
         file_server
     }
-
-    # Reverse proxy Angular WebSocket requests
-    @angular_ws {
-        header Connection *Upgrade*
-        header Upgrade    websocket
-    }
-    reverse_proxy @angular_ws localhost:4200
 
     @tailwind {
         path /tailwind.css
     }
 
     handle @tailwind {
-        root * ../frontend/tailwind/dist
+        root * /app/tailwind/dist
         file_server
     }
 
@@ -37,10 +31,13 @@
         not query token=*
     }
     handle @templ {
-        reverse_proxy 127.0.0.1:8081
+        reverse_proxy templ:8081
     }
 
+    # Serve Compiled Angular Static Files with SPA Fallback
     handle {
-        reverse_proxy localhost:4200
+        root * /app/angular
+        try_files {path} /index.html
+        file_server
     }
 }
