@@ -45,8 +45,8 @@ jobs:
           file: frontend/templ/Dockerfile
           push: true
           tags: |
-            ghcr.io/mateus-ms/xeubiart-templ:${{ steps.vars.outputs.VERSION }}
-            ghcr.io/mateus-ms/xeubiart-templ:latest
+            ghcr.io/Mateus-MS/xeubiart-templ:${{ steps.vars.outputs.VERSION }}
+            ghcr.io/Mateus-MS/xeubiart-templ:latest
 
       - name: Build and Push Caddy Service
         uses: docker/build-push-action@v6
@@ -55,5 +55,5 @@ jobs:
           file: infra/caddy/Dockerfile
           push: true
           tags: |
-            ghcr.io/mateus-ms/xeubiart-caddy:${{ steps.vars.outputs.VERSION }}
-            ghcr.io/mateus-ms/xeubiart-caddy:latest
+            ghcr.io/Mateus-MS/xeubiart-caddy:${{ steps.vars.outputs.VERSION }}
+            ghcr.io/Mateus-MS/xeubiart-caddy:latest
