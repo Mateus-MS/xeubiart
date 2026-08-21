@@ -1,7 +1,5 @@
 package templates
 
-import "xeubiart.com/components"
-
 type BaseProps struct{
     HeadTitle   string
     HeadImports templ.Component
@@ -21,26 +19,28 @@ templ Base(props BaseProps){
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{props.HeadTitle}</title>
 
-        <link href="/static/css/main.css" rel="stylesheet">
+        <link href="/tailwind.css" rel="stylesheet">
 
         <link rel="icon" type="image/x-icon" href="/static/svg/xeubiart.svg">
+
+        <script type="module" src="/static/ui/ui-kit.mjs"></script>
 
         @props.HeadImports
     </head>
     <body class="min-h-[100dvh] h-fit">
         if props.IncludeNavigation {
-            @components.NavBar()
+            <ui-navbar></ui-navbar>
         }
 
         { children... }
 
         if props.IncludeFooter {
-            @components.Footer(components.FooterProps{IncludeCTA: props.IncludeFooterCTA})
+            <ui-footer></ui-footer>
         }
 
-        // if props.IncludeNavigation {
-        //     @components.HotBar()
-        // }
+        if props.IncludeNavigation {
+            <ui-hotbar></ui-hotbar>
+        }
     </body>
     </html>    
 }

@@ -1,0 +1,23 @@
+package atoms
+
+import "github.com/Oudwins/tailwind-merge-go/pkg/twmerge"
+
+type LinkProps struct {
+    RedirectTo string
+    AditionalClassenames string
+}
+
+templ Link(props LinkProps){
+    <a class={
+        twmerge.Merge(
+            `
+                text-cherry font-semibold relative
+
+                before:absolute before:w-[0px] before:h-[1px] before:-bottom-0.5 before:bg-cherry before:transition-[width]
+                hover:before:w-full
+            `, 
+            props.AditionalClassenames,
+        )}
+        href={props.RedirectTo}
+    >{ children... }</a>
+}

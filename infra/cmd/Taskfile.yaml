@@ -1,0 +1,91 @@
+version: '3'
+
+tasks:
+  caddy:
+    dir: '../../infra'
+    cmds:
+      - caddy run --config ./caddy/Caddyfile.dev
+
+  angular:
+    dir: '../../frontend/angular'
+    cmds:
+      - npm start
+
+  templ:
+    dir: '../../frontend/templ'
+    cmds:
+      - go tool templ generate --watch --cmd="go run main.go"
+
+  tailwind:
+    dir: '../../frontend/tailwind'
+    cmds:
+      - npx @tailwindcss/cli -i ./input.css -o ./dist/tailwind.css --watch
+
+  # --- Shared Web Components Watcher ---
+  ui:
+    dir: '../../frontend/ui'
+    cmds:
+      - npx vite build --watch
+
+  dev:
+    deps: [caddy, angular, templ, tailwind, ui]
+
+  # Main command to run on a fresh clone
+  init:
+    desc: Install all dependencies and prepare project for development
+    cmds:
+      - task: init:go
+      - task: init:angular
+      - task: init:tailwind
+      - task: init:ui
+      - task: generate:templ
+      - task: build:tailwind
+      - task: build:ui
+      - cmd: echo "Init complete! You can now run 'task dev'."
+        silent: true
+
+  # --- Granular Init Tasks ---
+
+  init:go:
+    desc: Download Go modules
+    dir: '../../frontend/templ'
+    cmds:
+      - go mod download
+
+  init:angular:
+    desc: Install Angular dependencies
+    dir: '../../frontend/angular'
+    cmds:
+      - npm install
+
+  init:tailwind:
+    desc: Install Tailwind CLI and dependencies
+    dir: '../../frontend/tailwind'
+    cmds:
+      - npm install
+
+  init:ui:
+    desc: Install Shared UI Web Component dependencies
+    dir: '../../frontend/ui'
+    cmds:
+      - npm install
+
+  # --- Build / Prep Tasks ---
+
+  generate:templ:
+    desc: Generate Go code from Templ templates
+    dir: '../../frontend/templ'
+    cmds:
+      - go tool templ generate
+
+  build:tailwind:
+    desc: Initial Tailwind CSS build
+    dir: '../../frontend/tailwind'
+    cmds:
+      - npx @tailwindcss/cli -i ./input.css -o ./dist/tailwind.css
+
+  build:ui:
+    desc: Initial Shared UI build
+    dir: '../../frontend/ui'
+    cmds:
+      - npx vite build

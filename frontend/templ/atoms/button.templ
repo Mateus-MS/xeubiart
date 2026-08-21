@@ -1,0 +1,45 @@
+package atoms
+
+import "github.com/Oudwins/tailwind-merge-go/pkg/twmerge"
+
+type ButtonProps struct{
+    AditionalClassnames string
+}
+
+templ Button(props ButtonProps, attrs templ.Attributes){
+    <button class={ twmerge.Merge("px-7 py-2 cursor-pointer border-1 rounded-full transition-all duration-150 flex gap-2", props.AditionalClassnames) } { attrs... }>
+        { children... }
+    </button>
+}
+
+templ Button_Heavy(extra string, attrs templ.Attributes){
+    @Button(ButtonProps{
+        AditionalClassnames: twmerge.Merge("font-contrast text-white bg-cherry border-cherry hover:bg-cherry-dark hover:-translate-y-0.5 shadow-[0_10px_28px_rgba(139,26,43,0.45)] disabled:bg-muted disabled:border-muted disabled:hover:-translate-y-0 disabled:shadow-none disabled:cursor-not-allowed", extra),
+    }, attrs){
+        { children... }
+    }
+}
+
+templ Button_Light(extra string, attrs templ.Attributes){
+    @Button(ButtonProps{
+        AditionalClassnames: twmerge.Merge("text-black bg-transparent border-cherry/30 hover:border-cherry", extra),
+    }, attrs){
+        { children... }
+    }
+}
+
+templ Button_Morph(extra string, attrs templ.Attributes) {
+    @Button(ButtonProps{
+        AditionalClassnames: twmerge.Merge(`
+            transition-all duration-200 ease-in-out
+            
+            data-[light]:text-black data-[light]:bg-transparent data-[light]:border-cherry/30 data-[light]:hover:border-cherry
+            
+            data-[heavy]:font-contrast data-[heavy]:text-white data-[heavy]:bg-cherry data-[heavy]:border-cherry 
+            data-[heavy]:hover:bg-cherry-dark data-[heavy]:hover:-translate-y-0.5 
+            data-[heavy]:shadow-lg data-[heavy]:shadow-cherry/50
+        `, extra),
+    }, attrs) {
+        { children... }
+    }
+}

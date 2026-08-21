@@ -1,0 +1,33 @@
+name: xeubiart
+
+services:
+  templ:
+    container_name: templ
+    build:
+      context: ../../frontend/templ
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    networks:
+      - app-net
+    restart: unless-stopped
+
+  caddy:
+    container_name: caddy
+    build:
+      context: ../../
+      dockerfile: infra/caddy/Dockerfile
+    ports:
+      - "${PORT:-80}:80"
+    volumes:
+      - ../caddy/Caddyfile.${APP_ENV:-prod}:/etc/caddy/Caddyfile
+      - ../../frontend/static:/app/static
+    depends_on:
+      - templ
+    networks:
+      - app-net
+    restart: unless-stopped
+
+networks:
+  app-net:
+    driver: bridge

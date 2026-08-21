@@ -1,0 +1,198 @@
+package frags
+
+import "com.xeubiart/atoms"
+
+templ Social(){
+    <section-social class="block py-15 bg-cream">
+        // Header
+        <div class="flex flex-col lg:flex-row justify-between px-8 lg:px-20">
+            <div>
+                <ui-eyebrow type="sparkly" text="Avaliações reais" additionalClasses="mb-4 block"></ui-eyebrow>
+                @atoms.Title(atoms.TitleProps{Level: "h4", ClassNames: "[font-size:clamp(2.2rem,6vw,3.4rem)] [line-height:1]"}){O que dizem <br> as minhas <em>clientes</em>}
+            </div>
+            <div class="flex flex-col gap-1">
+                <span class="text-cherry text-7xl/23 font-contrast">5.0</span>
+                <div class="flex gap-1">
+                    for _ = range(5) {
+                        <svg class="w-[15px] aspect-square fill-[#e8b84b]" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                    }
+                </div>
+                <span class="text-sm text-muted">+300 avaliações verificadas</span>
+            </div>
+        </div>
+        // Chips
+        <div>
+            {{
+                type chipsData struct {
+                    score string
+                    label string
+                }
+
+                chips := []chipsData{
+                    {
+                        score: "5.0",
+                        label: "no Google",
+                    },
+                    {
+                        score: "5.0",
+                        label: "no Instagram",
+                    },
+                    {
+                        score: "100%",
+                        label: "recomendam",
+                    },
+                }
+            }}
+
+            <div class="flex justify-center flex-wrap py-15 gap-5">
+                for _, data := range(chips){
+                    <div class="w-fit border-1 border-cherry/30 bg-white px-4 py-2 shadow-[0_2px_10px_rgba(139,26,43,0.05)] rounded-full flex gap-3 items-center">
+                        <span class="font-contrast text-cherry text-lg/4 mb-[.25rem]">{data.score}</span>
+                        <span class="text-sm">{data.label}</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        @carrossel()
+        <div class="px-10">
+            @highlight()
+        </div>
+    </section-social>
+}
+
+templ carrossel(){
+    {{
+        type userReviewData struct{
+            Username string
+            Date string
+            Comment string
+            Style string // Make a enum
+            Source string // Make a enum
+        }
+
+        userReviews := []userReviewData{
+            {
+                Username: "Mateus Alves",
+                Date: "Agosto 2025",
+                Comment: "A atenção ao detalhe é incrível. Cada linha, cada sombreado pensado com tanto carinho. Minha tattoo virou obra de arte.",
+                Style: "Fine Line",
+                Source: "instagram",
+            },
+            {
+                Username: "Khelbia Lopes",
+                Date: "Agosto 2025",
+                Comment: "A atenção ao detalhe é incrível. Cada linha, cada sombreado pensado com tanto carinho. Minha tattoo virou obra de arte.",
+                Style: "Fine Line",
+                Source: "google",
+            },
+            {
+                Username: "Neneco Peteco",
+                Date: "Agosto 2025",
+                Comment: "A atenção ao detalhe é incrível. Cada linha, cada sombreado pensado com tanto carinho. Minha tattoo virou obra de arte.",
+                Style: "Old School",
+                Source: "instagram",
+            },
+            {
+                Username: "Mateus Alves",
+                Date: "Agosto 2025",
+                Comment: "A atenção ao detalhe é incrível. Cada linha, cada sombreado pensado com tanto carinho. Minha tattoo virou obra de arte.",
+                Style: "Fine Line",
+                Source: "instagram",
+            },
+            {
+                Username: "Khelbia Lopes",
+                Date: "Agosto 2025",
+                Comment: "A atenção ao detalhe é incrível. Cada linha, cada sombreado pensado com tanto carinho. Minha tattoo virou obra de arte.",
+                Style: "Fine Line",
+                Source: "google",
+            },
+            {
+                Username: "Neneco Peteco",
+                Date: "Agosto 2025",
+                Comment: "A atenção ao detalhe é incrível. Cada linha, cada sombreado pensado com tanto carinho. Minha tattoo virou obra de arte.",
+                Style: "Old School",
+                Source: "instagram",
+            },
+        }
+    }}
+
+    <div class="
+        relative overflow-x-clip w-full
+
+        before:absolute before:left-0 before:top-0 before:w-[50px] before:h-full before:z-2 before:bg-linear-to-r before:from-cream before:to-transparent
+        after:absolute after:right-0 after:top-0 after:w-[50px] after:h-full after:z-2 after:bg-linear-to-l after:from-cream after:to-transparent
+    ">
+        // Scrolling element
+        <div class="flex gap-10 mb-15 animate-infinite-scroll hover:[animation-play-state:paused]">
+            for _, data := range(userReviews){
+                <div class="
+                    flex flex-col w-[300px] gap-6 bg-white p-8 rounded-2xl relative overflow-hidden transition-all shrink-0
+
+                    after:w-0 after:h-[3px] after:absolute after:left-0 after:bottom-0
+                    after:bg-linear-to-r after:from-cherry after:to-transparent
+                    after:transition-[width]
+
+                    hover:after:w-full hover:-translate-y-[5px]
+                    hover:shadow-[0_20px_60px_rgba(139,26,43,0.1)]
+                ">
+                    // Customer info
+                    <div class="flex justify-between">
+                        @atoms.Avatar(atoms.AvatarProps{UserName: data.Username})
+                        <div class="flex flex-col">
+                            <span class="font-bold text-sm">{data.Username}</span>
+                            <span class="text-xs text-muted">{data.Date}</span>
+                        </div>
+                        <div class="flex gap-1">
+                            for _ = range(5) {
+                                <svg class="w-[10px] aspect-square fill-[#e8b84b]" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                            }
+                        </div>
+                    </div>
+                    <span class="font-contrast text-5xl/5 italic text-cherry/50">"</span>
+
+                    // Body
+                    <p class="text-muted italic -mt-[15px]">{data.Comment}</p>
+
+                    // Footer
+                    <div class="flex justify-between">
+                        <div class="uppercase bg-cherry/15 rounded-full px-2 py-1 text-[.65rem] text-cherry tracking-widest font-semibold">{data.Style}</div>
+                        switch data.Source {
+                            case "instagram":
+                                <div class="text-muted text-sm"><icon class="mr-1">&#xF16D;</icon> instagram</div>
+                            case "google":
+                                <div class="text-muted text-sm"><icon class="mr-1">&#xF1A0;</icon> google</div>
+                            default:
+                                <div>ERROR</div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+templ highlight(){
+    <div class="
+        bg-cherry rounded-2xl p-10 max-w-[800px] mx-auto relative overflow-hidden
+
+        after:block after:absolute after:w-[500px] after:h-[500px] after:rounded-full
+        after:bg-white/15
+        after:bottom-[-350px] after:right-[-300px] after:pointer-events-none after:z-0
+
+        before:block before:absolute before:text-white/15 before:text-[20rem]/30 before:font-contrast before:italic
+        before:content-['\22']
+        before:top-[30px] before:left-[100px] before:pointer-events-none before:z-0
+    ">
+        <p class="text-white font-bold font-contrast [font-size:clamp(1.2rem,2.4vw,1.6rem)] mb-10">Nunca pensei que uma tatuagem pudesse me emocionar tanto. Ela não só fez uma arte — ela eternizou algo que eu carrego no coração. Voltarei para sempre.</p>
+        // Avatar
+        <div class="flex gap-5 items-center">
+            <div class="bg-[#ffffff2e] border-[#ffffff4d] border-1 w-[65px] aspect-square rounded-full grid place-items-center font-contrast text-white italic text-3xl">P</div>
+            // Avatar info
+            <div class="flex flex-col">
+                <span class="text-white">Sofia carvalho</span>
+                <span class="text-white/50 text-xs">Março 2026</span>
+            </div>
+        </div>
+    </div>
+}

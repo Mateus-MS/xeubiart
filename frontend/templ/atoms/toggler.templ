@@ -1,0 +1,30 @@
+package atoms
+
+import "github.com/Oudwins/tailwind-merge-go/pkg/twmerge"
+
+templ Toggler(bindTo string, additionalClassNames string){
+    <div 
+        class={twmerge.Merge(`
+            [--height:23px] [--padding:3px]
+            [--circle-size:calc(var(--height)-(var(--padding)*2))]
+            w-[40px] h-(--height) bg-gray-500 p-(--padding) rounded-full relative cursor-pointer transition-colors
+        `, additionalClassNames)}
+        x-data="{
+            state: false
+        }"
+        x-init="
+            console.log('initiating');
+        "
+        x-modelable="state"
+        x-model={bindTo}
+        @click="state = !state"
+        :class="state ? 'bg-green-800' : 'bg-gray-500'"
+    >
+        <div 
+            class="h-(--circle-size) aspect-square bg-white rounded-full absolute top-1/2 -translate-y-1/2 transition-all duration-200"
+            :class="state 
+                ? 'left-[calc(100%-var(--circle-size)-var(--padding))]' 
+                : 'left-(--padding)'"
+        ></div>
+    </div>
+}

@@ -1,0 +1,31 @@
+package atoms
+
+import "github.com/Oudwins/tailwind-merge-go/pkg/twmerge"
+
+type CardProps struct{
+    AditionalClassnames string
+}
+
+templ Card(props CardProps){
+    <atom-card class={twmerge.Merge("p-4 block rounded-2xl border-cherry/20 border-1", props.AditionalClassnames)}>
+        { children... }
+    </atom-card>
+}
+
+templ Card_Light(extra string){
+    @Card(CardProps{AditionalClassnames: twmerge.Merge("bg-white", extra)}){
+        { children... }
+    }
+}
+
+templ Card_Dark(extra string){
+    @Card(CardProps{AditionalClassnames: twmerge.Merge("bg-black/75", extra)}){
+        { children... }
+    }
+}
+
+templ Card_Transparent(extra string){
+    @Card(CardProps{AditionalClassnames: twmerge.Merge("bg-white/7 border-white/10", extra)}){
+        { children... }
+    }
+}

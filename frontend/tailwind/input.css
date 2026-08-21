@@ -1,16 +1,97 @@
 @import "tailwindcss";
 
 @source "../angular/src";
+@source "../templ";
+@source "../ui/components";
 
 @theme {
-  --color-primary: #2563eb;
-  --color-secondary: #7c3aed;
-  --color-accent: #f97316;
+  --color-cherry: #8B1A2B;
+  --color-cherry-dark: #610a17;
 
-  --color-surface: #ffffff;
-  --color-background: #f8fafc;
+  --color-text: #1a1a1a;
+  --color-text-dark: #111;
 
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
+  --color-muted: #999;
+  --color-cream: #FAF5EE;
+
+  --spacing-header: 70px;
+
+  --font-brand: 'brand';
+  --font-contrast: 'contrast';
+
+  --animate-infinite-scroll: infinite-scroll 20s linear infinite;
+  @keyframes infinite-scroll{
+      0% {
+          transform: translateX(0);
+      }
+      100% {
+          transform: translateX(-50%);
+      }
+  }
+}
+
+@layer base{
+    * {
+        user-select: none;
+        box-sizing: border-box;
+
+        outline: unset;
+        box-sizing: border-box;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    icon{
+        font-family: icons;
+    }
+
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    [x-cloak] { 
+        display: none !important; 
+    }
+
+    /* Hide indicators by default */
+    .htmx-indicator {
+        display: none;
+    }
+
+    /* Show them when the request is happening */
+    .htmx-request .htmx-indicator,
+    .htmx-request.htmx-indicator {
+        display: flex;
+    }
+
+    /* Optional: Make the table look blurry/disabled */
+    #table_body.htmx-request {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}
+
+@font-face {
+    font-family: 'brand';
+    src: url('/static/fonts/logo.ttf') format(truetype);
+}
+@font-face {
+    font-family: 'contrast';
+    src: url('/static/fonts/contrast.ttf') format(truetype);
+}
+@font-face {
+    font-family: 'icons';
+    src: url('/static/fonts/icons.ttf') format(truetype);
 }

@@ -1,0 +1,70 @@
+package atoms
+
+import "fmt"
+import "github.com/Oudwins/tailwind-merge-go/pkg/twmerge"
+
+type DropdownProps struct{
+    Label string
+    Icon string
+    Placeholder string
+    AditionalClassenames string
+}
+
+templ Dropdown(props DropdownProps, xModel string){
+    <atom-dropdown
+        class="w-full block shrink"
+        x-data="{
+            open: false,
+            selected: '',
+        }"
+        x-modelable="selected"
+        x-model={xModel}
+        @click="open = !open"
+        @click.outside="open = false"
+    >
+
+        if props.Label != "" {
+            <span class="block text-sm mb-1">{props.Label}</span>
+        }
+
+        <div class={ twmerge.Merge("text-sm cursor-pointer flex justify-between relative", props.AditionalClassenames) }>
+            if props.Icon != "" {
+                <icon class="text-muted mr-3">{props.Icon}</icon>
+            }
+
+            <span class="block w-full" x-text={fmt.Sprintf("selected === '' ? '%s' : selected", props.Placeholder)}></span> <icon class="block text-muted ml-3">&#xE800;</icon>
+            <div
+                x-show="open"
+                x-cloak
+                x-transition.origin.top.left
+                class="absolute w-fit px-2 py-2 border-1 border-cherry/15 rounded-xl text-sm flex flex-col top-[calc(100%+.5rem)] min-w-full left-0 z-20 bg-white gap-1"
+                >
+                { children... }
+            </div>
+        </div>
+    </atom-dropdown>
+}
+
+templ DropdownOption(text string){
+    <dropdown-option
+        @click={fmt.Sprintf("selected = '%s'", text)}
+        class="hover:bg-cherry/5 p-3 rounded-lg hover:text-cherry transition-colors"
+        >{text}</dropdown-option>
+}
+
+templ Dropdown_Styles(xModel string){
+    {{ styles := []string{"Fine Line", "Blackwork"} }}
+
+    @Dropdown(
+        DropdownProps{
+            Label: "Estilos",
+            Placeholder: "Selecione um estilo",
+            AditionalClassenames: "text-nowrap bg-white border-cherry/25 border-1 rounded-xl px-4 py-2",
+        },
+        xModel,
+    ){
+        for _, text := range(styles){
+            @DropdownOption(text)
+        }
+    }
+}

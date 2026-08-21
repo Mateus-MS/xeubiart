@@ -1,0 +1,49 @@
+{
+    auto_https off
+}
+
+:80 {
+    # Shared UI library bundle
+    handle_path /static/ui/* {
+        root * ../frontend/ui/dist
+        file_server
+    }
+
+    # Static assets (css, fonts)
+    handle_path /static/* {
+        root * ../frontend/static
+        file_server
+    }
+
+    # Reverse proxy Angular WebSocket requests (Fixed typo/backtick)
+    @angular_ws {
+        header Connection *Upgrade*
+        header Upgrade websocket
+    }
+    reverse_proxy @angular_ws localhost:4200
+
+    # Tailwind CSS bundle
+    @tailwind {
+        path /tailwind.css
+    }
+    handle @tailwind {
+        root * ../frontend/tailwind/dist
+        file_server
+    }
+
+    # Backend for Frontend (Templ)
+    @templ {
+        method GET
+        path /
+        not header Upgrade *websocket*
+        not query token=*
+    }
+    handle @templ {
+        reverse_proxy localhost:8081
+    }
+
+    # Fallback to Angular local dev server
+    handle {
+        reverse_proxy localhost:4200
+    }
+}
