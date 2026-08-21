@@ -3,13 +3,7 @@ name: Publish Xeubiart Packages
 on:
   push:
     tags:
-      - 'v*'
-  workflow_dispatch: # <-- ADD THIS LINE
-    inputs:
-      version:
-        description: 'Version tag to publish (e.g., v1.0.0)'
-        required: true
-        default: 'v1.0.0'
+      - 'v*' # Only trigger on version tags like v1.0.0
 
 jobs:
   publish:
@@ -34,24 +28,27 @@ jobs:
 
       - name: Extract Version Tag
         id: vars
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        run: |
+          # Strips 'refs/tags/v' to leave just the version number (e.g., 1.0.0)
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Build and Push Templ Service
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: frontend/templ
           file: frontend/templ/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/xeubiart-frontend:${{ steps.vars.outputs.VERSION }}
-            ghcr.io/${{ github.repository_owner }}/xeubiart-frontend:latest
+            ghcr.io/${{ github.repository_owner }}/xeubiart-templ:${{ steps.vars.outputs.VERSION }}
+            ghcr.io/${{ github.repository_owner }}/xeubiart-templ:latest
 
       - name: Build and Push Caddy Service
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
-          context: infra/caddy
+          context: .
           file: infra/caddy/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/xeubiart-infra:${{ steps.vars.outputs.VERSION }}
-            ghcr.io/${{ github.repository_owner }}/xeubiart-infra:latest
+            ghcr.io/${{ github.repository_owner }}/xeubiart-caddy:${{ steps.vars.outputs.VERSION }}
+            ghcr.io/${{ github.repository_owner }}/xeubiart-caddy:latest
