@@ -1,6 +1,6 @@
 services:
   frontend:
-    image: ghcr.io/Mateus-MS/xeubiart-frontend:${IMAGE_TAG:-latest}
+    image: ghcr.io/mateus-ms/xeubiart-frontend:${IMAGE_TAG:-latest}
     container_name: frontend
     build:
       context: ../../frontend/templ
@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
 
   infra:
-    image: ghcr.io/Mateus-MS/xeubiart-infra:${IMAGE_TAG:-latest}
+    image: ghcr.io/mateus-ms/xeubiart-infra:${IMAGE_TAG:-latest}
     container_name: infra
     build:
       context: ../../
