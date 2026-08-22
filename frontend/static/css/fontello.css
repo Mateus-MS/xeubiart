@@ -56,5 +56,9 @@
 .icon-minus:before { content: '\e804'; } /* '' */
 .icon-right:before { content: '\e805'; } /* '' */
 .icon-left:before { content: '\e806'; } /* '' */
+.icon-mail:before { content: '\e807'; } /* '' */
 .icon-download:before { content: '\f02e'; } /* '' */
+.icon-facebook:before { content: '\f09a'; } /* '' */
+.icon-instagram:before { content: '\f16d'; } /* '' */
+.icon-whatsapp:before { content: '\f232'; } /* '' */
 .icon-clone:before { content: '\f24d'; } /* '' */

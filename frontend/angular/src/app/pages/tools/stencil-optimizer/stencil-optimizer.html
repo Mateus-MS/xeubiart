@@ -31,55 +31,122 @@
             <div [class.hidden]="selectedTab !== 'Imagens'" 
                 class="h-fit lg:block lg:h-full lg:overflow-y-auto py-1 px-2 grid-cards">
                 @for (entry of uploadedImages; track entry[0]) {
-                    <ui-card additionalClasses="w-full h-fit mb-7 last:mb-0 grid grid-cols-[30%_1fr] p-4 gap-3">
-                        <div class="w-full aspect-square rounded-lg overflow-hidden">
+                    <ui-card additionalClasses="w-full h-fit mb-7 last:mb-0 grid grid-cols-[30%_minmax(0,1fr)] p-3 sm:p-4 gap-3 sm:gap-4">
+    
+                        <!-- Thumbnail com Botão de Crop -->
+                        <div class="w-full aspect-square rounded-lg overflow-hidden relative group cursor-pointer" (click)="openCropModal(entry[0])">
                             <img [src]="entry[1].url" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white mb-1">
+                                    <path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/>
+                                </svg>
+                                <span class="text-white font-bold text-sm hidden sm:block">Recortar</span>
+                            </div>
                         </div>
 
-                        <div class="w-full h-full flex flex-col justify-between">
-                            <div>
-                                <div class="flex justify-between items-center font-bold text-text mb-2">
-                                    <div class="flex items-center">
-                                        <span class="text-md">Tamanhos</span>
-                                        <span class="ml-2 bg-muted/50 text-white text-[.6rem] px-2 py-.5 rounded-full">{{entry[1].sizes.length}}</span>
-                                    </div>
-                                    <div class="flex gap-2">
-                                        <ui-button (click)="deleteFile(entry[0])" type="light" additionalClasses="w-fit !p-1 aspect-square text-sm"><i class="icon-trash"></i></ui-button>
-                                    </div>
+                        <!-- Container de Tamanhos -->
+                        <div class="w-full h-full flex flex-col min-w-0">
+                            
+                            <!-- Cabeçalho das Colunas -->
+                            <div class="flex items-center gap-1 sm:gap-2 px-1 sm:px-2 mb-2 text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                                <span class="flex-1 truncate">Tamanho</span>
+                                <div class="w-8 sm:w-9 flex justify-center shrink-0" title="Espelhar Horizontalmente">
+                                    ↔
                                 </div>
+                                <div class="w-8 sm:w-9 flex justify-center shrink-0" title="Espelhar Verticalmente">
+                                    ↕
+                                </div>
+                                <div class="w-6 sm:w-7 shrink-0"></div> <!-- Espaço reservado para o botão de deletar -->
+                            </div>
 
-                                <div class="flex flex-wrap gap-1.5 items-center">
-                                    @for (size of entry[1].sizes; track $index) {
-                                        <div class="inline-flex items-center bg-cherry text-white rounded-full px-2 py-1 font-bold">
+                            <!-- Lista de Tamanhos -->
+                            <div class="flex flex-col gap-1 w-full">
+                                @for (size of entry[1].sizes; track $index) {
+                                    <div class="group flex items-center justify-between gap-1 sm:gap-2 px-1 sm:px-2 py-1.5 rounded-xl hover:bg-black/5 transition-colors w-full">
+                                        
+                                        <!-- Input e Unidade -->
+                                        <div class="flex items-center gap-1.5 sm:gap-3 flex-1 min-w-0">
                                             <input 
                                                 type="number" 
-                                                [(ngModel)]="entry[1].sizes[$index]"
+                                                [(ngModel)]="entry[1].sizes[$index].value"
                                                 (ngModelChange)="onSizeChange()"
-                                                class="bg-transparent w-8 text-white text-[16px] text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                class="w-10 sm:w-16 min-w-0 bg-white border border-gray-200 rounded-lg px-1 sm:px-2 py-1 sm:py-1.5 text-center focus:outline-none focus:border-gray-400 text-sm transition-colors"
                                             />
-                                            <button 
-                                                type="button"
-                                                (click)="deleteSize(entry[0], $index)" 
-                                                class="w-4 h-4 rounded-full bg-black/20 hover:bg-black/40 text-white flex items-center justify-center text-xs font-bold leading-none cursor-pointer transition-colors"
-                                            >
-                                                &times;
-                                            </button>
+                                            <span class="text-xs sm:text-sm text-gray-600">cm</span>
                                         </div>
-                                    }
-                                    <ui-button (click)="addNewSize(entry[0])" type="light" additionalClasses="w-fit !px-2 !py-1 text-sm">
-                                        <i class="icon-plus"></i>
-                                    </ui-button>
-                                </div>
+
+                                        <!-- Botão Flip X -->
+                                        <button 
+                                            type="button"
+                                            (click)="toggleFlip(entry[0], $index, 'x')"
+                                            class="w-8 h-8 sm:w-9 sm:h-9 shrink-0 rounded-lg flex items-center justify-center transition-colors border"
+                                            [class.bg-cherry]="entry[1].sizes[$index].flipX"
+                                            [class.border-transparent]="entry[1].sizes[$index].flipX"
+                                            [class.text-white]="entry[1].sizes[$index].flipX"
+                                            [class.bg-white]="!entry[1].sizes[$index].flipX"
+                                            [class.border-gray-200]="!entry[1].sizes[$index].flipX"
+                                            [class.text-gray-500]="!entry[1].sizes[$index].flipX"
+                                            title="Espelhar Horizontalmente"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M12 2v20"/><path d="M8 8l-4 4 4 4"/><path d="M16 8l4 4-4 4"/>
+                                            </svg>
+                                        </button>
+
+                                        <!-- Botão Flip Y -->
+                                        <button 
+                                            type="button"
+                                            (click)="toggleFlip(entry[0], $index, 'y')"
+                                            class="w-8 h-8 sm:w-9 sm:h-9 shrink-0 rounded-lg flex items-center justify-center transition-colors border"
+                                            [class.bg-cherry]="entry[1].sizes[$index].flipY"
+                                            [class.border-transparent]="entry[1].sizes[$index].flipY"
+                                            [class.text-white]="entry[1].sizes[$index].flipY"
+                                            [class.bg-white]="!entry[1].sizes[$index].flipY"
+                                            [class.border-gray-200]="!entry[1].sizes[$index].flipY"
+                                            [class.text-gray-500]="!entry[1].sizes[$index].flipY"
+                                            title="Espelhar Verticalmente"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M2 12h20"/><path d="M8 8l4-4 4 4"/><path d="M8 16l4 4 4-4"/>
+                                            </svg>
+                                        </button>
+
+                                        <!-- Botão Deletar (Aparece no Hover na web / Sempre na área interativa mobile) -->
+                                        <button 
+                                            type="button"
+                                            (click)="deleteSize(entry[0], $index)" 
+                                            class="w-6 h-6 sm:w-7 sm:h-7 shrink-0 flex items-center justify-center text-gray-400 hover:text-gray-700 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity rounded-md"
+                                            title="Remover Tamanho"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M18 6L6 18M6 6l12 12"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                }
                             </div>
+
+                            <!-- Botão Adicionar Tamanho -->
+                            <button 
+                                type="button"
+                                (click)="addNewSize(entry[0])" 
+                                class="w-full mt-2 py-2 sm:py-2.5 px-2 sm:px-4 rounded-xl border border-dashed border-gray-300 text-gray-500 text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-black/5 hover:border-gray-400 transition-colors"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                <span class="truncate">Adicionar tamanho</span>
+                            </button>
+                            
                         </div>
                     </ui-card>
                 }
             </div>
 
             <div [class.hidden]="selectedTab !== 'Pré-visualização'" class="py-1 h-full lg:block">
+                <!-- Mantive todo o interior inalterado para poupar espaço (mantém tudo que tinhas na view do packing e download) -->
                 <ui-card additionalClasses="w-full h-full flex flex-col gap-4 p-6 items-center">
                     
-                    <!-- Preview Header with Active Pagination -->
                     <div class="w-full justify-between flex gap-2 items-center">
                         <span class="text-sm text-muted text-[.60rem]">Formato A4 · 210 × 297mm</span>
 
@@ -106,7 +173,6 @@
                         </div>
                     </div>
                     
-                    <!-- A4 Canvas Area -->
                     <div #previewContainer class="relative lg:w-[unset] flex-1 min-h-0 aspect-[210/297] rounded-lg bg-white shadow-xl ring-1 ring-cherry/15 overflow-hidden w-full max-h-full">
                         @for (item of currentPageItems; track item.id) {
                             <div 
@@ -120,13 +186,17 @@
                                     <img 
                                         [src]="item.url" 
                                         class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 object-contain max-w-none"
+                                        [class.-scale-x-100]="item.flipX"
+                                        [class.-scale-y-100]="item.flipY"
                                         [style.width.px]="item.height * (previewContainer.clientWidth / 210)"
                                         [style.height.px]="item.width * (previewContainer.clientWidth / 210)"
                                     />
                                 } @else {
                                     <img 
                                         [src]="item.url" 
-                                        class="w-full h-full object-contain pointer-events-none" 
+                                        class="w-full h-full object-contain pointer-events-none transition-transform" 
+                                        [class.-scale-x-100]="item.flipX"
+                                        [class.-scale-y-100]="item.flipY"
                                     />
                                 }
 
@@ -137,7 +207,6 @@
                         }
                     </div>
                     
-                    <!-- Preview Footer -->
                     <div class="w-full flex place-content-between text-[.70rem] [&_strong]:text-cherry text-muted [&_strong]:font-black">
                         <span class="block">Aproveitamento: <strong>{{ currentEfficiency }}%</strong></span>
                         <span class="block"><strong>{{ allItems.length }}</strong> artes empacotadas</span>
@@ -173,10 +242,9 @@
             </ui-file-uploader>
         </div>
     }
-    </div>
+</div>
 <ui-footer></ui-footer>
 
-<!-- Mobile Action Bar -->
 <div class="sticky bottom-0 w-full h-[70px] bg-cream border-t border-cherry/25 lg:hidden flex justify-center gap-3 px-6 py-3 z-50">
     <div class="relative w-fit h-full">
         <input 
@@ -203,3 +271,76 @@
         </ui-button>
     }
 </div>
+
+
+<!-- ====== MODAL DE RECORTE (CROP) ====== -->
+@if (isCropping) {
+    <div class="fixed inset-0 bg-black/90 z-[100] flex flex-col items-center justify-center p-4 lg:p-10">
+        <div class="bg-cream rounded-xl p-5 w-full max-w-5xl flex flex-col gap-4 shadow-2xl max-h-full">
+            <div class="flex justify-between items-center shrink-0">
+                <h2 class="text-xl font-bold text-cherry">Recortar Imagem</h2>
+                <button (click)="closeCropModal()" class="text-4xl text-muted hover:text-text transition-colors leading-none -mt-2">&times;</button>
+            </div>
+            
+            <div class="relative w-full flex-1 overflow-hidden flex items-center justify-center bg-gray-200/50 rounded-lg min-h-0 select-none p-4">
+                <div class="relative w-fit h-fit max-w-full max-h-full mx-auto shadow-xl">
+                    
+                    <img #cropImg 
+                         [src]="cropImgUrl" 
+                         (load)="initCropBox(cropImg)" 
+                         class="block max-w-full max-h-[60vh] lg:max-h-[65vh]" 
+                         draggable="false">
+                         
+                    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                        <!-- Sombra Escura que preenche o exterior (dim) -->
+                        <div class="absolute pointer-events-auto cursor-move border-2 border-white flex flex-col"
+                             style="box-shadow: 0 0 0 9999px rgba(0,0,0,0.6);"
+                             [style.left.px]="cropBox.x"
+                             [style.top.px]="cropBox.y"
+                             [style.width.px]="cropBox.w"
+                             [style.height.px]="cropBox.h"
+                             (mousedown)="onCropPointerDown($event, 'move')"
+                             (touchstart)="onCropPointerDown($event, 'move')">
+                             
+                            <!-- Grelha -->
+                            <div class="w-full h-1/3 border-b border-white/40 flex-1"></div>
+                            <div class="w-full h-1/3 border-b border-white/40 flex-1"></div>
+                            <div class="w-full h-1/3 flex-1"></div>
+                            <div class="absolute inset-0 flex">
+                                <div class="h-full w-1/3 border-r border-white/40"></div>
+                                <div class="h-full w-1/3 border-r border-white/40"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pegas para arrastar/esticar (Handles) -->
+                    <div class="absolute w-5 h-5 bg-cherry border-[3px] border-white rounded-full cursor-nwse-resize z-10 -translate-x-1/2 -translate-y-1/2"
+                         [style.left.px]="cropBox.x"
+                         [style.top.px]="cropBox.y"
+                         (mousedown)="onCropPointerDown($event, 'tl')"
+                         (touchstart)="onCropPointerDown($event, 'tl')"></div>
+                    <div class="absolute w-5 h-5 bg-cherry border-[3px] border-white rounded-full cursor-nesw-resize z-10 -translate-x-1/2 -translate-y-1/2"
+                         [style.left.px]="cropBox.x + cropBox.w"
+                         [style.top.px]="cropBox.y"
+                         (mousedown)="onCropPointerDown($event, 'tr')"
+                         (touchstart)="onCropPointerDown($event, 'tr')"></div>
+                    <div class="absolute w-5 h-5 bg-cherry border-[3px] border-white rounded-full cursor-nesw-resize z-10 -translate-x-1/2 -translate-y-1/2"
+                         [style.left.px]="cropBox.x"
+                         [style.top.px]="cropBox.y + cropBox.h"
+                         (mousedown)="onCropPointerDown($event, 'bl')"
+                         (touchstart)="onCropPointerDown($event, 'bl')"></div>
+                    <div class="absolute w-5 h-5 bg-cherry border-[3px] border-white rounded-full cursor-nwse-resize z-10 -translate-x-1/2 -translate-y-1/2"
+                         [style.left.px]="cropBox.x + cropBox.w"
+                         [style.top.px]="cropBox.y + cropBox.h"
+                         (mousedown)="onCropPointerDown($event, 'br')"
+                         (touchstart)="onCropPointerDown($event, 'br')"></div>
+                </div>
+            </div>
+            
+            <div class="flex justify-end gap-3 shrink-0">
+                <ui-button type="light" (click)="closeCropModal()">Cancelar</ui-button>
+                <ui-button type="heavy" (click)="applyCrop()">Aplicar Recorte</ui-button>
+            </div>
+        </div>
+    </div>
+}
