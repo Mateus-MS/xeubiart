@@ -31,7 +31,7 @@
         not query token=*
     }
     handle @templ {
-        reverse_proxy templ:8081
+        reverse_proxy frontend:8081
     }
 
     # Fallback: Serve the pre-compiled Angular SPA static files
