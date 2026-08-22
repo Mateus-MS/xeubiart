@@ -57,6 +57,8 @@
 .icon-right:before { content: '\e805'; } /* '' */
 .icon-left:before { content: '\e806'; } /* '' */
 .icon-mail:before { content: '\e807'; } /* '' */
+.icon-resize-horizontal:before { content: '\e808'; } /* '' */
+.icon-resize-vertical:before { content: '\e809'; } /* '' */
 .icon-download:before { content: '\f02e'; } /* '' */
 .icon-facebook:before { content: '\f09a'; } /* '' */
 .icon-instagram:before { content: '\f16d'; } /* '' */

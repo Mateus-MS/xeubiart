@@ -65,7 +65,7 @@ export class UiFooter extends LitElement {
         { 
             Label: 'xeubiart_', 
             RedirectTo: 'https://www.instagram.com/xeubiart_/', 
-            Icon: '\uF16D' 
+            Icon: 'icon-instagram' 
         },
         { 
             Label: 'xeubiart', 
@@ -75,17 +75,17 @@ export class UiFooter extends LitElement {
         { 
             Label: 'xeubiart', 
             RedirectTo: 'https://www.facebook.com/xeubiart.comercial', 
-            Icon: '\uF09A' 
+            Icon: 'icon-facebook' 
         },
         { 
             Label: 'hi@xeubiart.com', 
             RedirectTo: 'mailto:hi@xeubiart.com', 
-            Icon: '\uE807' 
+            Icon: 'icon-mail' 
         },
         { 
             Label: '+351 910 338 381', 
             RedirectTo: 'https://wa.me/351910338381', 
-            Icon: '\uF232' 
+            Icon: 'icon-whatsapp' 
         },
     ];
 
@@ -126,7 +126,7 @@ export class UiFooter extends LitElement {
                     class="border-cherry/75 border text-muted rounded-full px-4 py-2 text-sm/4 flex items-center w-fit gap-2 transition-colors duration-350 hover:bg-cherry/15 hover:border-cherry"
                     href=${item.RedirectTo}
                 >
-                    <span class="font-icon">${item.Icon}</span>
+                    <i class=${item.Icon}></i>
                     <span>${item.Label}</span>
                 </a>
                 `
