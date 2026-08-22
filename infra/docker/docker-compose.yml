@@ -10,7 +10,7 @@ services:
       - app-net
 
   frontend:
-    image: ghcr.io/mateus-ms/xeubiart-frontend:${IMAGE_TAG:-latest}
+    image: ghcr.io/mateus-ms/xeubiart-frontend:latest
     container_name: frontend
     build:
       context: ../../frontend/templ
@@ -20,7 +20,7 @@ services:
     restart: unless-stopped
 
   infra:
-    image: ghcr.io/mateus-ms/xeubiart-infra:${IMAGE_TAG:-latest}
+    image: ghcr.io/mateus-ms/xeubiart-infra:latest
     container_name: infra
     build:
       context: ../../
