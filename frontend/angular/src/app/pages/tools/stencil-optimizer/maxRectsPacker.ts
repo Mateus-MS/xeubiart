@@ -5,6 +5,8 @@ export interface PackingItem {
     width: number;
     height: number;
     sizeCm: number;
+    flipX?: boolean;
+    flipY?: boolean;
 }
 
 export interface PackedItem extends PackingItem {

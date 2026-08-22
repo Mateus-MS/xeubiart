@@ -80,7 +80,7 @@ export class UiFooter extends LitElement {
         { 
             Label: 'hi@xeubiart.com', 
             RedirectTo: 'mailto:hi@xeubiart.com', 
-            Icon: '\uE803' 
+            Icon: '\uE807' 
         },
         { 
             Label: '+351 910 338 381', 
