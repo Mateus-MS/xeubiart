@@ -1,4 +1,14 @@
 services:
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel run --url http://infra:80
+    environment:
+      - TUNNEL_TOKEN=${CLOULDFLARE_TUNNEL_ID}
+    networks:
+      - app-net
+
   frontend:
     image: ghcr.io/mateus-ms/xeubiart-frontend:${IMAGE_TAG:-latest}
     container_name: frontend
