@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     command: tunnel run --url http://infra:80
     environment:
-      - TUNNEL_TOKEN=${CLOULDFLARE_TUNNEL_ID}
+      - TUNNEL_TOKEN=${CLOULDFLARE_TUNNEL_TOKEN}
     networks:
       - app-net
 
