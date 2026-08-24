@@ -59,8 +59,13 @@
 .icon-mail:before { content: '\e807'; } /* '' */
 .icon-resize-horizontal:before { content: '\e808'; } /* '' */
 .icon-resize-vertical:before { content: '\e809'; } /* '' */
+.icon-check:before { content: '\e80a'; } /* '' */
+.icon-eye:before { content: '\e80b'; } /* '' */
+.icon-eye-off:before { content: '\e80c'; } /* '' */
 .icon-download:before { content: '\f02e'; } /* '' */
 .icon-facebook:before { content: '\f09a'; } /* '' */
+.icon-arrow-down:before { content: '\f107'; } /* '' */
 .icon-instagram:before { content: '\f16d'; } /* '' */
 .icon-whatsapp:before { content: '\f232'; } /* '' */
 .icon-clone:before { content: '\f24d'; } /* '' */
+.icon-hand-peace-o:before { content: '\f25b'; } /* '' */

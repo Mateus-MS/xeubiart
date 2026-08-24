@@ -8,3 +8,6 @@ export * from './components/atoms/title';
 export * from './components/atoms/button';
 export * from './components/atoms/tab-switcher';
 export * from './components/atoms/card';
+export * from './components/atoms/input';
+export * from './components/atoms/dropdown';
+export * from './components/atoms/toggler';

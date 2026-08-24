@@ -1,0 +1,53 @@
+@if(isOpen()){
+    <div
+        (click)="close()" 
+        class="fixed inset-0 w-full h-full bg-black/25 backdrop-blur-xs flex justify-end"
+    >
+        <div 
+            (click)="$event.stopPropagation()"    
+            class="w-[max(40%,500px)] h-full right-0 top-0 bg-cream shadow-[-20px_0_60px_rgba(0,0,0,0.18)] flex flex-col"
+        >
+            <!-- Header -->
+            <div class="gap-1 px-8 py-4 shrink-0 bg-white bg-white border-b-cherry/25 border-b-1 font-contrast">
+                <span class="text-xl tracking-widest text-cherry">Criando trabalho</span>
+            </div>
+
+            <!-- Body -->
+            <div class="h-full grow w-full min-h-0 overflow-y-auto px-8 py-8 flex flex-col gap-6">
+                <div class="flex gap-4">
+                    <ui-input 
+                        class="w-full"
+                        label="Titulo do trabalho"
+                        [(value)]="title"
+                    ></ui-input>
+                    <ui-dropdown 
+                        class="w-full"
+                        label="Estilos" 
+                        placeholder="Selecionar um estilo"
+                        [(value)]="style"
+                        [options]="tattooStyles"
+                    >
+                    </ui-dropdown>
+                </div>
+                <ui-input 
+                    multiline 
+                    placeholder="Insira uma descrição para o projeto." 
+                    label="Descrição"
+                    [(value)]="description"
+                ></ui-input>
+                <div>
+                    <h2 class="text-xs font-semibold">Fotos do trabalho</h2>
+                    <span class="text-muted text-xs block">Clique em "Capa" para definir a foto principal deste trabalho.</span>
+                    <ui-file-uploader class="mt-2 block"></ui-file-uploader>
+                </div>
+                <app-visibility-toggler></app-visibility-toggler>
+            </div>
+
+            <!-- Footer/Actions -->
+            <div class="shrink-0 bg-white border-t-1 border-t-cherry/25 flex justify-between px-8 py-4">
+                <ui-button type="light">Cancelar</ui-button>
+                <ui-button type="heavy" disabled><i class="icon-check"></i> Criar novo trabalho</ui-button>
+            </div>
+        </div>
+    </div>
+}

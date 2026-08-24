@@ -19,6 +19,7 @@ export const LightDomMixin = <T extends Constructor<LitElement>>(superClass: T) 
         connectedCallback() {
             if (this.slottedChildren.length === 0) {
                 this.slottedChildren = Array.from(this.childNodes);
+                this.replaceChildren();
             }
             super.connectedCallback();
         }
