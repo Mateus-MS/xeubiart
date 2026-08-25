@@ -38,7 +38,9 @@
                 <div>
                     <h2 class="text-xs font-semibold">Fotos do trabalho</h2>
                     <span class="text-muted text-xs block">Clique em "Capa" para definir a foto principal deste trabalho.</span>
-                    <ui-file-uploader class="mt-2 block"></ui-file-uploader>
+                    <div >
+                        <ui-file-uploader (files-changed)="onUploadFile($event)" class="mt-2 block"></ui-file-uploader>
+                    </div>
                 </div>
                 <app-visibility-toggler></app-visibility-toggler>
             </div>

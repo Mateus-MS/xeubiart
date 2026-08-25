@@ -236,8 +236,7 @@
         <div class="w-full lg:max-w-[60%] h-full flex items-center justify-center mx-auto">
             <ui-file-uploader 
                 class="lg:w-full w-[80%] mt-4" 
-                (file-selected)="onFilesSelected($event)"
-                (change)="onFilesSelected($event)">
+                (files-uploaded)="onFilesSelected($event)">
             </ui-file-uploader>
         </div>
     }

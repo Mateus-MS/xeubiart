@@ -52,4 +52,8 @@ export class ItemPopup {
 	toggle() {
 		this.isOpen.update(value => !value);
 	}
+
+	onUploadFile(event: Event){
+		console.log(event)
+	}
 }
