@@ -13,11 +13,12 @@
             </div>
 
             <!-- Body -->
-            <div class="h-full grow w-full min-h-0 overflow-y-auto px-8 py-8 flex flex-col gap-6">
+            <div class="h-full grow w-full min-h-0 overflow-y-auto px-8 py-8 flex flex-col gap-5">
                 <div class="flex gap-4">
                     <ui-input 
                         class="w-full"
                         label="Titulo do trabalho"
+                        placeholder="Insira um titulo para o projeto."
                         [(value)]="title"
                     ></ui-input>
                     <ui-dropdown 
@@ -37,10 +38,8 @@
                 ></ui-input>
                 <div>
                     <h2 class="text-xs font-semibold">Fotos do trabalho</h2>
-                    <span class="text-muted text-xs block">Clique em "Capa" para definir a foto principal deste trabalho.</span>
-                    <div >
-                        <ui-file-uploader (files-changed)="onUploadFile($event)" class="mt-2 block"></ui-file-uploader>
-                    </div>
+                    <span class="text-muted text-xs block mb-4">Clique em "Capa" para definir a foto principal deste trabalho.</span>
+                    <app-file-upload-wrapper></app-file-upload-wrapper>
                 </div>
                 <app-visibility-toggler></app-visibility-toggler>
             </div>

@@ -1,5 +1,5 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, viewChild } from '@angular/core';
-import { ItemPopup } from './frags/item-popup/item-popup';
+import { ItemPopup } from './components/item-popup/item-popup';
 
 @Component({
 	selector: 'app-gallery',

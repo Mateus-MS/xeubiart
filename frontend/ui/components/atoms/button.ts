@@ -38,7 +38,7 @@ export class UiButton extends LightDomMixin(LitElement) {
         return html`
             <button 
                 @click="${this.handleGoTo}"
-                class="${this.styles.classes} ${this.classes} cursor-pointer flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:shadow-none transition-all" .disabled=${this.disabled}>
+                class="${this.styles.classes} ${this.classes} cursor-pointer flex items-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:shadow-none transition-all" .disabled=${this.disabled}>
                 ${this.slottedChildren.length > 0 
                     ? this.renderSlottedChildren()
                     : ''}

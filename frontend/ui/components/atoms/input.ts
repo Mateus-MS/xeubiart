@@ -9,6 +9,7 @@ export class UiInput extends LitElement {
     @property({ type: String }) label: string = '';
     @property({ type: Boolean }) multiline = false;
     @property({ type: String }) value = '';
+    @property({ type: String }) classes = '';
 
     protected createRenderRoot() {
         return this;
@@ -80,10 +81,12 @@ export class UiInput extends LitElement {
 
     render() {
         return html`
-            ${this.renderLabel()}
-            ${this.multiline
-                ? this.renderTextarea()
-                : this.renderInput()}
+            <div class="${this.classes}">
+                ${this.renderLabel()}
+                ${this.multiline
+                    ? this.renderTextarea()
+                    : this.renderInput()}
+            </div>
         `;
     }
 }

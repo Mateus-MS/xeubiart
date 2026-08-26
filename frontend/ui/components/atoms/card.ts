@@ -8,6 +8,7 @@ export type CardType = 'white';
 @customElement('ui-card')
 export class UiCard extends LightDomMixin(LitElement) {
     @property({ type: String }) type: CardType = 'white';
+    @property({ type: String }) classes = '';
 
     private styles = new StyleController<string>(this, {
         base: ['block', 'w-full', 'shadow-[0_1px_5px_rgba(139,26,43,0.4)]', 'rounded-2xl', 'border', 'border-cherry/10'],
@@ -19,9 +20,11 @@ export class UiCard extends LightDomMixin(LitElement) {
 
     render() {
         return html`
-            ${this.slottedChildren.length > 0 
-                ? this.renderSlottedChildren()
-                : ''}
+            <div class="${this.styles.classes} ${this.classes}">
+                ${this.slottedChildren.length > 0 
+                    ? this.renderSlottedChildren()
+                    : ''}
+            </div>
         `;
     }
 }

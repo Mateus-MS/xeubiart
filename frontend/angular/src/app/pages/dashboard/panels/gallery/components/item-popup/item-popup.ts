@@ -1,6 +1,7 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, effect, signal } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, effect, OnDestroy, signal } from '@angular/core';
 import { VisibilityToggler } from '../visibility-toggler/visibility-toggler';
 import { UiInputDirective } from '../../../../../../directives/uiInputDirective';
+import { FileUploadWrapper } from '../file-upload-wrapper/file-upload-wrapper';
 
 export const TATTOO_STYLES = [
     { value: 'fine-line', label: 'Fine Line' },
@@ -14,7 +15,7 @@ export type TattooStyle = typeof TATTOO_STYLES[number]['value'];
 
 @Component({
 	selector: 'app-item-popup',
-	imports: [VisibilityToggler, UiInputDirective],
+	imports: [VisibilityToggler, UiInputDirective, FileUploadWrapper],
 	templateUrl: './item-popup.html',
 	styleUrl: './item-popup.css',
 	schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -26,6 +27,8 @@ export class ItemPopup {
 	title = signal('');
 	style = signal<TattooStyle | ''>('');
 	description = signal('');
+
+	
 
 	constructor() {
 		effect(() => {
@@ -51,9 +54,5 @@ export class ItemPopup {
 
 	toggle() {
 		this.isOpen.update(value => !value);
-	}
-
-	onUploadFile(event: Event){
-		console.log(event)
 	}
 }

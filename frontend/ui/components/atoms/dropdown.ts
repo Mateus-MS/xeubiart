@@ -258,6 +258,7 @@ export class UiDropdown extends LightDomMixin(LitElement) {
                         transition-opacity
                         duration-150
                         ease-out
+                        z-50
 
                         list-none flex flex-col
                         p-2 rounded-xl

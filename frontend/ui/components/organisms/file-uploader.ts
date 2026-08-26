@@ -38,7 +38,7 @@ export class FileUploader extends LightDomMixin(LitElement) {
   	render() {
 		return html`
 			<div
-				class="flex flex-col gap-3 cursor-pointer"
+				class="flex flex-col gap-3 cursor-pointer hover:shadow-[0_8px_22px_rgba(139,26,43,0.18)] transition-all"
 				@click="${this._handleClick}"
 				@drop="${this._handleDrop}"
 				@dragover="${this._handleDragOver}"
