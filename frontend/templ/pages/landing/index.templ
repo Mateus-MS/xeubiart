@@ -17,12 +17,15 @@ templ landing(){
         IncludeFooter: true,
         IncludeFooterCTA: true,
     }){
-        @frags.Hero()
-        <ui-divider class="block bg-cream py-3 px-8"></ui-divider>
-        @frags.About()
-        @frags.Gallery()
-        @frags.Social()
-        @frags.Steps()
+        <div class="[&>section:nth-of-type(odd)]:bg-cream [&>section:nth-of-type(even)]:bg-text">
+            @frags.Hero()
+            <ui-divider class="block bg-cream py-3 px-8"></ui-divider>
+            @frags.About()
+            // Temporaly disabled 
+            // @frags.Gallery()
+            @frags.Social()
+            @frags.Steps()
+        </div>
     }
 }
 

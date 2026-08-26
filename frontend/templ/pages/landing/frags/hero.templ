@@ -1,7 +1,7 @@
 package frags
 
 templ Hero(){
-    <section-hero class="flex lg:grid lg:grid-cols-2 lg:place-items-center lg:py-15 lg:px-35 lg:gap-[20%] flex-col-reverse gap-8 p-10 h-fit bg-cream">
+    <section class="flex lg:grid lg:grid-cols-2 lg:place-items-center lg:py-15 lg:px-35 lg:gap-[20%] flex-col-reverse gap-8 p-10 h-fit">
         <div class="h-fit flex flex-col gap-4">
             <ui-eyebrow type="sparkly">Tatuadora artística</ui-eyebrow>
             <ui-title level="h2" classes="text-[clamp(2.6rem,10vw,3.5rem)]/12 mt-5 text-cherry [&>em]:text-cherry">Delicadeza<br> <em>que marca.</em></ui-title>
@@ -26,12 +26,17 @@ templ Hero(){
                 </div>
             </div>
         </div>
-        <div class="flex w-full h-fit p-10">
-            <div class="bg-green-500 w-full aspect-[3/4] max-w-[430px] relative">
+        <div class="flex w-full h-fit p-9">
+            <div 
+                 class="
+                    w-full aspect-[3/4] max-w-[430px] relative
+                    bg-[url(/static/img/pereco_hero.png)] bg-center bg-contain bg-no-repeat
+                 "
+            >
 
                 // Spinning disk
                 <div class="grid place-items-center w-[75px] aspect-square rounded-full bg-cherry text-white text-center uppercase text-[.65rem] tracking-widest absolute -right-[20px] -bottom-[20px] animate-[spin_15s_linear_infinite]">Arte<br>na<br>pele ✦</div>
             </div>
         </div>
-    </section-hero>
+    </section>
 }
