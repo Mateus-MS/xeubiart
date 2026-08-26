@@ -181,13 +181,14 @@ export class UiFooter extends LitElement {
                             © 2026 <strong class="text-cherry">Xeubiart</strong> — Todos os direitos reservados. Feito com
                             <strong class="animate-pulse">🍒</strong> em Santo-Tirso - Porto.
                         </p>
+                        <!-- Temporaly disabled
                         <div class="text-white flex items-center justify-center gap-2">
                             <a href="/legal/privacy" class="text-sm text-muted hover:text-white transition-colors">Privacidade</a>
                             <span class="text-cherry text-sm">✦</span>
                             <a href="/legal/terms" class="text-sm text-muted hover:text-white transition-colors">Termos</a>
                             <span class="text-cherry text-sm">✦</span>
                             <a href="/legal/cookies" class="text-sm text-muted hover:text-white transition-colors">Cookies</a>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </footer>

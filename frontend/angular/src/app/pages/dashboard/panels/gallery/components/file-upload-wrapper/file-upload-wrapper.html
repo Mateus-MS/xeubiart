@@ -1,57 +1,70 @@
 <div>
-    @if(this.uploadedFiles.length === 0){
-        <ui-file-uploader (files-uploaded)="onUploadFile($event)" class="mt-2 block"></ui-file-uploader>
-    }
-    @else{
-        <div
-            class="grid grid-cols-3 gap-4"
-        >
-            @for (item of uploadedFiles; track item.file.name; let i = $index) {
-                <div
-                    class="hover:shadow-[0_8px_22px_rgba(139,26,43,0.18)] hover:scale-102 transition-all duration-300 cursor-pointer group w-full aspect-square overflow-hidden rounded-lg relative"
-                    [class]="$index === 0 ? 'border-2 border-cherry' : ''"
-                >
-                    <img [src]="item.url"/>
+    <ui-file-uploader 
+        (files-uploaded)="onUploadFile($event)" 
+        class="mt-2 block"
+        #uploader
+        [class.hidden]="uploadedFiles.length > 0"
+    ></ui-file-uploader>
 
-                    <!-- Overlay -->
-                    <div class="inset-0 absolute w-full h-full text-xs">
-                        <!-- Photo index displayer -->
-                        @if($index === 0){
-                            <div class="absolute size-[20px] !w-fit px-2 py-1 left-2 text-[.6rem] top-2 rounded-full bg-cherry text-white font-bold uppercase">Capa</div>
-                        }
-                        <div class="absolute size-[20px] right-2 top-2 rounded-full bg-black/50 grid place-content-center text-white font-bold text-sm">{{i + 1}}</div>
+    <div
+        class="grid grid-cols-3 gap-4"
+        [class.hidden]="uploadedFiles.length === 0"
+    >
+        @for (item of uploadedFiles; track item.id; let i = $index) {
+            <div
+                class="hover:shadow-[0_8px_22px_rgba(139,26,43,0.18)] hover:scale-102 transition-all duration-300 cursor-pointer group w-full aspect-square overflow-hidden rounded-lg relative"
+                [class]="$index === 0 ? 'border-2 border-cherry' : ''"
+                [class.opacity-50]="draggedIndex === i"
+                
+                draggable="true"
+                (dragstart)="onDragStart(i)"
+                (dragover)="onDragOver($event)"
+                (drop)="onDrop(i)"
+                (dragend)="onDragEnd()"
+            >
+                <img [src]="item.url"/>
 
-                        <!-- Hover part -->
-                        <div class="absolute w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                            <!-- shadow -->
-                            <div class="absolute bottom-0 w-full h-[100px] bg-linear-to-t from-black/25 to-transparent"></div>
+                <!-- Overlay -->
+                <div class="inset-0 absolute w-full h-full text-xs">
+                    <!-- Photo index displayer -->
+                    @if($index === 0){
+                        <div class="absolute size-[20px] !w-fit px-2 py-1 left-2 text-[.6rem] top-2 rounded-full bg-cherry text-white font-bold uppercase">Capa</div>
+                    }
+                    <div class="absolute size-[20px] right-2 top-2 rounded-full bg-black/50 grid place-content-center text-white font-bold text-sm">{{i + 1}}</div>
 
-                            <!-- Set as cover button -->
-                            @if($index !== 0){
-                                <div
-                                    class="absolute left-2 bottom-2 bg-white rounded-full px-[7px] py-[3px] flex gap-1"
-                                >
-                                    <i class="icon-star-empty"></i> Capa
-                                </div>
-                            }
+                    <!-- Hover part -->
+                    <div class="absolute w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <!-- shadow -->
+                        <div class="absolute bottom-0 w-full h-[100px] bg-linear-to-t from-black/25 to-transparent"></div>
 
-                            <!-- Delete button -->
+                        <!-- Set as cover button -->
+                        @if($index !== 0){
                             <div
-                                class="absolute right-2 bottom-2 bg-cherry rounded-full px-[7px] py-[3px] flex gap-1 text-white"
+                                class="absolute left-2 bottom-2 bg-white rounded-full px-[7px] py-[3px] flex gap-1"
+                                (click)="setAsCover($index)"
                             >
-                                <i class="icon-trash"></i> Delete
+                                <i class="icon-star-empty"></i> Capa
                             </div>
+                        }
+
+                        <!-- Delete button -->
+                        <div
+                            class="absolute right-2 bottom-2 bg-cherry rounded-full px-[7px] py-[3px] flex gap-1 text-white"
+                            (click)="removeFile($index)"
+                        >
+                            <i class="icon-trash"></i> Delete
                         </div>
                     </div>
                 </div>
-            }
-
-            <!-- Add new files btn -->
-            <div
-                class="hover:shadow-[0_8px_22px_rgba(139,26,43,0.18)] hover:scale-102 w-full aspect-square border-dashed border-2 border-cherry/25 rounded-lg grid cursor-pointer hover:bg-cherry/5 duration-300 transition-all"
-            >
-                <i class="icon-plus place-self-center text-lg text-cherry"></i>
             </div>
+        }
+
+        <!-- Add new files btn -->
+        <div
+            class="hover:shadow-[0_8px_22px_rgba(139,26,43,0.18)] hover:scale-102 w-full aspect-square border-dashed border-2 border-cherry/25 rounded-lg grid cursor-pointer hover:bg-cherry/5 duration-300 transition-all"
+            (click)="openFilePicker()"
+        >
+            <i class="icon-plus place-self-center text-lg text-cherry"></i>
         </div>
-    }
+    </div>
 </div>

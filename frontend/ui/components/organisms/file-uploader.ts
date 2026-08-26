@@ -7,6 +7,10 @@ export class FileUploader extends LightDomMixin(LitElement) {
 	@property({ type: Boolean }) multiple = true;
 	@property({ type: String }) accept = '.png,.jpg';
 
+	public open() {
+		this._getInput()?.click();
+	}
+
 	private _handleFileChange(e: Event) {
 		const input = e.target as HTMLInputElement;
 
