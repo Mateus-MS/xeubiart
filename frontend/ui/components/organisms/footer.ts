@@ -28,24 +28,25 @@ export class UiFooter extends LitElement {
     }
 
     private linkGroups: LinkGroup[] = [
-        {
-            Title: 'Estúdio',
-            Links: [
-                { 
-                    Label: 'Portifólio', 
-                    RedirectTo: '/galery' 
-                },
-            ],
-        },
-        {
-            Title: 'Cuidados',
-            Links: [
-                { 
-                    Label: 'FAQ', 
-                    RedirectTo: '/faq' 
-                },
-            ],
-        },
+        // Temporaly disabled
+        // {
+        //     Title: 'Estúdio',
+        //     Links: [
+        //         { 
+        //             Label: 'Portifólio', 
+        //             RedirectTo: '/galery' 
+        //         },
+        //     ],
+        // },
+        // {
+        //     Title: 'Cuidados',
+        //     Links: [
+        //         { 
+        //             Label: 'FAQ', 
+        //             RedirectTo: '/faq' 
+        //         },
+        //     ],
+        // },
         {
             Title: 'Ferramentas',
             Links: [
@@ -70,7 +71,7 @@ export class UiFooter extends LitElement {
         { 
             Label: 'xeubiart', 
             RedirectTo: 'https://www.tiktok.com/@xeubiart', 
-            Icon: '\uE81A' 
+            Icon: 'icon-tiktok' 
         },
         { 
             Label: 'xeubiart', 
@@ -91,7 +92,7 @@ export class UiFooter extends LitElement {
 
     private renderLinks() {
         return html`
-        <div class="grid lg:grid-cols-4 grid-cols-2 gap-6">
+        <div class="grid lg:grid-cols-3 grid-cols-1 gap-6">
             ${this.linkGroups.map(
             (group) => html`
                 <ul>

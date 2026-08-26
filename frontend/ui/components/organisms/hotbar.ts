@@ -13,27 +13,27 @@ export class UiHotbar extends LitElement {
 
     @property({ type: Array }) items: HotBarItem[] = [
         { 
-            icon: '\uE802', 
+            icon: 'icon-home', 
             label: 'Início', 
             href: '/' 
         },
         { 
-            icon: '\uE805', 
+            icon: 'icon-picture', 
             label: 'Galeria', 
             href: '/gallery' 
         },
         { 
-            icon: '\uE804', 
+            icon: 'icon-calendar', 
             label: 'Agendar', 
             href: '/appointment' 
         },
         { 
-            icon: '\uE808', 
+            icon: 'icon-basket-1', 
             label: 'Loja', 
             href: '/shop' 
         },
         { 
-            icon: '\uE81B', 
+            icon: 'icon-login', 
             label: 'Entrar', 
             href: '/login' 
         },
@@ -73,7 +73,7 @@ export class UiHotbar extends LitElement {
                         class="flex flex-col items-center cursor-pointer transition-transform active:scale-95 ${isSelected ? 'text-cherry' : ''}"
                     >
                         <span class="font-icon text-lg mb-1 shadow-lg shadow-cherry/50 p-2 bg-cherry aspect-square grid place-items-center rounded-2xl text-white">
-                        ${item.icon}
+                            <i class=${item.icon}></i>
                         </span>
                         <span class="text-xs font-semibold text-cherry">${item.label}</span>
                     </a>
@@ -82,12 +82,14 @@ export class UiHotbar extends LitElement {
 
                 return html`
                     <a
-                    href=${item.href || '#'}
-                    @click=${(e: Event) => this.handleSelect(i, item, e)}
-                    class="w-[40px] h-[40px] flex flex-col items-center cursor-pointer transition-colors ${isSelected ? 'text-cherry font-bold' : 'text-muted hover:text-black/75'}"
+                        href=${item.href || '#'}
+                        @click=${(e: Event) => this.handleSelect(i, item, e)}
+                        class="w-[40px] h-[40px] flex flex-col items-center cursor-pointer transition-colors ${isSelected ? 'text-cherry font-bold' : 'text-muted hover:text-black/75'}"
                     >
-                    <span class="font-icon text-lg">${item.icon}</span>
-                    <span class="text-xs font-semibold">${item.label}</span>
+                        <span class="font-icon text-lg">
+                            <i class=${item.icon}></i>
+                        </span>
+                        <span class="text-xs font-semibold">${item.label}</span>
                     </a>
                 `;
                 })}

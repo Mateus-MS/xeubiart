@@ -5,14 +5,15 @@ import { LightDomMixin } from '../particles/LightDomMixin';
 
 @customElement('ui-title')
 export class UiTitle extends LightDomMixin(LitElement) {
-    @property({ type: String }) 
-    level: string = 'h1';
+    @property({ type: String }) level: string = 'h1';
+    @property({ type: String }) classes = '';
+
 
     render() {
         const tag = unsafeStatic(this.level);
 
         return html`
-            <${tag} class="text-4xl text-text font-contrast [&_em]:text-cherry">
+            <${tag} class="${this.classes} text-4xl text-text font-contrast [&_em]:text-cherry">
                 ${this.renderSlottedChildren()}
             </${tag}>
         `;

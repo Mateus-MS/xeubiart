@@ -1,7 +1,5 @@
 package frags
 
-import "com.xeubiart/atoms"
-
 templ About(){
     <section-about class="lg:grid lg:grid-cols-2 lg:place-items-center lg:px-[7%] lg:py-13 items-stretch flex flex-col gap-15 p-10 bg-cream">
         <div class="bg-red-500 w-full relative aspect-[3/4] max-w-[350px]">
@@ -11,11 +9,8 @@ templ About(){
             </div>
         </div>
         <div class="flex h-fit flex-col gap-5 max-w-[500px]">
-            <ui-eyebrow type="sparkly" text="Sobre mim"></ui-eyebrow>
-            @atoms.Title(atoms.TitleProps{
-                Level: "h2",
-                ClassNames: "text-[clamp(2.6rem,10vw,3.5rem)]/12",
-            }){A artista por<br> <em class="text-nowrap">trás da agulha.</em>}
+            <ui-eyebrow type="sparkly">Sobre mim</ui-eyebrow>
+            <ui-title level="h2" classes="lg:!text-6xl">A artista por<br> <em class="text-nowrap">trás da agulha.</em></ui-title>
             <div class="h-[1px] w-[50px] bg-cherry my-4"></div>
             <p class="text-muted text-base/6">Sou Khelbia Lopes — tatuadora, ilustradora e apaixonada por transformar momentos em arte permanente. Comecei minha jornada em 2018 com um sonho simples: fazer com que cada pessoa saísse do meu estúdio com algo que fosse verdadeiramente dela.</p>
         </div>

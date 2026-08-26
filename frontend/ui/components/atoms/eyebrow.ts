@@ -15,6 +15,7 @@ const ICONS: Record<EyebrowType | string, string> = {
 export class UiEyebrow extends LightDomMixin(LitElement) {
     @property({ type: String }) type: EyebrowType = 'default';
     @property({ type: String }) icon = '';
+    @property({ type: String }) classes = '';
 
     private styles = new StyleController<string>(this, {
         base: ['w-fit', 'inline-flex', 'items-center', 'rounded-full', 'px-3', 'py-1.5', 'text-[.7rem]', 'font-semibold', 'uppercase', 'tracking-widest'],
@@ -30,10 +31,12 @@ export class UiEyebrow extends LightDomMixin(LitElement) {
         const activeIcon = this.icon || ICONS[this.type] || '';
 
         return html`
-            ${activeIcon ? html`<span class="mr-2 select-none">${activeIcon}</span>` : ''}
-            ${this.slottedChildren.length > 0 
-                ? this.renderSlottedChildren()
-                : ''}
+            <div class="${this.styles.classes} ${this.classes}">
+                ${activeIcon ? html`<span class="mr-2 select-none">${activeIcon}</span>` : ''}
+                ${this.slottedChildren.length > 0 
+                    ? this.renderSlottedChildren()
+                    : ''}
+            <div>
         `;
     }
 }

@@ -1,42 +1,44 @@
-import { ReactiveController, ReactiveControllerHost } from 'lit';
+import { ReactiveControllerHost } from 'lit';
 
 export interface StyleConfig<PresetKey extends string = string> {
-	base?: string[];
-	presets?: Record<PresetKey, string>;
-	defaultPreset?: PresetKey;
+    base?: string[];
+    presets?: Record<PresetKey, string>;
+    defaultPreset?: PresetKey;
 }
 
-export class StyleController<PresetKey extends string = string> implements ReactiveController {
-	private host: ReactiveControllerHost & HTMLElement;
-	private config: StyleConfig<PresetKey>;
+export class StyleController<PresetKey extends string = string> {
+    private host: ReactiveControllerHost & HTMLElement;
+    private config: StyleConfig<PresetKey>;
 
-	constructor(host: ReactiveControllerHost & HTMLElement, config: StyleConfig<PresetKey>) {
-		this.host = host;
-		this.config = config;
+    constructor(
+        host: ReactiveControllerHost & HTMLElement,
+        config: StyleConfig<PresetKey>
+    ) {
+        this.host = host;
+        this.config = config;
+    }
 
-		this.host.addController(this);
-	}
+    public get classes(): string {
+        const baseClasses = this.config.base ?? [];
 
-	hostUpdated() {
-		this.applyStyles();
-	}
+        const preset = (
+            this.host.getAttribute('type') ??
+            this.config.defaultPreset ??
+            'default'
+        ) as PresetKey;
 
-	private applyStyles() {
-		const baseClasses = this.config.base || [];
+        const presetClasses =
+            this.config.presets?.[preset]?.split(' ') ?? [];
 
-		const variant = (this.host.getAttribute('type') || this.config.defaultPreset || 'default') as PresetKey;
-		const additional = (this.host.getAttribute('additionalClasses') || '').split(' ');
+        return Array.from(
+            new Set(
+                [...baseClasses, ...presetClasses]
+                    .filter(Boolean)
+            )
+        ).join(' ');
+    }
 
-		const presetClasses = (this.config.presets?.[variant] || '').split(' ');
-
-		const uniqueClasses = Array.from(
-			new Set([...baseClasses, ...presetClasses, ...additional].filter(Boolean))
-		);
-
-		this.host.className = uniqueClasses.join(' ');
-	}
-
-	public requestUpdate() {
-		this.host.requestUpdate();
-	}
+    public requestUpdate() {
+        this.host.requestUpdate();
+    }
 }
