@@ -29,9 +29,9 @@
                 (change)="onFilesSelected($event)">
 
             <div [class.hidden]="selectedTab !== 'Imagens'" 
-                class="h-fit lg:block lg:h-full lg:overflow-y-auto py-1 px-2 grid-cards">
+                class="h-fit flex flex-col lg:h-full lg:overflow-y-auto py-1 px-2 gap-4">
                 @for (entry of uploadedImages; track entry[0]) {
-                    <ui-card additionalClasses="w-full h-fit mb-7 last:mb-0 grid grid-cols-[30%_minmax(0,1fr)] p-3 sm:p-4 gap-3 sm:gap-4">
+                    <ui-card classes="w-full h-fit last:mb-0 grid grid-cols-[30%_minmax(0,1fr)] p-3 sm:p-4 gap-3 sm:gap-4">
     
                         <!-- Thumbnail com Botão de Crop -->
                         <div class="w-full aspect-square rounded-lg overflow-hidden relative group cursor-pointer" (click)="openCropModal(entry[0])">
@@ -144,7 +144,7 @@
             </div>
 
             <div [class.hidden]="selectedTab !== 'Pré-visualização'" class="py-1 h-full lg:block">
-                <ui-card additionalClasses="w-full h-full flex flex-col gap-4 p-6 items-center">
+                <ui-card classes="w-full h-full flex flex-col gap-4 p-6 items-center">
                     
                     <div class="w-full justify-between flex gap-2 items-center">
                         <span class="text-sm text-muted text-[.60rem]">Formato A4 · 210 × 297mm</span>
@@ -153,7 +153,7 @@
                             <ui-button 
                                 (click)="prevPage()" 
                                 [disabled]="currentPageIndex === 0"
-                                additionalClasses="w-fit !p-0 aspect-square disabled:opacity-30" 
+                                classes="w-fit !p-0 aspect-square disabled:opacity-30" 
                                 type="light">
                                 <i class="icon-left"></i>
                             </ui-button>
@@ -165,7 +165,7 @@
                             <ui-button 
                                 (click)="nextPage()" 
                                 [disabled]="currentPageIndex >= pages.length - 1"
-                                additionalClasses="w-fit !p-0 aspect-square disabled:opacity-30" 
+                                classes="w-fit !p-0 aspect-square disabled:opacity-30" 
                                 type="light">
                                 <i class="icon-right"></i>
                             </ui-button>
@@ -215,7 +215,7 @@
         </main>
 
         <div class="lg:mx-auto w-full lg:max-w-[60%] lg:flex justify-center hidden gap-5 h-[80px] bg-cream py-4 mb-7">
-            <ui-button (click)="fileInput.click()" additionalClasses="py-2 px-3 w-fit h-full justify-center items-center" type="light">
+            <ui-button (click)="fileInput.click()" classes="py-2 px-3 w-fit h-full justify-center items-center" type="light">
                 <i class="icon-plus text-text"></i>
                 @if (uploadedImages.length === 0) {
                     <span>Adicionar uma imagem</span>
@@ -224,7 +224,7 @@
                 }
             </ui-button>
             @if(uploadedImagesMap.size !== 0){
-                <ui-button (click)="downloadA4Sheet()" additionalClasses="py-2 px-4 w-fit h-full justify-center items-center" type="heavy">
+                <ui-button (click)="downloadA4Sheet()" classes="py-2 px-4 w-fit h-full justify-center items-center" type="heavy">
                     <strong class="ml-3 text-lg">
                         {{ pages.length === 1 ? 'Baixar página' : 'Baixar páginas' }}
                     </strong>
@@ -251,7 +251,7 @@
             multiple 
             accept="image/*" 
             (change)="onFilesSelected($event)">
-        <ui-button additionalClasses="py-2 px-4 w-fit h-full justify-center items-center pointer-events-none" type="light">
+        <ui-button classes="py-2 px-4 w-fit h-full justify-center items-center pointer-events-none" type="light">
             <i class="icon-plus text-text"></i>
             @if(uploadedImagesMap.size === 0){
                 <span>Adicionar uma imagem</span>
@@ -262,7 +262,7 @@
     @if(uploadedImagesMap.size !== 0){
         <ui-button 
             (click)="downloadA4Sheet()" 
-            additionalClasses="py-2 px-3 w-fit h-full justify-center items-center"
+            classes="py-2 px-3 w-fit h-full justify-center items-center"
             type="heavy"
         >
             Baixar página <strong class="ml-3 text-lg">{{currentPageIndex + 1}}</strong>
