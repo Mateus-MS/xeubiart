@@ -1,0 +1,15 @@
+services:
+  infra:
+    volumes:
+      - ../caddy/Caddyfile.prod:/etc/caddy/Caddyfile
+      - ../../frontend/static:/app/static
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    command: tunnel run --url http://infra:80
+    restart: unless-stopped
+    environment:
+      - TUNNEL_TOKEN=${CLOULDFLARE_TUNNEL_TOKEN}
+    networks:
+      - app-net

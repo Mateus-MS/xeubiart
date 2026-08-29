@@ -1,0 +1,7 @@
+services:
+  infra:
+    volumes:
+      - ../caddy/Caddyfile.dev:/etc/caddy/Caddyfile
+      - ../../frontend/static:/app/static
+    ports:
+      - "${PORT:-prod}:80"
