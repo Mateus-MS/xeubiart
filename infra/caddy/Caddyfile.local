@@ -3,6 +3,11 @@
 }
 
 :80 {
+    # API → Spring Boot
+    handle /api/* {
+        reverse_proxy localhost:8080
+    }
+
     # Shared UI library bundle
     handle_path /static/ui/* {
         root * ../frontend/ui/dist

@@ -1,6 +1,22 @@
 version: '3'
 
 tasks:
+  db:
+    dir: '.'
+    cmds:
+      - docker compose --env-file ../../.env -f compose.postgres.yml up -d postgres
+  
+  db:stop:
+    dir: '.'
+    cmds:
+      - docker compose --env-file ../../.env -f compose.postgres.yml down
+
+  db:reset:
+    dir: '.'
+    cmds:
+      - docker compose --env-file ../../.env -f compose.postgres.yml down -v
+      - docker compose --env-file ../../.env -f compose.postgres.yml up -d postgres
+
   caddy:
     dir: '../../infra'
     cmds:
@@ -21,15 +37,20 @@ tasks:
     cmds:
       - npx @tailwindcss/cli -i ./input.css -o ./dist/tailwind.css --watch
 
-  # --- Shared Web Components Watcher ---
   ui:
     dir: '../../frontend/ui'
     cmds:
       - npx vite build --watch
 
   dev:
-    deps: [caddy, angular, templ, tailwind, ui]
-
+    deps:
+      - db
+      - caddy
+      - angular
+      - templ
+      - tailwind
+      - ui
+      
   # Main command to run on a fresh clone
   init:
     desc: Install all dependencies and prepare project for development
@@ -38,6 +59,7 @@ tasks:
       - task: init:angular
       - task: init:tailwind
       - task: init:ui
+      - task: init:spring
       - task: generate:templ
       - task: build:tailwind
       - task: build:ui
@@ -69,6 +91,12 @@ tasks:
     dir: '../../frontend/ui'
     cmds:
       - npm install
+
+  init:spring:
+    desc: Download Spring Boot dependencies
+    dir: '../../backend'
+    cmds:
+      - mvnw.cmd dependency:go-offline
 
   # --- Build / Prep Tasks ---
 

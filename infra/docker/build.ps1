@@ -9,12 +9,15 @@ $composeFiles = @(
     "-f", "compose.$Environment.yml"
 )
 
+$envFile = "../../.env"
+
 Write-Host "Starting Xeubiart in '$Environment' environment..." -ForegroundColor Cyan
+Write-Host "Using environment file: $envFile" -ForegroundColor DarkGray
 
 if ($Environment -eq "prod") {
     Write-Host "Pulling latest Docker images..." -ForegroundColor Cyan
 
-    docker compose @composeFiles pull
+    docker compose --env-file $envFile @composeFiles pull
 
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Docker pull failed. Aborting startup." -ForegroundColor Red
@@ -24,7 +27,7 @@ if ($Environment -eq "prod") {
 
 Write-Host "Building Docker images..." -ForegroundColor Cyan
 
-docker compose @composeFiles build
+docker compose --env-file $envFile @composeFiles build
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Docker build failed. Aborting startup." -ForegroundColor Red
@@ -33,7 +36,7 @@ if ($LASTEXITCODE -ne 0) {
 
 Write-Host "Starting containers..." -ForegroundColor Green
 
-docker compose @composeFiles up -d
+docker compose --env-file $envFile @composeFiles up -d
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "Deployment completed successfully!" -ForegroundColor Green
