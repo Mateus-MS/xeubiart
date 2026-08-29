@@ -3,6 +3,9 @@ import { VisibilityToggler } from '../visibility-toggler/visibility-toggler';
 import { UiInputDirective } from '../../../../../../directives/uiInputDirective';
 import { FileUploadWrapper } from '../file-upload-wrapper/file-upload-wrapper';
 
+import { HttpClient } from '@angular/common/http';
+import { inject } from '@angular/core';
+
 export const TATTOO_STYLES = [
     { value: 'fine-line', label: 'Fine Line' },
     { value: 'blackwork', label: 'Blackwork' },
@@ -30,6 +33,8 @@ export class ItemPopup {
 
 	@ViewChild(FileUploadWrapper)fileUploadWrapper!: FileUploadWrapper;
 	@ViewChild(VisibilityToggler)visibilityToggler!: VisibilityToggler;
+
+	private http = inject(HttpClient);
 
 	open() {
 		this.isOpen.set(true);
@@ -71,7 +76,14 @@ export class ItemPopup {
 			images: this.fileUploadWrapper.uploadedFiles.map(item => item.file),
 		});
 
-		// this.http.post('/api/works', formData).subscribe(...)
+		this.http.post('/api/work', formData).subscribe({
+			next: (response) => {
+				console.log('Create work response:', response);
+			},
+			error: (error) => {
+				console.error('Create work failed:', error);
+			},
+		});
 	}
 
 	toggle() {
