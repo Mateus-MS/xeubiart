@@ -14,7 +14,9 @@ export class Dashboard {
   categories = new Map<string, dashboard_panel[]>([
     ['geral', [
       { 
-        title: 'Galeria', panel: Gallery
+        icon: 'icon-picture',
+        title: 'Galeria', 
+        panel: Gallery
       }
     ]],
   ]);
@@ -25,6 +27,7 @@ export class Dashboard {
 }
 
 interface dashboard_panel{
+  icon: string;
   title: string;
   panel: Type<any> | undefined;
 }

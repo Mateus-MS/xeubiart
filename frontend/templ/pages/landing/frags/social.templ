@@ -3,12 +3,12 @@ package frags
 import "com.xeubiart/atoms"
 
 templ Social(){
-    <section-social class="block py-15 bg-cream">
+    <section class="block py-15">
         // Header
         <div class="flex flex-col lg:flex-row justify-between px-8 lg:px-20">
             <div>
-                <ui-eyebrow type="sparkly" text="Avaliações reais" additionalClasses="mb-4 block"></ui-eyebrow>
-                @atoms.Title(atoms.TitleProps{Level: "h4", ClassNames: "[font-size:clamp(2.2rem,6vw,3.4rem)] [line-height:1]"}){O que dizem <br> as minhas <em>clientes</em>}
+                <ui-eyebrow type="sparkly" classes="mb-4 block">Avaliações reais</ui-eyebrow>
+                <ui-title level="h4" classes="[font-size:clamp(2.2rem,6vw,3.4rem)] [line-height:1]">O que dizem <br> as minhas <em>clientes</em></ui-title>
             </div>
             <div class="flex flex-col gap-1">
                 <span class="text-cherry text-7xl/23 font-contrast">5.0</span>
@@ -58,7 +58,7 @@ templ Social(){
         <div class="px-10">
             @highlight()
         </div>
-    </section-social>
+    </section>
 }
 
 templ carrossel(){
@@ -73,46 +73,53 @@ templ carrossel(){
 
         userReviews := []userReviewData{
             {
-                Username: "Mateus Alves",
-                Date: "Agosto 2025",
-                Comment: "A atenção ao detalhe é incrível. Cada linha, cada sombreado pensado com tanto carinho. Minha tattoo virou obra de arte.",
-                Style: "Fine Line",
-                Source: "instagram",
-            },
-            {
-                Username: "Khelbia Lopes",
-                Date: "Agosto 2025",
-                Comment: "A atenção ao detalhe é incrível. Cada linha, cada sombreado pensado com tanto carinho. Minha tattoo virou obra de arte.",
+                Username: "Lara",
+                Date: "Fevereiro 2026",
+                Comment: "A melhoooor! Tem um traço lindo e é muito dedicada, ansiosa pra fazer mais com ela. Recomendo 100%",
                 Style: "Fine Line",
                 Source: "google",
             },
             {
-                Username: "Neneco Peteco",
-                Date: "Agosto 2025",
-                Comment: "A atenção ao detalhe é incrível. Cada linha, cada sombreado pensado com tanto carinho. Minha tattoo virou obra de arte.",
-                Style: "Old School",
-                Source: "instagram",
-            },
-            {
-                Username: "Mateus Alves",
-                Date: "Agosto 2025",
-                Comment: "A atenção ao detalhe é incrível. Cada linha, cada sombreado pensado com tanto carinho. Minha tattoo virou obra de arte.",
-                Style: "Fine Line",
-                Source: "instagram",
-            },
-            {
-                Username: "Khelbia Lopes",
-                Date: "Agosto 2025",
-                Comment: "A atenção ao detalhe é incrível. Cada linha, cada sombreado pensado com tanto carinho. Minha tattoo virou obra de arte.",
+                Username: "Anita Alves",
+                Date: "Fevereiro 2026",
+                Comment: "Excelente profissional, o trabalho é incrível, tem uma mão super leve, a melhor sem duvidas",
                 Style: "Fine Line",
                 Source: "google",
             },
             {
-                Username: "Neneco Peteco",
-                Date: "Agosto 2025",
-                Comment: "A atenção ao detalhe é incrível. Cada linha, cada sombreado pensado com tanto carinho. Minha tattoo virou obra de arte.",
-                Style: "Old School",
-                Source: "instagram",
+                Username: "Iris Machado",
+                Date: "Fevereiro 2026",
+                Comment: "Excelente profissional, deixa as pessoas super tranquilas e à vontade. Recomendo imenso.",
+                Style: "Fine Line",
+                Source: "google",
+            },
+            {
+                Username: "Renata Vale Rêgo",
+                Date: "Julho 2026",
+                Comment: "Tem pessoas que realmente sabem o que estão a fazer. Recomendo",
+                Style: "Fine Line",
+                Source: "google",
+            },
+            {
+                Username: "Andreia Almeida",
+                Date: "Fevereiro 2026",
+                Comment: "Simpática, paciente e extremamente profissional. É perfeccionista e isso nota-se no resultado final. Adoro o trabalho e recomendo muito.",
+                Style: "Fine Line",
+                Source: "google",
+            },
+            {
+                Username: "Bella Hair",
+                Date: "Fevereiro 2026",
+                Comment: "Trabalho e atendimento impecavel.",
+                Style: "Fine Line",
+                Source: "google",
+            },
+            {
+                Username: "Lara Costa",
+                Date: "Fevereiro 2026",
+                Comment: "O ambiente é super acolhedor a khelbia é um AMOR,fora que o trabalho é impecável 😍❤️",
+                Style: "Fine Line",
+                Source: "google",
             },
         }
     }}
@@ -155,16 +162,11 @@ templ carrossel(){
                     <p class="text-muted italic -mt-[15px]">{data.Comment}</p>
 
                     // Footer
-                    <div class="flex justify-between">
+                    <div class="flex justify-between mt-auto">
                         <div class="uppercase bg-cherry/15 rounded-full px-2 py-1 text-[.65rem] text-cherry tracking-widest font-semibold">{data.Style}</div>
-                        switch data.Source {
-                            case "instagram":
-                                <div class="text-muted text-sm"><icon class="mr-1">&#xF16D;</icon> instagram</div>
-                            case "google":
-                                <div class="text-muted text-sm"><icon class="mr-1">&#xF1A0;</icon> google</div>
-                            default:
-                                <div>ERROR</div>
-                        }
+                        <div class="text-muted text-sm">
+                            <i class={"icon-" + data.Source + " mr-1"}></i>{data.Source}
+                        </div>
                     </div>
                 </div>
             }
@@ -184,14 +186,14 @@ templ highlight(){
         before:content-['\22']
         before:top-[30px] before:left-[100px] before:pointer-events-none before:z-0
     ">
-        <p class="text-white font-bold font-contrast [font-size:clamp(1.2rem,2.4vw,1.6rem)] mb-10">Nunca pensei que uma tatuagem pudesse me emocionar tanto. Ela não só fez uma arte — ela eternizou algo que eu carrego no coração. Voltarei para sempre.</p>
+        <p class="text-white font-bold font-contrast [font-size:clamp(1.2rem,2.4vw,1.6rem)] mb-10">Tenhos só coisas boas a falar deste sítio, uma tatuadora incrível, extremamente profissional e vai exatamente àquilo que queremos, um sítio incrível e uma pessoa / tatuadora incrível 🫶🏻</p>
         // Avatar
         <div class="flex gap-5 items-center">
-            <div class="bg-[#ffffff2e] border-[#ffffff4d] border-1 w-[65px] aspect-square rounded-full grid place-items-center font-contrast text-white italic text-3xl">P</div>
+            <div class="bg-[#ffffff2e] border-[#ffffff4d] border-1 w-[65px] aspect-square rounded-full grid place-items-center font-contrast text-white italic text-3xl">L</div>
             // Avatar info
             <div class="flex flex-col">
-                <span class="text-white">Sofia carvalho</span>
-                <span class="text-white/50 text-xs">Março 2026</span>
+                <span class="text-white">Leo</span>
+                <span class="text-white/50 text-xs">Fevereiro 2026</span>
             </div>
         </div>
     </div>

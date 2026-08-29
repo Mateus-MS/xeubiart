@@ -4,7 +4,7 @@ tasks:
   caddy:
     dir: '../../infra'
     cmds:
-      - caddy run --config ./caddy/Caddyfile.dev
+      - caddy run --config ./caddy/Caddyfile.local
 
   angular:
     dir: '../../frontend/angular'

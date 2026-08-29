@@ -24,7 +24,7 @@
         file_server
     }
 
-    # Backend API / Templ routes
+    # Backend for Frontend (Templ)
     @templ {
         method GET
         path /

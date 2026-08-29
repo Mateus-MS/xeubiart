@@ -26,7 +26,7 @@ export class UiTabSwitcher extends LitElement {
         const selectedTab = this.activeTab || this.tabs[0] || '';
 
         return html`
-            <div class="relative isolate flex items-center bg-cherry/10 rounded-full p-1 w-fit">
+            <div class="relative isolate flex items-center bg-white ring-cherry/15 ring rounded-full p-1 w-fit">
                 <div 
                     class="absolute bg-cherry rounded-full transition-all duration-300 -z-10 shadow-[0_4px_16px_rgba(139,26,43,0.4)]
                            [position-anchor:--active-tab] 

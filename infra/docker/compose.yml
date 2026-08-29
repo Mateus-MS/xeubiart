@@ -1,0 +1,26 @@
+name: xeubiart
+
+services:
+  frontend:
+    build:
+      context: ../../frontend/templ
+      dockerfile: Dockerfile
+    container_name: frontend
+    networks:
+      - app-net
+    restart: unless-stopped
+
+  infra:
+    build:
+      context: ../../
+      dockerfile: infra/caddy/Dockerfile
+    container_name: infra
+    depends_on:
+      - frontend
+    networks:
+      - app-net
+    restart: unless-stopped
+
+networks:
+  app-net:
+    driver: bridge

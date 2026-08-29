@@ -24,6 +24,7 @@ templ Base(props BaseProps){
         <link rel="icon" type="image/x-icon" href="/static/svg/xeubiart.svg">
 
         <script type="module" src="/static/ui/ui-kit.mjs"></script>
+        <link rel="stylesheet" href="/static/css/fontello.css">
 
         @props.HeadImports
     </head>
@@ -38,9 +39,10 @@ templ Base(props BaseProps){
             <ui-footer></ui-footer>
         }
 
-        if props.IncludeNavigation {
-            <ui-hotbar></ui-hotbar>
-        }
+        // Temporaly disabled
+        // if props.IncludeNavigation {
+        //     <ui-hotbar></ui-hotbar>
+        // }
     </body>
     </html>    
 }
