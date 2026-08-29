@@ -253,9 +253,7 @@
             (change)="onFilesSelected($event)">
         <ui-button classes="py-2 px-4 w-fit h-full justify-center items-center pointer-events-none" type="light">
             <i class="icon-plus text-text"></i>
-            @if(uploadedImagesMap.size === 0){
-                <span>Adicionar uma imagem</span>
-            }
+            <span class="hidden lg:block">Adicionar uma imagem</span>
         </ui-button>
     </div>
 

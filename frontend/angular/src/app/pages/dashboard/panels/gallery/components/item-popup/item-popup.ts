@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, effect, OnDestroy, signal } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, effect, OnDestroy, signal, ViewChild } from '@angular/core';
 import { VisibilityToggler } from '../visibility-toggler/visibility-toggler';
 import { UiInputDirective } from '../../../../../../directives/uiInputDirective';
 import { FileUploadWrapper } from '../file-upload-wrapper/file-upload-wrapper';
@@ -28,17 +28,8 @@ export class ItemPopup {
 	style = signal<TattooStyle | ''>('');
 	description = signal('');
 
-	
-
-	constructor() {
-		effect(() => {
-			console.log({
-				title: this.title(),
-				style: this.style(),
-				description: this.description(),
-			});
-		});
-	}
+	@ViewChild(FileUploadWrapper)fileUploadWrapper!: FileUploadWrapper;
+	@ViewChild(VisibilityToggler)visibilityToggler!: VisibilityToggler;
 
 	open() {
 		this.isOpen.set(true);
@@ -48,8 +39,39 @@ export class ItemPopup {
 		this.isOpen.set(false);
 	}
 
-	makeRequest(){
-		console.log()
+	canCreateWork(): boolean {
+		return (
+			this.title().trim().length > 0 &&
+			this.style() !== '' &&
+			this.description() !== '' &&
+			this.fileUploadWrapper?.uploadedFiles.length > 0
+		);
+	}
+
+	createWork() {
+		const formData = new FormData();
+
+		formData.append('title', this.title());
+		formData.append('style', this.style());
+		formData.append('description', this.description());
+		formData.append(
+			'visibility',
+			String(this.visibilityToggler.isActive)
+		);
+
+		for (const item of this.fileUploadWrapper.uploadedFiles) {
+			formData.append('images', item.file, item.file.name);
+		}
+
+		console.log('Request data:', {
+			title: this.title(),
+			style: this.style(),
+			description: this.description(),
+			visibility: this.visibilityToggler.isActive,
+			images: this.fileUploadWrapper.uploadedFiles.map(item => item.file),
+		});
+
+		// this.http.post('/api/works', formData).subscribe(...)
 	}
 
 	toggle() {
