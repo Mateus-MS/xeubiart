@@ -3,14 +3,14 @@
         (files-uploaded)="onUploadFile($event)" 
         class="mt-2 block"
         #uploader
-        [class.hidden]="uploadedFiles.length > 0"
+        [class.hidden]="files().length > 0"
     ></ui-file-uploader>
 
     <div
         class="grid grid-cols-3 gap-4"
-        [class.hidden]="uploadedFiles.length === 0"
+        [class.hidden]="files().length === 0"
     >
-        @for (item of uploadedFiles; track item.id; let i = $index) {
+        @for (item of files(); track item.url; let i = $index) {
             <div
                 class="hover:shadow-[0_8px_22px_rgba(139,26,43,0.18)] hover:scale-102 transition-all duration-300 cursor-pointer group w-full aspect-square overflow-hidden rounded-lg relative"
                 [class]="$index === 0 ? 'border-2 border-cherry' : ''"
@@ -22,7 +22,12 @@
                 (drop)="onDrop(i)"
                 (dragend)="onDragEnd()"
             >
-                <img [src]="item.url"/>
+                @if(item.isLocal){
+                    <img [src]="item.url"/>
+                }
+                @else{
+                    <img [src]="'/api/files/' + item.url"/>
+                }
 
                 <!-- Overlay -->
                 <div class="inset-0 absolute w-full h-full text-xs">

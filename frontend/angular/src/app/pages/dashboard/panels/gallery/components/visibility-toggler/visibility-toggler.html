@@ -1,13 +1,13 @@
 <ui-card classes="flex justify-between p-5 items-center h-[100px]">
     <div class="flex gap-4 h-full items-center">
         <div
-            [class]="isActive ? 'bg-green-500/25 text-green-800' : 'bg-red-500/25 text-red-800'"
+            [class]="isActive() ? 'bg-green-500/25 text-green-800' : 'bg-red-500/25 text-red-800'"
             class="size-[35px] rounded-lg grid place-items-center shrink-0 transition-colors"
         >
-            <i [class]="isActive ? 'icon-eye' : 'icon-eye-off'"></i>
+            <i [class]="isActive() ? 'icon-eye' : 'icon-eye-off'"></i>
         </div>
         <div>
-            @if(isActive){
+            @if(isActive()){
                 <h3 class="text-nowrap text-sm text-semibold font-contrast">Visível no portifólio público</h3>
                 <span class="text-xs text-muted">Aparece em xeubiart.com/galeria</span>
             }
@@ -18,7 +18,7 @@
         </div>
     </div>
     <ui-toggler
-        [active]="isActive"
+        [active]="isActive()"
         (toggler-change)="onTogglerChange($event)"
     ></ui-toggler>
 </ui-card>

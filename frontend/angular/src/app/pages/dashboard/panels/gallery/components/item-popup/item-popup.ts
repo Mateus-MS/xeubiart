@@ -1,20 +1,12 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, effect, OnDestroy, signal, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, effect, OnDestroy, output, signal, ViewChild } from '@angular/core';
 import { VisibilityToggler } from '../visibility-toggler/visibility-toggler';
 import { UiInputDirective } from '../../../../../../directives/uiInputDirective';
 import { FileUploadWrapper } from '../file-upload-wrapper/file-upload-wrapper';
+import { UploadedFile } from '../../../../../../models/uploadedFile';
+import { CreateWorkDTO, TattooStyle, WorkEntity } from '../../../../../../models/work';
+import { TATTOO_STYLES } from '../../../../../../models/tattooStyles';
 
-import { HttpClient } from '@angular/common/http';
-import { inject } from '@angular/core';
-
-export const TATTOO_STYLES = [
-    { value: 'fine-line', label: 'Fine Line' },
-    { value: 'blackwork', label: 'Blackwork' },
-    { value: 'floral', label: 'Floral' },
-    { value: 'red-trace', label: 'Red Trace' },
-    { value: 'authoral', label: 'Autorais' },
-] as const;
-
-export type TattooStyle = typeof TATTOO_STYLES[number]['value'];
+export type TattooStyles = typeof TATTOO_STYLES[number]['value'];
 
 @Component({
 	selector: 'app-item-popup',
@@ -23,21 +15,78 @@ export type TattooStyle = typeof TATTOO_STYLES[number]['value'];
 	styleUrl: './item-popup.css',
 	schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class ItemPopup {
+export class ItemPopup implements OnDestroy {
 	tattooStyles = TATTOO_STYLES;
 	isOpen = signal<boolean>(false);
+	isEditing: boolean = false;
 
 	title = signal('');
 	style = signal<TattooStyle | ''>('');
 	description = signal('');
+	visible = signal(true);
 
-	@ViewChild(FileUploadWrapper)fileUploadWrapper!: FileUploadWrapper;
+	uploadedFiles = signal<UploadedFile[]>([]);
 	@ViewChild(VisibilityToggler)visibilityToggler!: VisibilityToggler;
 
-	private http = inject(HttpClient);
+	createWorkEvent = output<{
+		workData: CreateWorkDTO;
+		files: UploadedFile[];
+	}>();
 
-	open() {
+	open(data?: WorkEntity) {
+		this.isEditing = data !== undefined
 		this.isOpen.set(true);
+
+		this.title.set(data?.title ?? '');
+		this.style.set(data?.style ?? '');
+		this.description.set(data?.description ?? '');
+		this.visible.set(data?.visible ?? true);
+
+		this.uploadedFiles.set(
+			data?.photosUrls.map(url => ({
+				url,
+				isLocal: false
+			})) ?? []
+		);
+	}
+
+	onFilesSelected(files: File[]) {
+		const uploadedFiles = files.map(file => ({
+			id: crypto.randomUUID(),
+			file,
+			url: URL.createObjectURL(file),
+			isLocal: true
+		}));
+
+		this.uploadedFiles.update(current => [
+			...current,
+			...uploadedFiles
+		]);
+	}
+
+	onFileRemoved(index: number) {
+		this.uploadedFiles.update(files => {
+			const result = [...files];
+			const [removed] = result.splice(index, 1);
+
+			if (removed?.isLocal) {
+				URL.revokeObjectURL(removed.url);
+			}
+
+			return result;
+		});
+	}
+
+	onFilesReordered(event: { fromIndex: number; toIndex: number; }) {
+		this.uploadedFiles.update(files => {
+			const result = [...files];
+
+			const [file] = result.splice(event.fromIndex, 1);
+
+			result.splice(event.toIndex, 0, file);
+
+			return result;
+		});
 	}
 
 	close() {
@@ -48,45 +97,50 @@ export class ItemPopup {
 		return (
 			this.title().trim().length > 0 &&
 			this.style() !== '' &&
-			this.description() !== '' &&
-			this.fileUploadWrapper?.uploadedFiles.length > 0
+			this.description().trim().length > 0 &&
+			this.uploadedFiles().length > 0
 		);
 	}
 
+	onFilesChange(files: UploadedFile[]) {
+		console.log(files)
+	}
+
 	createWork() {
-		const formData = new FormData();
+		const style = this.style();
 
-		formData.append('title', this.title());
-		formData.append('style', this.style());
-		formData.append('description', this.description());
-		formData.append(
-			'visibility',
-			String(this.visibilityToggler.isActive)
-		);
-
-		for (const item of this.fileUploadWrapper.uploadedFiles) {
-			formData.append('images', item.file, item.file.name);
+		if (!style || !this.canCreateWork()) {
+			return;
 		}
 
-		console.log('Request data:', {
-			title: this.title(),
-			style: this.style(),
-			description: this.description(),
-			visibility: this.visibilityToggler.isActive,
-			images: this.fileUploadWrapper.uploadedFiles.map(item => item.file),
-		});
-
-		this.http.post('/api/work', formData).subscribe({
-			next: (response) => {
-				console.log('Create work response:', response);
+		this.createWorkEvent.emit({
+			workData: {
+				title: this.title(),
+				style,
+				description: this.description(),
+				visible: this.visible()
 			},
-			error: (error) => {
-				console.error('Create work failed:', error);
-			},
+			files: this.uploadedFiles()
 		});
 	}
 
 	toggle() {
 		this.isOpen.update(value => !value);
+	}
+
+	visibilityChange(event: Event) {
+		const toggler = event.target as HTMLElement & {
+			active: boolean;
+		};
+
+		this.visible.set(toggler.active);
+	}
+
+	ngOnDestroy() {
+		for (const file of this.uploadedFiles()) {
+			if (file.isLocal) {
+				URL.revokeObjectURL(file.url);
+			}
+		}
 	}
 }

@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, input, output } from '@angular/core';
 
 @Component({
 	selector: 'app-visibility-toggler',
@@ -7,13 +7,15 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 	schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class VisibilityToggler {
-  	isActive = true;
+    isActive = input(true);
 
-	onTogglerChange(event: Event) {
+    isActiveChange = output<boolean>();
+
+    onTogglerChange(event: Event) {
         const toggler = event.target as HTMLElement & {
             active: boolean;
         };
 
-        this.isActive = toggler.active;
+        this.isActiveChange.emit(toggler.active);
     }
 }

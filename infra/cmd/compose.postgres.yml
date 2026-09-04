@@ -4,15 +4,17 @@ services:
   postgres:
     image: postgres:18
     container_name: postgres-dev
-    POSTGRES_DB: ${POSTGRES_DB_TEST}
-    POSTGRES_USER: ${POSTGRES_USER_TEST}
-    POSTGRES_PASSWORD: ${POSTGRES_PASS_TEST}
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB_TEST}
+      POSTGRES_USER: ${POSTGRES_USER_TEST}
+      POSTGRES_PASSWORD: ${POSTGRES_PASS_TEST}
+
     ports:
       - "5432:5432"
     volumes:
       - postgres-dev-data:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER_TEST} -d ${POSTGRES_DB_TEST}"]
       interval: 2s
       timeout: 5s
       retries: 10

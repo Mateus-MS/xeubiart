@@ -1,5 +1,6 @@
 package com.xeubiart.backend.domain.work.entity;
 
+import com.xeubiart.backend.domain.work.model.TattooStyle;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Table(name = "tb_works")
 @Getter @Setter @Builder @AllArgsConstructor @NoArgsConstructor
 public class WorkEntity {
     @Id
@@ -17,7 +19,7 @@ public class WorkEntity {
     private String title;
 
     @Column(nullable = false)
-    private String style;
+    private TattooStyle style;
 
     @Column(nullable = false)
     private String description;

@@ -11,7 +11,16 @@
             <ui-tab-switcher 
                 class="lg:hidden"
                 (tab-change)="handleTabChange($event)" 
-                [tabs]="['Imagens', 'Pré-visualização']">
+                [tabs]="[
+                    {
+                        label: 'Imagens',
+                        value: 'images'
+                    },
+                    {
+                        label: 'Pré-visualização',
+                        value: 'preview'
+                    }
+                ]">
             </ui-tab-switcher>
         </div>
 
@@ -28,7 +37,7 @@
                 accept="image/png, image/jpeg, image/webp, image/heic, image/*" 
                 (change)="onFilesSelected($event)">
 
-            <div [class.hidden]="selectedTab !== 'Imagens'" 
+            <div [class.hidden]="selectedTab !== 'images'" 
                 class="h-fit flex flex-col lg:h-full lg:overflow-y-auto py-1 px-2 gap-4">
                 @for (entry of uploadedImages; track entry[0]) {
                     <ui-card classes="w-full h-fit last:mb-0 grid grid-cols-[30%_minmax(0,1fr)] p-3 sm:p-4 gap-3 sm:gap-4">
@@ -143,7 +152,7 @@
                 }
             </div>
 
-            <div [class.hidden]="selectedTab !== 'Pré-visualização'" class="py-1 h-full lg:block">
+            <div [class.hidden]="selectedTab !== 'preview'" class="py-1 h-full lg:block">
                 <ui-card classes="w-full h-full flex flex-col gap-4 p-6 items-center">
                     
                     <div class="w-full justify-between flex gap-2 items-center">

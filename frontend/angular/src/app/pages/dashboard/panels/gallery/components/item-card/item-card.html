@@ -1,0 +1,65 @@
+<div
+    class="
+        border-1 border-cherry/25 rounded-2xl overflow-hidden transition-all duration-200
+        hover:-translate-y-[3px] hover:shadow-[0_14px_40px_rgba(139,26,43,0.12)] hover:border-cherry/45
+        group
+    "
+    [class.saturate-25]="!work().visible"
+>
+    <!-- Top -->
+    <div class="w-full relative">
+        <img class="w-full h-[350px] object-cover" [src]="'/api/files/' + work().photosUrls[0]">
+        <!-- Overlay -->
+        <div class="flex p-3 justify-between absolute inset-0 w-full h-full">
+            <!-- Visibility visible -->
+            <div 
+                class="
+                    flex px-2 py-1 bg-white text-xs flex items-center gap-2 w-fit h-fit rounded-full
+                    before:block before:grow-0 before:w-[7px] before:h-[7px] before:rounded-full font-semibold
+                " 
+                [class]="work().visible ? 'before:bg-green-800 text-green-800' : 'before:bg-gray-500 text-gray-500'"
+            >
+                @if(work().visible) {
+                    <span>Visível</span>
+                } @else {
+                    <span>Oculto</span>
+                }
+            </div>
+            <!-- Photos count -->
+            <div class="w-fit h-fit px-3 py-[.2rem] rounded-full bg-black/40 text-white flex gap-2 items-center">
+                <i class="icon-picture text-[.6rem]"></i>
+                <span class="text-[.75rem] font-semibold">{{work().photosUrls.length}}</span>
+            </div>
+
+            <!-- Edit buttons -->
+            <div class="
+                w-full h-fit absolute p-3 left-0 bottom-0 opacity-0 transition-opacity duration-200
+                group-hover:opacity-100
+            ">
+                <div class="w-full h-[200px] bg-linear-to-t from-black/40 to-transparent absolute left-0 bottom-0"></div>
+                <button class="w-fit bg-white px-2 py-1 rounded-full flex gap-1 items-center absolute right-3 bottom-3 cursor-pointer"
+                        (click)="handleEditClick()"
+                >
+                    <i class="text-xs icon-pencil"></i>
+                    <span class="text-[.75rem] font-semibold">Editar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info: Title, Description -->
+    <div class="w-full p-3 bg-white">
+        <div class="font-contrast text-lg mb-1">{{work().title}}</div>
+        <div class="text-muted text-sm">{{work().description}}</div>
+    </div>
+
+    <!-- Bottom: Style, Date -->
+    <div class="w-full flex justify-between items-center p-3 border-t-1 border-t-cherry/25">
+        <div>
+            <span class="text-xs text-muted">25/06/26 · {{ getStyleLabel(work().style) }}</span>
+        </div>
+        <div>
+            <ui-toggler [active]="this.work().visible" (toggler-change)="handleVisibilityChange($event)"></ui-toggler>
+        </div>
+    </div>
+</div>

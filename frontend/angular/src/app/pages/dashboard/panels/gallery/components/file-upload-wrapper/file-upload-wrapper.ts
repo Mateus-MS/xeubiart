@@ -1,10 +1,5 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild } from '@angular/core';
-
-interface UploadedFile {
-	id: string;
-	file: File;
-	url: string;
-}
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, input, output, ViewChild } from '@angular/core';
+import { UploadedFile } from '../../../../../../models/uploadedFile';
 
 @Component({
 	selector: 'app-file-upload-wrapper',
@@ -13,89 +8,79 @@ interface UploadedFile {
 	schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class FileUploadWrapper {
-  	uploadedFiles: UploadedFile[] = [];
-	draggedIndex: number | null = null;
+    files = input<UploadedFile[]>([]);
 
-	@ViewChild('uploader') uploader!: ElementRef;
+    filesSelected = output<File[]>();
+    fileRemoved = output<number>();
+    filesReordered = output<{
+        fromIndex: number;
+        toIndex: number;
+    }>();
 
-	openFilePicker() {
-		this.uploader.nativeElement.open();
-	}
+    draggedIndex: number | null = null;
 
-  	onUploadFile(event: Event){
-		const customEvent = event as CustomEvent<{ files: File[] }>;
+    @ViewChild('uploader') uploader!: ElementRef;
 
-		this.appendImages(customEvent.detail.files)
-	}
+    get filesCount(): number {
+        return this.files().length;
+    }
 
-	appendImages(files: File[]){
-		this.uploadedFiles = [
-			...this.uploadedFiles,
-			...files.map(file => ({
-				id: crypto.randomUUID(),
-				file,
-				url: URL.createObjectURL(file),
-			})),
-		];
-	}
+    openFilePicker() {
+        this.uploader.nativeElement.open();
+    }
 
-	removeFile(index: number){
-		const [removed] = this.uploadedFiles.splice(index, 1);
+    onUploadFile(event: Event) {
+        const customEvent =
+            event as CustomEvent<{ files: File[] }>;
 
-		if (removed) {
-			URL.revokeObjectURL(removed.url);
-		}
+        this.filesSelected.emit(customEvent.detail.files);
+    }
 
-		this.uploadedFiles = [...this.uploadedFiles];
-	}
+    removeFile(index: number) {
+        this.fileRemoved.emit(index);
+    }
 
-	setAsCover(index: number){
-		this.reorderFile(index, 0);
-	}
+    setAsCover(index: number) {
+        this.reorderFile(index, 0);
+    }
 
-	reorderFile(fromIndex: number, toIndex: number){
-		if (
-			fromIndex < 0 ||
-			fromIndex >= this.uploadedFiles.length ||
-			toIndex < 0 ||
-			toIndex >= this.uploadedFiles.length
-		){
-			return;
-		}
+    reorderFile(fromIndex: number, toIndex: number) {
+        if (
+            fromIndex < 0 ||
+            fromIndex >= this.files().length ||
+            toIndex < 0 ||
+            toIndex >= this.files().length
+        ) {
+            return;
+        }
 
-		const files = [...this.uploadedFiles];
-		const [file] = files.splice(fromIndex, 1);
+        this.filesReordered.emit({
+            fromIndex,
+            toIndex
+        });
+    }
 
-		files.splice(toIndex, 0, file);
+    onDragStart(index: number) {
+        this.draggedIndex = index;
+    }
 
-		this.uploadedFiles = files;
-	}
+    onDragEnd() {
+        this.draggedIndex = null;
+    }
 
-	onDragStart(index: number) {
-		this.draggedIndex = index;
-	}
+    onDragOver(event: DragEvent) {
+        event.preventDefault();
+    }
 
-	onDragEnd() {
-		this.draggedIndex = null;
-	}
+    onDrop(index: number) {
+        if (
+            this.draggedIndex === null ||
+            this.draggedIndex === index
+        ) {
+            return;
+        }
 
-	onDragOver(event: DragEvent) {
-		event.preventDefault();
-	}
-
-	onDrop(index: number){
-		if (this.draggedIndex === null || this.draggedIndex === index) {
-			return;
-		}
-
-		this.reorderFile(this.draggedIndex, index);
-
-		this.draggedIndex = null;
-	}
-
-	ngOnDestroy(){
-		for (const item of this.uploadedFiles) {
-			URL.revokeObjectURL(item.url);
-		}
-	}
+        this.reorderFile(this.draggedIndex, index);
+        this.draggedIndex = null;
+    }
 }

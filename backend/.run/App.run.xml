@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="App" type="Application" factoryName="Application" activateToolWindowBeforeRun="false">
+  <configuration default="false" name="App" type="Application" factoryName="Application" activateToolWindowBeforeRun="true">
     <option name="envFilePaths">
       <option value="$PROJECT_DIR$/../.env" />
     </option>
