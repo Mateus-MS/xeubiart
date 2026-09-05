@@ -1,12 +1,10 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, effect, OnDestroy, output, signal, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnDestroy, output, signal } from '@angular/core';
 import { VisibilityToggler } from '../visibility-toggler/visibility-toggler';
 import { UiInputDirective } from '../../../../../../directives/uiInputDirective';
 import { FileUploadWrapper } from '../file-upload-wrapper/file-upload-wrapper';
 import { UploadedFile } from '../../../../../../models/uploadedFile';
-import { CreateWorkDTO, TattooStyle, WorkEntity } from '../../../../../../models/work';
+import { TattooStyle, WorkEntity } from '../../../../../../models/work';
 import { TATTOO_STYLES } from '../../../../../../models/tattooStyles';
-
-export type TattooStyles = typeof TATTOO_STYLES[number]['value'];
 
 @Component({
 	selector: 'app-item-popup',
@@ -26,10 +24,17 @@ export class ItemPopup implements OnDestroy {
 	visible = signal(true);
 	id: string = '';
 
-	uploadedFiles = signal<UploadedFile[]>([]);
-	@ViewChild(VisibilityToggler)visibilityToggler!: VisibilityToggler;
+	private initialState: {
+		title: string;
+		style: TattooStyle | '';
+		description: string;
+		visible: boolean;
+		files: UploadedFile[];
+	} | null = null;
 
-	createWorkEvent = output<{
+	uploadedFiles = signal<UploadedFile[]>([]);
+
+	submitWorkEvent = output<{
 		isEditing: boolean;
 		workData: Partial<WorkEntity>;
 		files: UploadedFile[];
@@ -45,12 +50,49 @@ export class ItemPopup implements OnDestroy {
 		this.visible.set(data?.visible ?? true);
 		this.id = data?.id ?? '';
 
-		const files: UploadedFile[] = (data?.photosUrls ?? []).map(url => ({
+		const files: UploadedFile[] = (data?.photosURLs ?? []).map(url => ({
+			id: url,
 			url,
 			isLocal: false
 		}));
 
 		this.uploadedFiles.set(files);
+
+		if (this.isEditing) {
+			this.initialState = {
+				title: this.title(),
+				style: this.style(),
+				description: this.description(),
+				visible: this.visible(),
+				files: structuredClone(files)
+			};
+		} else {
+			this.initialState = null;
+		}
+	}
+
+	hasChanges(): boolean {
+    	if (!this.isEditing || !this.initialState) {
+			return false;
+		}
+
+		return (
+			this.title() !== this.initialState.title ||
+			this.style() !== this.initialState.style ||
+			this.description() !== this.initialState.description ||
+			this.visible() !== this.initialState.visible ||
+			!this.areFilesEqual(this.uploadedFiles(), this.initialState.files)
+		);
+	}
+
+	private areFilesEqual(current: UploadedFile[], initial: UploadedFile[]): boolean {
+		if (current.length !== initial.length) {
+			return false;
+		}
+
+		return current.every((file, index) => {
+			return file.id === initial[index].id;
+		});
 	}
 
 	onFilesSelected(files: File[]) {
@@ -92,7 +134,17 @@ export class ItemPopup implements OnDestroy {
 		});
 	}
 
-	close() {
+	close(askConfirmation: boolean = false) {
+		if (askConfirmation && this.hasChanges()) {
+			const confirmed = window.confirm(
+				'You have unsaved changes. Are you sure you want to close?'
+			);
+
+			if (!confirmed) {
+				return;
+			}
+		}
+
 		this.isOpen.set(false);
 	}
 
@@ -109,14 +161,14 @@ export class ItemPopup implements OnDestroy {
 		console.log(files)
 	}
 
-	createWork() {
+	submitWork() {
 		const style = this.style();
 
 		if (!style || !this.canCreateWork()) {
 			return;
 		}
 
-		this.createWorkEvent.emit({
+		this.submitWorkEvent.emit({
 			isEditing: this.isEditing,
 			workData: {
 				id: this.id,

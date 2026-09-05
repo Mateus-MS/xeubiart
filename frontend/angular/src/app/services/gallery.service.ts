@@ -70,7 +70,7 @@ export class GalleryService {
 
             return {
                 type: 'existing',
-                value: file.url
+                value: file.id
             };
         });
 
@@ -89,7 +89,7 @@ export class GalleryService {
 
         for (const item of files) {
             if(item.isLocal && item.file && item.id){
-                formData.append('images', item.file, item.id);
+                formData.append('images', item.file, `${item.id}__${item.file.name}`);
             }
         }
 

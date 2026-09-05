@@ -3,31 +3,31 @@ import { Gallery } from './panels/gallery/gallery';
 import { NgComponentOutlet } from '@angular/common';
 
 @Component({
-  selector: 'app-dashboard',
-  imports: [NgComponentOutlet],
-  templateUrl: './dashboard.html',
-  styleUrl: './dashboard.css',
+	selector: 'app-dashboard',
+	imports: [NgComponentOutlet],
+	templateUrl: './dashboard.html',
+	styleUrl: './dashboard.css',
 })
 export class Dashboard {
-  selectedCategory: string = 'geral';
-  
-  categories = new Map<string, dashboard_panel[]>([
-    ['geral', [
-      { 
-        icon: 'icon-picture',
-        title: 'Galeria', 
-        panel: Gallery
-      }
-    ]],
-  ]);
+	selectedCategory: string = 'geral';
+	
+	categories = new Map<string, dashboard_panel[]>([
+		['geral', [
+		{ 
+			icon: 'icon-picture',
+			title: 'Galeria', 
+			panel: Gallery
+		}
+		]],
+	]);
 
-  get getSelectedPanel(): Type<any> | undefined {
-    return this.categories.get(this.selectedCategory)?.[0]?.panel;
-  }
+	get getSelectedPanel(): Type<any> | undefined {
+		return this.categories.get(this.selectedCategory)?.[0]?.panel;
+	}
 }
 
 interface dashboard_panel{
-  icon: string;
-  title: string;
-  panel: Type<any> | undefined;
+	icon: string;
+	title: string;
+	panel: Type<any> | undefined;
 }

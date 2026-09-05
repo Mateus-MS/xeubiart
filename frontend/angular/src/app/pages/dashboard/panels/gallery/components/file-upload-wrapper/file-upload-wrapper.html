@@ -12,9 +12,10 @@
     >
         @for (item of files(); track item.url; let i = $index) {
             <div
-                class="hover:shadow-[0_8px_22px_rgba(139,26,43,0.18)] hover:scale-102 transition-all duration-300 cursor-pointer group w-full aspect-square overflow-hidden rounded-lg relative"
+                class="hover:shadow-[0_8px_22px_rgba(139,26,43,0.18)] hover:scale-102 transition-all duration-300 group w-full aspect-square overflow-hidden rounded-lg relative"
                 [class]="$index === 0 ? 'border-2 border-cherry' : ''"
                 [class.opacity-50]="draggedIndex === i"
+                [class]="draggedIndex !== null ? 'cursor-grabbing' : 'cursor-grab'"
                 
                 draggable="true"
                 (dragstart)="onDragStart(i)"

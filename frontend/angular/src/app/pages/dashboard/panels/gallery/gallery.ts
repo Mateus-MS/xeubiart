@@ -54,7 +54,7 @@ export class Gallery implements OnInit {
 		});
 	}
 
-	handleCreateWork(event: {isEditing: boolean; workData: Partial<WorkEntity>; files: UploadedFile[];}) {
+	handleSubmitWork(event: {isEditing: boolean; workData: Partial<WorkEntity>; files: UploadedFile[];}) {
 		if(event.isEditing){
 			this.galleryService.updateWork(event.workData.id ?? '', event.workData, event.files).subscribe({
 				next: () => {

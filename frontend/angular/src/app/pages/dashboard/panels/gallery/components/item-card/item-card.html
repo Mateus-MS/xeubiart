@@ -8,7 +8,7 @@
 >
     <!-- Top -->
     <div class="w-full relative">
-        <img class="w-full h-[350px] object-cover" [src]="'/api/files/' + work().photosUrls[0]">
+        <img class="w-full h-[350px] object-cover" [src]="'/api/files/' + work().photosURLs[0]">
         <!-- Overlay -->
         <div class="flex p-3 justify-between absolute inset-0 w-full h-full">
             <!-- Visibility visible -->
@@ -28,7 +28,7 @@
             <!-- Photos count -->
             <div class="w-fit h-fit px-3 py-[.2rem] rounded-full bg-black/40 text-white flex gap-2 items-center">
                 <i class="icon-picture text-[.6rem]"></i>
-                <span class="text-[.75rem] font-semibold">{{work().photosUrls.length}}</span>
+                <span class="text-[.75rem] font-semibold">{{work().photosURLs.length}}</span>
             </div>
 
             <!-- Edit buttons -->

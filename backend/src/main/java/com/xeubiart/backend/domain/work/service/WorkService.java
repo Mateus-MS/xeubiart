@@ -1,5 +1,6 @@
 package com.xeubiart.backend.domain.work.service;
 
+import com.xeubiart.backend.controllerAdvice.exceptions.ResourceNotFoundException;
 import com.xeubiart.backend.domain.work.DTO.CreateWorkRequest;
 import com.xeubiart.backend.domain.work.DTO.SearchWorkResponse;
 import com.xeubiart.backend.domain.work.DTO.UpdateWorkRequest;
@@ -13,5 +14,5 @@ import java.util.UUID;
 public interface WorkService {
     void create(CreateWorkRequest request);
     Page<SearchWorkResponse> find(Boolean visible, Pageable pageable);
-    void update(UUID id, UpdateWorkRequest request, List<MultipartFile> images);
+    void update(UUID id, UpdateWorkRequest request, List<MultipartFile> images) throws ResourceNotFoundException;
 }

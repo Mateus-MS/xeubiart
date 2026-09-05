@@ -10,7 +10,7 @@ export interface WorkEntity {
     title: string;
     description: string;
     style: TattooStyle;
-    photosUrls: string[];
+    photosURLs: string[];
     visible: boolean;
 }
 

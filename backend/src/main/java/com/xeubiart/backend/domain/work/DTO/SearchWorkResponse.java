@@ -12,6 +12,6 @@ public class SearchWorkResponse {
     private String title;
     private TattooStyle style;
     private String description;
-    private List<String> photosUrls;
+    private List<String> photosURLs;
     private boolean visible;
 }

@@ -1,6 +1,6 @@
-package com.xeubiart.backend.services.fileService.controller;
+package com.xeubiart.backend.domain.fileStorage.controller;
 
-import com.xeubiart.backend.services.fileService.service.FileService;
+import com.xeubiart.backend.domain.fileStorage.service.FileStorageService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -17,11 +17,11 @@ import java.io.IOException;
 @RequestMapping("/api/files")
 @AllArgsConstructor
 public class FileServiceController {
-    private final FileService fileService;
+    private final FileStorageService fileStorageService;
 
     @GetMapping("/{key}")
     public ResponseEntity<Resource> getImage(@PathVariable String key) throws IOException {
-        Resource resource = this.fileService.load(key);
+        Resource resource = this.fileStorageService.load(key);
 
         return ResponseEntity.ok()
                 .contentType(MediaTypeFactory
