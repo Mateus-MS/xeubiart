@@ -24,30 +24,33 @@ export class ItemPopup implements OnDestroy {
 	style = signal<TattooStyle | ''>('');
 	description = signal('');
 	visible = signal(true);
+	id: string = '';
 
 	uploadedFiles = signal<UploadedFile[]>([]);
 	@ViewChild(VisibilityToggler)visibilityToggler!: VisibilityToggler;
 
 	createWorkEvent = output<{
-		workData: CreateWorkDTO;
+		isEditing: boolean;
+		workData: Partial<WorkEntity>;
 		files: UploadedFile[];
 	}>();
 
 	open(data?: WorkEntity) {
-		this.isEditing = data !== undefined
+		this.isEditing = data !== undefined;
 		this.isOpen.set(true);
 
 		this.title.set(data?.title ?? '');
 		this.style.set(data?.style ?? '');
 		this.description.set(data?.description ?? '');
 		this.visible.set(data?.visible ?? true);
+		this.id = data?.id ?? '';
 
-		this.uploadedFiles.set(
-			data?.photosUrls.map(url => ({
-				url,
-				isLocal: false
-			})) ?? []
-		);
+		const files: UploadedFile[] = (data?.photosUrls ?? []).map(url => ({
+			url,
+			isLocal: false
+		}));
+
+		this.uploadedFiles.set(files);
 	}
 
 	onFilesSelected(files: File[]) {
@@ -114,7 +117,9 @@ export class ItemPopup implements OnDestroy {
 		}
 
 		this.createWorkEvent.emit({
+			isEditing: this.isEditing,
 			workData: {
+				id: this.id,
 				title: this.title(),
 				style,
 				description: this.description(),

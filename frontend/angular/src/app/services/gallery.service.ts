@@ -37,13 +37,13 @@ export class GalleryService {
         });
     }
 
-    createWork(workData: CreateWorkDTO, files: UploadedFile[]) {
+    createWork(workData: Partial<WorkEntity>, files: UploadedFile[]) {
         const formData = new FormData();
 
-        formData.append('title', workData.title);
-        formData.append('style', workData.style);
-        formData.append('description', workData.description);
-        formData.append('visible', String(workData.visible));
+        formData.append('title', workData.title ?? '');
+        formData.append('style', workData.style ?? '');
+        formData.append('description', workData.description ?? '');
+        formData.append('visible', String(workData.visible ?? true));
 
         for (const item of files) {
             formData.append('images', item.file!, item.file!.name);
@@ -56,26 +56,59 @@ export class GalleryService {
         this._visibilityQueryMode.set(state);
     }
 
+    updateWork(id: string, workData: Partial<WorkEntity>, files: UploadedFile[]) {
+        const formData = new FormData();
+
+        // Append the files order so backend can maintain the order of uploaded files
+        const photos = files.map(file => {
+            if (file.isLocal) {
+                return {
+                    type: 'new',
+                    value: file.id
+                };
+            }
+
+            return {
+                type: 'existing',
+                value: file.url
+            };
+        });
+
+        const data = {
+            ...workData,
+            photos
+        };
+
+        formData.append(
+            'data',
+            new Blob(
+                [JSON.stringify(data)],
+                { type: 'application/json' }
+            )
+        );
+
+        for (const item of files) {
+            if(item.isLocal && item.file && item.id){
+                formData.append('images', item.file, item.id);
+            }
+        }
+
+        return this.http.patch(`/api/work/${id}`, formData);
+    }
+
     updateWorkVisibility(id: string, visible: boolean) {
         const formData = new FormData();
-        formData.append('visible', String(visible));
+        const work = this._works().find(work => work.id === id);
+        if (!work) {
+            console.error(`Work with id ${id} not found.`);
+            return;
+        }
+        work.visible = visible;
+        formData.append('data', new Blob(
+            [JSON.stringify(work)],
+            { type: 'application/json' }
+        ));
 
-        this.http.patch(`/api/work/${id}`, formData).subscribe({
-            next: () => {
-                const updatedWorks = this._works().map(work =>
-                    work.id === id
-                        ? { ...work, visible }
-                        : work
-                );
-
-                this._works.set(updatedWorks);
-            },
-            error: error => {
-                console.error(
-                    `Error updating visibility for work ${id}:`,
-                    error
-                );
-            }
-        });
+        return this.http.patch(`/api/work/${id}`, formData);
     }
 }

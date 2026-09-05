@@ -4,7 +4,7 @@ import { ItemCard } from './components/item-card/item-card';
 import { GalleryService, VisibilityQueryMode } from '../../../../services/gallery.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UploadedFile } from '../../../../models/uploadedFile';
-import { CreateWorkDTO, WorkEntity } from '../../../../models/work';
+import { WorkEntity } from '../../../../models/work';
 
 @Component({
 	selector: 'app-gallery',
@@ -44,20 +44,38 @@ export class Gallery implements OnInit {
 	}
 
 	handleUpdateVisibility(event: { id: string; visible: boolean }) {
-		this.galleryService.updateWorkVisibility(event.id, event.visible);
+		this.galleryService.updateWorkVisibility(event.id, event.visible)?.subscribe({
+			next: () => {
+				this.galleryService.loadWorks();
+			},
+			error: error => {
+				console.error('Visibility update failed', error);
+			}
+		});
 	}
 
-	handleCreateWork(event: {workData: CreateWorkDTO; files: UploadedFile[];}) {
-		this.galleryService.createWork(event.workData, event.files)
-			.subscribe({
+	handleCreateWork(event: {isEditing: boolean; workData: Partial<WorkEntity>; files: UploadedFile[];}) {
+		if(event.isEditing){
+			this.galleryService.updateWork(event.workData.id ?? '', event.workData, event.files).subscribe({
 				next: () => {
 					this.popup()?.close();
 					this.galleryService.loadWorks();
 				},
 				error: error => {
-					console.error('Create work failed:', error);
+					console.error('Update failed', error);
 				}
 			});
+		}else{
+			this.galleryService.createWork(event.workData, event.files).subscribe({
+				next: () => {
+					this.popup()?.close();
+					this.galleryService.loadWorks();
+				},
+				error: error => {
+					console.error('Update failed', error);
+				}
+			});
+		}
 	}
 
 	handleOpenEditPopup(work: WorkEntity) {

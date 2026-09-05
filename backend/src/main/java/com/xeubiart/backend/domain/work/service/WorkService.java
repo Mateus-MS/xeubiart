@@ -5,11 +5,13 @@ import com.xeubiart.backend.domain.work.DTO.SearchWorkResponse;
 import com.xeubiart.backend.domain.work.DTO.UpdateWorkRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface WorkService {
     void create(CreateWorkRequest request);
     Page<SearchWorkResponse> find(Boolean visible, Pageable pageable);
-    void update(UUID id, UpdateWorkRequest request);
+    void update(UUID id, UpdateWorkRequest request, List<MultipartFile> images);
 }

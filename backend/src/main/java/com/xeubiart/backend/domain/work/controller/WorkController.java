@@ -10,7 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -30,7 +32,10 @@ public class WorkController {
     }
 
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void updateWork(@PathVariable UUID id, @Valid @ModelAttribute UpdateWorkRequest request){
-        workService.update(id, request);
+    public void updateWork(@PathVariable UUID id,
+                           @RequestPart("data") UpdateWorkRequest request,
+                           @RequestPart(value = "images", required = false) List<MultipartFile> images
+    ){
+        workService.update(id, request, images);
     }
 }
