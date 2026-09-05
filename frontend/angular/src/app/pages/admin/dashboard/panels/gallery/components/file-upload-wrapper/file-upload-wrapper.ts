@@ -1,5 +1,5 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, input, output, ViewChild } from '@angular/core';
-import { UploadedFile } from '../../../../../../models/uploadedFile';
+import { UploadedFile } from '../../../../../../../models/uploadedFile';
 
 @Component({
 	selector: 'app-file-upload-wrapper',

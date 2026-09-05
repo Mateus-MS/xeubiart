@@ -1,10 +1,10 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnDestroy, output, signal } from '@angular/core';
 import { VisibilityToggler } from '../visibility-toggler/visibility-toggler';
-import { UiInputDirective } from '../../../../../../directives/uiInputDirective';
+import { UiInputDirective } from '../../../../../../../directives/uiInputDirective';
 import { FileUploadWrapper } from '../file-upload-wrapper/file-upload-wrapper';
-import { UploadedFile } from '../../../../../../models/uploadedFile';
-import { TattooStyle, WorkEntity } from '../../../../../../models/work';
-import { TATTOO_STYLES } from '../../../../../../models/tattooStyles';
+import { UploadedFile } from '../../../../../../../models/uploadedFile';
+import { TattooStyle, WorkEntity } from '../../../../../../../models/work';
+import { TATTOO_STYLES } from '../../../../../../../models/tattooStyles';
 
 @Component({
 	selector: 'app-item-popup',

@@ -1,6 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, input, output } from '@angular/core';
-import { WorkEntity } from '../../../../../../models/work';
-import { TATTOO_STYLES } from '../../../../../../models/tattooStyles';
+import { WorkEntity } from '../../../../../../../models/work';
+import { TATTOO_STYLES } from '../../../../../../../models/tattooStyles';
 
 @Component({
 	selector: 'app-item-card',

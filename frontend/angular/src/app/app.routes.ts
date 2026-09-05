@@ -1,10 +1,18 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from './auth/admin.guard';
 
 export const routes: Routes = [
     {
         path: 'admin/dashboard',
-        loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard),
+        canActivate: [adminGuard],
+        loadComponent: () => import('./pages/admin/dashboard/dashboard').then(m => m.Dashboard),
         title: 'Xeubiart | Painel de administrador',
+    },
+    {
+        path: 'admin/login',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./pages/admin/login/login').then(m => m.Login),
+        title: 'Xeubiart | Login como administrador',
     },
     {
         path: 'tools/stencil-optimizer',

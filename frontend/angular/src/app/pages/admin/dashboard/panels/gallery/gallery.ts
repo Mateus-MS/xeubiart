@@ -1,10 +1,10 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, DestroyRef, inject, OnInit, signal, viewChild } from '@angular/core';
 import { ItemPopup } from './components/item-popup/item-popup';
 import { ItemCard } from './components/item-card/item-card';
-import { GalleryService, VisibilityQueryMode } from '../../../../services/gallery.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { UploadedFile } from '../../../../models/uploadedFile';
-import { WorkEntity } from '../../../../models/work';
+import { GalleryService, VisibilityQueryMode } from '../../../../../services/gallery.service';
+import { WorkEntity } from '../../../../../models/work';
+import { UploadedFile } from '../../../../../models/uploadedFile';
 
 @Component({
 	selector: 'app-gallery',
