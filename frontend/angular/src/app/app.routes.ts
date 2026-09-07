@@ -10,7 +10,6 @@ export const routes: Routes = [
     },
     {
         path: 'admin/login',
-        canActivate: [adminGuard],
         loadComponent: () => import('./pages/admin/login/login').then(m => m.Login),
         title: 'Xeubiart | Login como administrador',
     },

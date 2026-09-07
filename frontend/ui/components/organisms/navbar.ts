@@ -16,7 +16,7 @@ export class UiNavbar extends LitElement {
                     selectedFlag: '/static/svg/flags/br.svg',
                 }"
             >
-                <a class="font-brand text-3xl text-cherry lg:absolute lg:left-1/2 lg:-translate-1/2 lg:top-1/2 lg:-transate-1/2" href="/">Xeubiart</a>
+                <ui-logo classes="lg:absolute lg:left-1/2 lg:-translate-1/2 lg:top-1/2 lg:-transate-1/2 text-4xl text-cherry"></ui-logo>
 
                 <div class="hidden lg:flex"></div>
             </div>

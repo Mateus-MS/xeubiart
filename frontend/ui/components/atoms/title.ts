@@ -8,7 +8,6 @@ export class UiTitle extends LightDomMixin(LitElement) {
     @property({ type: String }) level: string = 'h1';
     @property({ type: String }) classes = '';
 
-
     render() {
         const tag = unsafeStatic(this.level);
 

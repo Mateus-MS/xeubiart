@@ -1,1 +1,31 @@
-<p>login works!</p>
+<div class="size-full grid grid-cols-2">
+    <div 
+        class="
+            size-full relative overflow-hidden bg-text px-16 py-10
+            before:block before:absolute before:w-[500px] before:h-[500px] before:rounded-full before:bg-[radial-gradient(circle,_rgba(139,26,43,0.32)_0%,_transparent_65%)] before:bottom-[-200px] before:left-[-200px] before:pointer-events-none before:z-0 
+            after:block after:absolute after:w-[500px] after:h-[500px] after:rounded-full after:bg-[radial-gradient(circle,_rgba(139,26,43,0.32)_0%,_transparent_65%)] after:top-[-200px] after:right-[-200px] after:pointer-events-none after:z-
+        "
+    >
+        <ui-logo classes="text-white text-5xl"></ui-logo>
+    </div>
+    <div class="size-full bg-cream grid place-items-center">
+        <div class="w-[400px] max-w-[400px] h-fit flex flex-col gap-6">
+            <!-- Header -->
+            <div class="flex flex-col gap-1">
+                <ui-eyebrow type="cherry">Admin dashboard</ui-eyebrow>
+                <ui-title level="h3">Entrar no <em> estúdio.</em></ui-title>
+                <p class="text-muted">Acesso restrito a administradores. Usa as tuas credenciais para continuar.</p>
+            </div>
+            <!-- Body -->
+            <div class="flex flex-col gap-4">
+                <ui-input type="email" icon="icon-mail" placeholder="teu@xeubiart.com" label="Email" [(value)]="email" [state]="loginFeedback()"></ui-input>
+                <ui-input type="password" icon="icon-lock" placeholder="Sua senha" label="Senha" [(value)]="password" [state]="loginFeedback()"></ui-input>
+                <ui-button type="heavy" [disabled]="!canSubmit" classes="w-full !py-3" (click)="submit()">Abrir dashboard <i class="icon-right-hand"></i></ui-button>
+            </div>
+            <!-- Footer -->
+            <div>
+
+            </div>
+        </div>
+    </div>
+</div>

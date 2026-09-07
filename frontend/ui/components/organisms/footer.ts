@@ -163,7 +163,7 @@ export class UiFooter extends LitElement {
             >
                 <div class="w-full lg:max-w-[65%] ml-auto mr-auto flex gap-7 flex-col z-10">
                     <div>
-                        <a class="font-brand text-cherry text-5xl block mb-5" href="/">Xeubiart</a>
+                        <ui-logo classes="block mb-5 text-5xl text-cherry"></ui-logo>
                         <div class="text-muted text-sm">
                         <p>Arte feita com <em class="text-white/75 font-semibold">intenção</em> tatuada com cuidado.</p>
                         <p>Santo-Tirso, Porto - Portugal</p>

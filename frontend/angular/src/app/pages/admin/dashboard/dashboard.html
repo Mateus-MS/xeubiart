@@ -1,8 +1,8 @@
 <header class="bg-text w-full h-fit px-8 py-4 shrink-0">
-    <a class="font-brand text-white text-3xl" href="/">Xeubiart</a>
+    <ui-logo classes="text-white text-3xl"></ui-logo>
 </header>
 <section class="block bg-cream w-full h-full grid grid-cols-[250px_1fr] flex-1 min-h-0">
-    <aside class="w-full h-full bg-text-dark py-10">
+    <aside class="w-full h-full bg-text-dark py-10 flex flex-col">
         @for(category of categories; track category[0]){
             <div class="category">
                 <h3 class="mb-3 ml-6 text-[.7rem] uppercase text-white/30">{{ category[0] }}</h3>
@@ -21,6 +21,10 @@
                 </ul>
             </div>
         }
+
+        <div class="mt-auto w-full h-fit text-white hover:bg-cherry/20 transition-colors px-6 py-1.5">
+            <div (click)="logout()" class="cursor-pointer"><i class="icon-logout"></i> Logout</div>
+        </div>
     </aside>
     <main class="w-full mx-auto h-full bg-cream min-h-full overflow-y-auto">
         @if (getSelectedPanel) {

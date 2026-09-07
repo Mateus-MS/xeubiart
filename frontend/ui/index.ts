@@ -11,3 +11,4 @@ export * from './components/atoms/card';
 export * from './components/atoms/input';
 export * from './components/atoms/dropdown';
 export * from './components/atoms/toggler';
+export * from './components/atoms/logo';

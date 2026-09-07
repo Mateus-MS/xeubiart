@@ -6,8 +6,15 @@ import { catchError, map, of } from 'rxjs';
 export const adminGuard: CanActivateFn = () => {
     const http = inject(HttpClient);
 
-    return http.get('/api/user/isAdmin').pipe(
-        map(() => true),
+    return http.get<{ role: string; email: string }>('/api/auth/me', {withCredentials: true}).pipe(
+        map(response => {
+            if (response.role === 'ROLE_ADMIN') {
+                return true;
+            }
+
+            window.location.href = '/';
+            return false;
+        }),
 
         catchError(error => {
             if (error.status === 401) {
