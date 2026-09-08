@@ -2,7 +2,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, DestroyRef, inject, OnInit, signal, 
 import { ItemPopup } from './components/item-popup/item-popup';
 import { ItemCard } from './components/item-card/item-card';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { GalleryService, VisibilityQueryMode } from '../../../../../services/gallery.service';
+import { GalleryService, VisibilityQueryMode } from './services/work.service';
 import { WorkEntity } from '../../../../../models/work';
 import { UploadedFile } from '../../../../../models/uploadedFile';
 

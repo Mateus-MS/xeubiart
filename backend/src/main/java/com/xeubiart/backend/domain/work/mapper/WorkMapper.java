@@ -1,8 +1,6 @@
 package com.xeubiart.backend.domain.work.mapper;
 
-import com.xeubiart.backend.domain.work.DTO.CreateWorkRequest;
-import com.xeubiart.backend.domain.work.DTO.SearchWorkResponse;
-import com.xeubiart.backend.domain.work.DTO.UpdateWorkRequest;
+import com.xeubiart.backend.domain.work.DTO.*;
 import com.xeubiart.backend.domain.work.entity.WorkEntity;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -11,7 +9,11 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring")
 public interface WorkMapper {
-    SearchWorkResponse toSearchResponse(WorkEntity work);
+
+    PublicWorkResponse toPublicResponse(WorkEntity work);
+    UserWorkResponse toUserResponse(WorkEntity work);
+    AdminWorkResponse toAdminResponse(WorkEntity work);
+
     WorkEntity toEntity(CreateWorkRequest request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

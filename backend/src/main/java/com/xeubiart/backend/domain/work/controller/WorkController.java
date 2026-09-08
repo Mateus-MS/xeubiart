@@ -1,8 +1,6 @@
 package com.xeubiart.backend.domain.work.controller;
 
-import com.xeubiart.backend.domain.work.DTO.CreateWorkRequest;
-import com.xeubiart.backend.domain.work.DTO.SearchWorkResponse;
-import com.xeubiart.backend.domain.work.DTO.UpdateWorkRequest;
+import com.xeubiart.backend.domain.work.DTO.*;
 import com.xeubiart.backend.domain.work.service.WorkService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -17,28 +15,46 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/work")
+@RequestMapping("/api")
 @AllArgsConstructor
 public class WorkController {
     private WorkService workService;
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/works", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void createWork(@Valid @ModelAttribute CreateWorkRequest request) {
         workService.create(request);
     }
 
-    @GetMapping
-    public Page<SearchWorkResponse> findAll(@RequestParam(required = false) Boolean visible, Pageable pageable){
-        return this.workService.find(visible, pageable);
-    }
-
     @PreAuthorize("hasRole('ADMIN')")
-    @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/works/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void updateWork(@PathVariable UUID id,
                            @RequestPart("data") UpdateWorkRequest request,
                            @RequestPart(value = "images", required = false) List<MultipartFile> images
     ){
         workService.update(id, request, images);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/works")
+    public Page<AdminWorkResponse> findAdminWorks(
+            @RequestParam(required = false) Boolean visible,
+            Pageable pageable
+    ) {
+        return workService.findForAdmin(visible, pageable);
+    }
+
+//    @PreAuthorize("isAuthenticated()")
+//    @GetMapping("/me/works")
+//    public Page<UserWorkResponse> findMyWorks(Pageable pageable) {
+//
+//        UUID userId = authenticationService.getCurrentUserId();
+//
+//        return workService.findForUser(userId, pageable);
+//    }
+
+    @GetMapping("/works")
+    public Page<PublicWorkResponse> findAll(Pageable pageable) {
+        return workService.findPublic(pageable);
     }
 }

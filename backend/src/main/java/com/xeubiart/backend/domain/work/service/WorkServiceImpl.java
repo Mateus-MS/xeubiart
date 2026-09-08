@@ -1,8 +1,9 @@
 package com.xeubiart.backend.domain.work.service;
 
 import com.xeubiart.backend.controllerAdvice.exceptions.ResourceNotFoundException;
+import com.xeubiart.backend.domain.work.DTO.AdminWorkResponse;
 import com.xeubiart.backend.domain.work.DTO.CreateWorkRequest;
-import com.xeubiart.backend.domain.work.DTO.SearchWorkResponse;
+import com.xeubiart.backend.domain.work.DTO.PublicWorkResponse;
 import com.xeubiart.backend.domain.work.DTO.UpdateWorkRequest;
 import com.xeubiart.backend.domain.work.entity.WorkEntity;
 import com.xeubiart.backend.domain.work.exceptions.InvalidPhotoOrderException;
@@ -16,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -35,18 +35,30 @@ public class WorkServiceImpl implements WorkService{
         this.workRepository.save(work);
     }
 
+
     @Override
-    public Page<SearchWorkResponse> find(Boolean visible, Pageable pageable) {
-        if (visible == null) {
-            return workRepository.findAll(pageable)
-                    .map(this.workMapper::toSearchResponse);
+    public Page<PublicWorkResponse> findPublic(Pageable pageable){
+        return workRepository
+                .findByVisibleTrue(pageable)
+                .map(workMapper::toPublicResponse);
+    }
+//    public Page<UserWorkResponse> findForUser(UUID userId, Pageable pageable){
+//        return workRepository
+//                .findByCustomerId(userId, pageable)
+//                .map(workMapper::toUserResponse);
+//    }
+
+    @Override
+    public Page<AdminWorkResponse> findForAdmin(Boolean visible, Pageable pageable){
+        Page<WorkEntity> works;
+
+        if(visible == null){
+            works = workRepository.findAll(pageable);
+        }else{
+            works = workRepository.findByVisible(visible, pageable);
         }
-        if (visible) {
-            return workRepository.findByVisibleTrue(pageable)
-                    .map(this.workMapper::toSearchResponse);
-        }
-        return workRepository.findByVisibleFalse(pageable)
-                .map(this.workMapper::toSearchResponse);
+
+        return works.map(workMapper::toAdminResponse);
     }
 
     @Override public void update( UUID id, UpdateWorkRequest request, List<MultipartFile> images ) {
@@ -62,13 +74,9 @@ public class WorkServiceImpl implements WorkService{
             try {
                 this.workRepository.save(work);
             } catch (RuntimeException e) {
-                /* * The database update failed after new files were saved.
-                 * Remove those new files so they don't remain orphaned.
-                 */
                 this.deleteNewImages(oldPhotos, newPhotos); throw e;
             }
 
-            /* * Only delete old files after the database update succeeded. */
             this.deleteRemovedImages(oldPhotos, newPhotos);
             return;
         }

@@ -1,9 +1,9 @@
 import { inject, Service, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Page } from '../models/page';
-import { CreateWorkDTO, WorkEntity } from '../models/work';
+import { Page } from '../../../../../../models/page';
+import { CreateWorkDTO, WorkEntity } from '../../../../../../models/work';
 import { Subject } from 'rxjs';
-import { UploadedFile } from '../models/uploadedFile';
+import { UploadedFile } from '../../../../../../models/uploadedFile';
 
 export type VisibilityQueryMode = 'visible' | 'hidden' | 'all';
 
@@ -23,7 +23,7 @@ export class GalleryService {
     loadWorks() {
         const visibility = this._visibilityQueryMode();
 
-        this.http.get<Page<WorkEntity>>('/api/work', {
+        this.http.get<Page<WorkEntity>>('/api/admin/works', {
             params: visibility !== 'all'
                 ? { visible: visibility === 'visible' }
                 : {}
@@ -49,7 +49,7 @@ export class GalleryService {
             formData.append('images', item.file!, item.file!.name);
         }
 
-        return this.http.post('/api/work', formData);
+        return this.http.post('/api/works', formData);
     }
     
     setVisibilityQueryMode(state: VisibilityQueryMode) {
@@ -93,7 +93,7 @@ export class GalleryService {
             }
         }
 
-        return this.http.patch(`/api/work/${id}`, formData);
+        return this.http.patch(`/api/works/${id}`, formData);
     }
 
     updateWorkVisibility(id: string, visible: boolean) {
@@ -109,6 +109,6 @@ export class GalleryService {
             { type: 'application/json' }
         ));
 
-        return this.http.patch(`/api/work/${id}`, formData);
+        return this.http.patch(`/api/works/${id}`, formData);
     }
 }
