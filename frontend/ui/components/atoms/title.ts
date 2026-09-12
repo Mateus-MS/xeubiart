@@ -12,7 +12,7 @@ export class UiTitle extends LightDomMixin(LitElement) {
         const tag = unsafeStatic(this.level);
 
         return html`
-            <${tag} class="${this.classes} text-4xl text-text font-contrast [&_em]:text-cherry">
+            <${tag} class="${this.classes} text-4xl text-text font-contrast [&_em]:text-cherry [&_it]:italic [&_it]:text-transparent [&_it]:[-webkit-text-stroke:1.5px_rgba(0,0,0,0.45)]">
                 ${this.renderSlottedChildren()}
             </${tag}>
         `;

@@ -39,7 +39,7 @@
     # Backend for Frontend (Templ)
     @templ {
         method GET
-        path / /test
+        path / /gallery
         not header Upgrade *websocket*
         not query token=*
     }

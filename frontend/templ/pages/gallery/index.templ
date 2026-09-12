@@ -1,0 +1,95 @@
+package pages
+
+import "com.xeubiart/app"
+import "com.xeubiart/pages/gallery/frags"
+import "com.xeubiart/utils"
+import "fmt"
+
+func init(){
+    app.GetInstance().Router.GET("/gallery", utils.Render(gallery()))
+}
+
+templ gallery(){
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Xeubiart | Gallery</title>
+
+        <link href="/tailwind.css" rel="stylesheet">
+
+        <link rel="icon" type="image/x-icon" href="/static/svg/xeubiart.svg">
+
+        <script type="module" src="/static/ui/ui-kit.mjs"></script>
+        <link rel="stylesheet" href="/static/css/fontello.css">
+
+        @head()
+    </head>
+    <body class="min-h-[100dvh] h-fit bg-cream">
+        <ui-navbar></ui-navbar>
+        <header class="px-[15%] pt-10 pb-5">
+            <ui-eyebrow type="dash">Portifólio</ui-eyebrow>
+            <ui-title level="h1" classes="text-6xl">Cada traço,<br> uma <it>história.</it></ui-title>
+            <span>Exibindo <strong>12</strong> de <strong>24</strong> trabalhos.</span>
+        </header>
+        @styleSelector()
+
+        <div id="gallery" class="mx-auto py-5">
+            {{
+                result, _ := app.GetInstance().Services.GalleryService.GetGallery()
+            }}
+
+            for _, item := range result.Content {
+                @frags.ItemCard(item)
+            }
+        </div>
+
+        <ui-footer></ui-footer>
+    </body>
+    </html> 
+}
+
+templ head(){
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script type="module" src="/static/ui/ui-kit.mjs"></script>
+
+    <script type="module">
+        import Masonry from 'https://esm.sh/masonry-layout@4';
+
+        const gallery = document.querySelector('#gallery');
+
+        if (gallery) {
+            const masonry = new Masonry(gallery, {
+                itemSelector: '.gallery-item',
+                columnWidth: 300,
+                gutter: 16,
+                fitWidth: true,
+                transitionDuration: '0.2s',
+            });
+        }
+    </script>
+}
+
+templ styleSelector(){
+    <div
+        x-data="{ selected: 'Todos' }"
+        class="flex gap-2 px-[15%] py-5 sticky top-(--spacing-header) z-100 bg-cream/85 backdrop-blur-md"
+    >
+        {{
+            categories := []string{"Todos", "Fine Line", "Floral", "Blackwork", "Authoral"}
+        }}
+
+        for _, category := range categories {
+            <div
+                class="flex border-1 rounded-full py-[.2rem] px-4 transition-all duration-300 cursor-pointer"
+                @click={fmt.Sprintf(`selected = '%s'`, category)}
+                :class={fmt.Sprintf(`selected === '%s' ? "text-white border-cherry bg-cherry hover:cursor-default" : "text-text/50 border-text/50 hover:text-text hover:border-text"`, category)}
+            >
+                <span>{category}</span>
+            </div>
+        }
+    </div>
+}

@@ -1,8 +1,11 @@
 package app
 
 import (
+	"net/http"
 	"sync"
 
+	"com.xeubiart/app/domains/gallery/service"
+	"com.xeubiart/app/router"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,14 +15,24 @@ var (
 )
 
 type application struct {
-	Router *gin.Engine
+	Router     *gin.Engine
+	HTTPClient *router.HTTPClient
+	Services   services
+}
+
+type services struct {
+	GalleryService service.GalleryService
 }
 
 func new() *application {
-	router := gin.Default()
+	httpClient := router.New(&http.Client{})
 
 	return &application{
-		Router: router,
+		Router:     gin.Default(),
+		HTTPClient: httpClient,
+		Services: services{
+			GalleryService: *service.New(httpClient),
+		},
 	}
 }
 

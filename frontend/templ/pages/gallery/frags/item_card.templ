@@ -1,0 +1,43 @@
+package frags
+
+import "com.xeubiart/app/domains/gallery/models"
+import "fmt"
+
+templ ItemCard(props models.GalleryItem) {
+    <article class="gallery-item group cursor-pointer w-[300px] mb-4 overflow-hidden rounded-2xl border border-cherry/20">
+        <div class="relative">
+            <img
+                src={fmt.Sprintf("/api/files/%s", props.PhotoURLs[0])}
+                alt={props.Title}
+                class="block w-full h-auto"
+            />
+
+            <div class="
+                absolute
+                inset-0
+
+                flex
+                flex-col
+                justify-end
+
+                p-4
+
+                opacity-0
+                group-hover:opacity-100
+
+                transition-opacity duration-200
+                bg-gradient-to-t from-black/80 via-black/20 to-transparent
+            ">
+                <div class="text-white">
+                    <h2 class="text-xl font-semibold">
+                        { props.Title }
+                    </h2>
+
+                    <span class="text-sm opacity-70">
+                        { props.Style }
+                    </span>
+                </div>
+            </div>
+        </div>
+    </article>
+}

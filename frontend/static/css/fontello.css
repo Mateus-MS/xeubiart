@@ -74,6 +74,7 @@
 .icon-lock:before { content: '\e816'; } /* '' */
 .icon-camera:before { content: '\e817'; } /* '' */
 .icon-logout:before { content: '\e818'; } /* '' */
+.icon-resize-full:before { content: '\e819'; } /* '' */
 .icon-download:before { content: '\f02e'; } /* '' */
 .icon-facebook:before { content: '\f09a'; } /* '' */
 .icon-arrow-down:before { content: '\f107'; } /* '' */

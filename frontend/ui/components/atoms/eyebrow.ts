@@ -3,7 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { StyleController } from '../particles/styleController.js';
 import { LightDomMixin } from '../particles/LightDomMixin.js';
 
-export type EyebrowType = 'default' | 'cherry' | 'sparkly';
+export type EyebrowType = 'default' | 'cherry' | 'sparkly' | 'dash';
 
 const ICONS: Record<EyebrowType | string, string> = {
     default: '',
@@ -23,20 +23,30 @@ export class UiEyebrow extends LightDomMixin(LitElement) {
             default: 'bg-gray-100 text-gray-800',
             cherry: 'bg-cherry/20 text-cherry',
             sparkly: 'bg-cherry/20 text-cherry',
+            dash: 'bg-transparent text-gray-800',
         },
         defaultPreset: 'default',
     });
 
     render() {
-        const activeIcon = this.icon || ICONS[this.type] || '';
+        const activeIcon = this.type !== 'dash'
+            ? this.icon || ICONS[this.type] || ''
+            : '';
 
         return html`
             <div class="${this.styles.classes} ${this.classes}">
-                ${activeIcon ? html`<span class="mr-2 select-none">${activeIcon}</span>` : ''}
-                ${this.slottedChildren.length > 0 
+                ${this.type === 'dash'
+                    ? html`<span class="mr-2 select-none">—</span>`
+                    : ''}
+
+                ${activeIcon
+                    ? html`<span class="mr-2 select-none">${activeIcon}</span>`
+                    : ''}
+
+                ${this.slottedChildren.length > 0
                     ? this.renderSlottedChildren()
                     : ''}
-            <div>
+            </div>
         `;
     }
 }
