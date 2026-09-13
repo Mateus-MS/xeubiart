@@ -1,10 +1,13 @@
 package com.xeubiart.backend.domain.work.service;
 
 import com.xeubiart.backend.controllerAdvice.exceptions.ResourceNotFoundException;
+import com.xeubiart.backend.domain.imageMetadata.models.ImageDimensions;
+import com.xeubiart.backend.domain.imageMetadata.service.ImageMetadataService;
 import com.xeubiart.backend.domain.work.DTO.AdminWorkResponse;
 import com.xeubiart.backend.domain.work.DTO.CreateWorkRequest;
 import com.xeubiart.backend.domain.work.DTO.PublicWorkResponse;
 import com.xeubiart.backend.domain.work.DTO.UpdateWorkRequest;
+import com.xeubiart.backend.domain.work.entity.PhotoEntity;
 import com.xeubiart.backend.domain.work.entity.WorkEntity;
 import com.xeubiart.backend.domain.work.exceptions.InvalidPhotoOrderException;
 import com.xeubiart.backend.domain.work.mapper.WorkMapper;
@@ -26,15 +29,35 @@ public class WorkServiceImpl implements WorkService{
     private FileStorageService fileStorageService;
     private WorkRepository workRepository;
     private WorkMapper workMapper;
+    private ImageMetadataService imageMetadataService;
 
     @Override
     public void create(CreateWorkRequest request) {
+
         WorkEntity work = this.workMapper.toEntity(request);
 
-        work.setPhotosURLs(this.fileStorageService.saveMultiple(request.getImages()));
-        this.workRepository.save(work);
+        List<PhotoEntity> photos = request.getImages()
+                .stream()
+                .map(this::savePhoto)
+                .toList();
+
+        work.setPhotos(photos);
+
+        workRepository.save(work);
     }
 
+    private PhotoEntity savePhoto(MultipartFile image) {
+
+        ImageDimensions dimensions = this.imageMetadataService.getDimensions(image);
+
+        String url = this.fileStorageService.save(image);
+
+        return PhotoEntity.builder()
+                .url(url)
+                .width(dimensions.getWidth())
+                .height(dimensions.getHeight())
+                .build();
+    }
 
     @Override
     public Page<PublicWorkResponse> findPublic(Pageable pageable){
@@ -61,90 +84,154 @@ public class WorkServiceImpl implements WorkService{
         return works.map(workMapper::toAdminResponse);
     }
 
-    @Override public void update( UUID id, UpdateWorkRequest request, List<MultipartFile> images ) {
-        WorkEntity work = this.workRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Work not found: " + id) );
-        this.workMapper.updateEntity(request, work);
+    @Override
+    public void update(
+            UUID id,
+            UpdateWorkRequest request,
+            List<MultipartFile> images
+    ) {
+        WorkEntity work = workRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Work not found: " + id
+                        )
+                );
 
-        if (request.getPhotos() != null) {
-            List<String> oldPhotos = new ArrayList<>(work.getPhotosURLs());
-            List<String> newPhotos = this.syncImages( oldPhotos, request.getPhotos(), images );
-            work.setPhotosURLs(newPhotos);
+        workMapper.updateEntity(request, work);
 
-            try {
-                this.workRepository.save(work);
-            } catch (RuntimeException e) {
-                this.deleteNewImages(oldPhotos, newPhotos); throw e;
-            }
-
-            this.deleteRemovedImages(oldPhotos, newPhotos);
+        if (request.getPhotos() == null) {
+            workRepository.save(work);
             return;
         }
 
-        this.workRepository.save(work);
+        List<PhotoEntity> oldPhotos =
+                new ArrayList<>(work.getPhotos());
+
+        List<PhotoEntity> newPhotos =
+                syncImages(
+                        oldPhotos,
+                        request.getPhotos(),
+                        images
+                );
+
+        work.setPhotos(newPhotos);
+
+        try {
+            workRepository.save(work);
+        } catch (RuntimeException e) {
+            deleteNewImages(oldPhotos, newPhotos);
+            throw e;
+        }
+
+        deleteRemovedImages(oldPhotos, newPhotos);
     }
 
-    private List<String> syncImages(List<String> oldPhotos, List<UpdateWorkRequest.PhotoOrder> photoOrder, List<MultipartFile> images){
-        Map<String, String> newImages = this.saveNewImages(images);
+    private List<PhotoEntity> syncImages(
+            List<PhotoEntity> oldPhotos,
+            List<UpdateWorkRequest.PhotoOrder> photoOrder,
+            List<MultipartFile> images
+    ) {
+        Map<String, PhotoEntity> newImages = saveNewImages(images);
 
         return photoOrder.stream()
                 .map(photo -> {
-                    if("new".equals(photo.getType())){
-                        String savedKey = newImages.get(photo.getValue());
 
-                        if(savedKey == null){
-                            throw new InvalidPhotoOrderException("Missing uploaded image: " + photo.getValue());
+                    if ("new".equals(photo.getType())) {
+
+                        PhotoEntity savedPhoto =
+                                newImages.get(photo.getValue());
+
+                        if (savedPhoto == null) {
+                            throw new InvalidPhotoOrderException(
+                                    "Missing uploaded image: " + photo.getValue()
+                            );
                         }
 
-                        return savedKey;
+                        return savedPhoto;
                     }
 
-                    if("existing".equals(photo.getType())){
-                        if(!oldPhotos.contains(photo.getValue())){
-                            throw new InvalidPhotoOrderException("Image does not belong to this work: " + photo.getValue());
-                        }
+                    if ("existing".equals(photo.getType())) {
 
-                        return photo.getValue();
+                        return oldPhotos.stream()
+                                .filter(existing ->
+                                        existing.getUrl().equals(photo.getValue())
+                                )
+                                .findFirst()
+                                .orElseThrow(() ->
+                                        new InvalidPhotoOrderException(
+                                                "Image does not belong to this work: "
+                                                        + photo.getValue()
+                                        )
+                                );
                     }
 
-                    throw new InvalidPhotoOrderException("Invalid photo type: " + photo.getType());
-                }).toList();
+                    throw new InvalidPhotoOrderException(
+                            "Invalid photo type: " + photo.getType()
+                    );
+                })
+                .toList();
     }
 
-    private Map<String, String> saveNewImages(List<MultipartFile> images){
-        Map<String, String> newImages = new HashMap<>();
+    private Map<String, PhotoEntity> saveNewImages(
+            List<MultipartFile> images
+    ) {
+        Map<String, PhotoEntity> newImages = new HashMap<>();
 
-        if(images == null){
+        if (images == null) {
             return newImages;
         }
 
-        for(MultipartFile image : images){
+        for (MultipartFile image : images) {
+
             String filename = image.getOriginalFilename();
 
-            if(filename == null || !filename.contains("__")){
-                throw new InvalidPhotoOrderException("Invalid uploaded image filename");
+            if (filename == null || !filename.contains("__")) {
+                throw new InvalidPhotoOrderException(
+                        "Invalid uploaded image filename"
+                );
             }
 
-            String temporaryId = filename.substring(0, filename.indexOf("__"));
-            String savedKey = this.fileStorageService.save(image);
-            newImages.put(temporaryId, savedKey);
+            String temporaryId =
+                    filename.substring(0, filename.indexOf("__"));
+
+            PhotoEntity photo = savePhoto(image);
+
+            newImages.put(temporaryId, photo);
         }
 
         return newImages;
     }
 
-    private void deleteRemovedImages(List<String> oldPhotos, List<String> newPhotos){
-        for(String oldPhoto : oldPhotos){
-            if(!newPhotos.contains(oldPhoto)){
-                this.fileStorageService.delete(oldPhoto);
+    private void deleteRemovedImages(
+            List<PhotoEntity> oldPhotos,
+            List<PhotoEntity> newPhotos
+    ) {
+        for (PhotoEntity oldPhoto : oldPhotos) {
+
+            boolean stillExists = newPhotos.stream()
+                    .anyMatch(newPhoto ->
+                            newPhoto.getUrl().equals(oldPhoto.getUrl())
+                    );
+
+            if (!stillExists) {
+                fileStorageService.delete(oldPhoto.getUrl());
             }
         }
     }
 
-    private void deleteNewImages(List<String> oldPhotos, List<String> newPhotos){
-        for (String newPhoto : newPhotos){
-            if(!oldPhotos.contains(newPhoto)){
-                this.fileStorageService.delete(newPhoto);
+    private void deleteNewImages(
+            List<PhotoEntity> oldPhotos,
+            List<PhotoEntity> newPhotos
+    ) {
+        for (PhotoEntity newPhoto : newPhotos) {
+
+            boolean existedBefore = oldPhotos.stream()
+                    .anyMatch(oldPhoto ->
+                            oldPhoto.getUrl().equals(newPhoto.getUrl())
+                    );
+
+            if (!existedBefore) {
+                fileStorageService.delete(newPhoto.getUrl());
             }
         }
     }

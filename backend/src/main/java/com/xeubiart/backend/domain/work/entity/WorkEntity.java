@@ -27,6 +27,11 @@ public class WorkEntity {
     @Column(nullable = false)
     private boolean visible;
 
-    @Column(nullable = false)
-    private List<String> photosURLs;
+    @ElementCollection
+    @CollectionTable(
+            name = "tb_work_photos",
+            joinColumns = @JoinColumn(name = "work_id")
+    )
+    @OrderColumn(name = "photo_order")
+    private List<PhotoEntity> photos;
 }
