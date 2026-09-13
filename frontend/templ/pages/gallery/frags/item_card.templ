@@ -2,14 +2,22 @@ package frags
 
 import "com.xeubiart/app/domains/gallery/models"
 import "fmt"
+import "strconv"
 
 templ ItemCard(props models.GalleryItem) {
-    <article class="gallery-item group cursor-pointer w-[300px] mb-4 overflow-hidden rounded-2xl border border-cherry/20">
+    <article 
+        class="
+            gallery-item group cursor-pointer w-[300px] mb-4 overflow-hidden rounded-2xl border border-cherry/20
+            opacity-0 transition-transform transition-opacity duration-500 ease-out
+        "
+    >
         <div class="relative">
             <img
-                src={fmt.Sprintf("/api/files/%s", props.PhotoURLs[0])}
+                src={fmt.Sprintf("/api/files/%s", props.Photos[0].Url)}
                 alt={props.Title}
-                class="block w-full h-auto"
+                class="block w-full h-auto group-hover:scale-[1.03] transition-transform duration-500 ease-out"
+                width={strconv.Itoa(props.Photos[0].Width)}
+                height={strconv.Itoa(props.Photos[0].Height)}
             />
 
             <div class="

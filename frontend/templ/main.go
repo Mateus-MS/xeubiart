@@ -3,6 +3,7 @@ package main
 import (
 	"com.xeubiart/app"
 	_ "com.xeubiart/pages/gallery"
+	_ "com.xeubiart/pages/gallery/partials"
 	_ "com.xeubiart/pages/landing"
 )
 

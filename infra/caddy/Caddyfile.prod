@@ -32,7 +32,7 @@
     # Backend for Frontend (Templ)
     @templ {
         method GET
-        path / /gallery
+        path / /gallery /gallery/section
         not query token=*
     }
     handle @templ {

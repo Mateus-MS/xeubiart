@@ -4,12 +4,17 @@ import "com.xeubiart/app"
 import "com.xeubiart/pages/gallery/frags"
 import "com.xeubiart/utils"
 import "fmt"
+import "strconv"
 
 func init(){
     app.GetInstance().Router.GET("/gallery", utils.Render(gallery()))
 }
 
 templ gallery(){
+    {{
+        result, _ := app.GetInstance().Services.GalleryService.GetGallery(0)
+    }}
+
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -31,18 +36,26 @@ templ gallery(){
         <header class="px-[15%] pt-10 pb-5">
             <ui-eyebrow type="dash">Portifólio</ui-eyebrow>
             <ui-title level="h1" classes="text-6xl">Cada traço,<br> uma <it>história.</it></ui-title>
-            <span>Exibindo <strong>12</strong> de <strong>24</strong> trabalhos.</span>
+            <span>Exibindo <strong>{strconv.Itoa(result.NumberOfElements)}</strong> de <strong>{strconv.Itoa(result.TotalElements)}</strong> trabalhos.</span>
         </header>
         @styleSelector()
 
-        <div id="gallery" class="mx-auto py-5">
-            {{
-                result, _ := app.GetInstance().Services.GalleryService.GetGallery()
-            }}
+        <div id="gallery" class="py-5 lg:px-[10%]">
 
-            for _, item := range result.Content {
-                @frags.ItemCard(item)
-            }
+            <div id="gallery-grid" class="mx-auto">
+                for _, item := range result.Content {
+                    @frags.ItemCard(item)
+                }
+            </div>
+
+            <div
+                id="gallery-loader"
+                hx-get="/gallery/section"
+                hx-vars="js:{ page: currentPage }"
+                hx-trigger="revealed"
+                hx-target="#gallery-grid"
+                hx-swap="beforeend"
+            ></div>
         </div>
 
         <ui-footer></ui-footer>
@@ -51,23 +64,58 @@ templ gallery(){
 }
 
 templ head(){
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <script type="module" src="/static/ui/ui-kit.mjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
 
-    <script type="module">
-        import Masonry from 'https://esm.sh/masonry-layout@4';
+    <script>
+        let masonry;
+        let currentPage = 1;
 
-        const gallery = document.querySelector('#gallery');
+        document.addEventListener('DOMContentLoaded', () => {
+            const gallery = document.querySelector('#gallery-grid');
 
-        if (gallery) {
-            const masonry = new Masonry(gallery, {
-                itemSelector: '.gallery-item',
-                columnWidth: 300,
-                gutter: 16,
-                fitWidth: true,
-                transitionDuration: '0.2s',
+            imagesLoaded(gallery, () => {
+                masonry = new Masonry(gallery, {
+                    itemSelector: '.gallery-item',
+                    columnWidth: 300,
+                    gutter: 16,
+                    fitWidth: true,
+                    transitionDuration: '0.2s',
+                });
+
+                revealItems(gallery.querySelectorAll('.gallery-item'));
+            });
+        });
+
+        document.addEventListener('htmx:afterSwap', (event) => {
+            if (!masonry || event.detail.target.id !== 'gallery-grid') {
+                return;
+            }
+
+            const items = event.detail.target.querySelectorAll(
+                '.gallery-item.opacity-0'
+            );
+
+            if (!items.length) {
+                return;
+            }
+
+            imagesLoaded(items, () => {
+                masonry.appended(items);
+                revealItems(items);
+
+                currentPage++;
+                htmx.trigger('#gallery-loader', 'revealed');
+                console.log("Next request will be made for page: " + currentPage)
+            });
+        });
+
+        function revealItems(items) {
+            items.forEach((item, index) => {
+                item.classList.remove('opacity-0');
             });
         }
     </script>

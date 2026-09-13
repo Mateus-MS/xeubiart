@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"com.xeubiart/app/domains/gallery/models"
 	"com.xeubiart/app/router"
 )
@@ -15,11 +17,11 @@ func New(httpClient *router.HTTPClient) *GalleryService {
 	}
 }
 
-func (s *GalleryService) GetGallery() (*models.GalleryResponse, error) {
+func (s *GalleryService) GetGallery(page int) (*models.GalleryResponse, error) {
 	resp := models.GalleryResponse{}
 
 	err := s.httpClient.Get(
-		"http://localhost:8080/api/works",
+		fmt.Sprintf("http://localhost:8080/api/works?page=%d&size=12", page),
 		&resp,
 	)
 
