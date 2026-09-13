@@ -4,7 +4,6 @@ import "com.xeubiart/app"
 import "com.xeubiart/pages/gallery/frags"
 import "com.xeubiart/utils"
 import "fmt"
-import "strconv"
 
 func init(){
     app.GetInstance().Router.GET("/gallery", utils.Render(gallery()))
@@ -33,29 +32,53 @@ templ gallery(){
     </head>
     <body class="min-h-[100dvh] h-fit bg-cream">
         <ui-navbar></ui-navbar>
-        <header class="px-[15%] pt-10 pb-5">
+        <header class="px-8 lg:px-[10%] pt-10">
             <ui-eyebrow type="dash">Portifólio</ui-eyebrow>
-            <ui-title level="h1" classes="text-6xl">Cada traço,<br> uma <it>história.</it></ui-title>
-            <span>Exibindo <strong>{strconv.Itoa(result.NumberOfElements)}</strong> de <strong>{strconv.Itoa(result.TotalElements)}</strong> trabalhos.</span>
+            <ui-title level="h1" classes="text-[clamp(2.6rem,10vw,3.5rem)] [&_it]:[-webkit-text-stroke:1.5px_var(--color-cherry)]">Cada traço,<br> uma <it>história.</it></ui-title>
         </header>
         @styleSelector()
 
-        <div id="gallery" class="py-5 lg:px-[10%]">
-
-            <div id="gallery-grid" class="mx-auto">
+        <div
+            x-data="gallery()"
+            x-init="init()"
+            class="px-8 lg:px-[10%]"
+        >
+            <div
+                x-ref="grid"
+                id="gallery-grid"
+                class="mx-auto"
+            >
                 for _, item := range result.Content {
                     @frags.ItemCard(item)
                 }
+
+                <template x-for="item in items" :key="item.id">
+                    <article
+                        class="gallery-item opacity-0 group cursor-pointer w-[150px] lg:w-[300px] mb-4 overflow-hidden rounded-2xl border border-cherry/20">
+                        <div class="relative">
+                            <img
+                                :src="`/api/files/${item.photos[0].url}`"
+                                :alt="item.title"
+                                class="block w-full h-auto"
+                            >
+                            <div class="absolute inset-0 flex flex-col justify-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-gradient-to-t from-black/80 via-black/20 to-transparent">
+                                <div class="text-white">
+                                    <h2
+                                        class="text-xl font-semibold"
+                                        x-text="item.title"
+                                    ></h2>
+                                    <span
+                                        class="text-sm opacity-70"
+                                        x-text="item.style"
+                                    ></span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </template>
             </div>
 
-            <div
-                id="gallery-loader"
-                hx-get="/gallery/section"
-                hx-vars="js:{ page: currentPage }"
-                hx-trigger="revealed"
-                hx-target="#gallery-grid"
-                hx-swap="beforeend"
-            ></div>
+            <div x-ref="loader" class="h-10"></div>
         </div>
 
         <ui-footer></ui-footer>
@@ -64,59 +87,108 @@ templ gallery(){
 }
 
 templ head(){
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
 
     <script>
-        let masonry;
-        let currentPage = 1;
+        function gallery() {
+            return {
+                page: 1,
+                items: [],
+                loading: false,
+                hasMore: true,
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const gallery = document.querySelector('#gallery-grid');
+                masonry: null,
+                observer: null,
 
-            imagesLoaded(gallery, () => {
-                masonry = new Masonry(gallery, {
-                    itemSelector: '.gallery-item',
-                    columnWidth: 300,
-                    gutter: 16,
-                    fitWidth: true,
-                    transitionDuration: '0.2s',
-                });
+                init() {
+                    const grid = this.$refs.grid;
 
-                revealItems(gallery.querySelectorAll('.gallery-item'));
-            });
-        });
+                    imagesLoaded(grid, () => {
+                        this.masonry = new Masonry(grid, {
+                            itemSelector: '.gallery-item',
+                            columnWidth: window.innerWidth < 1024 ? 150 : 300,
+                            gutter: 16,
+                            fitWidth: true,
+                            transitionDuration: 0,
+                        });
 
-        document.addEventListener('htmx:afterSwap', (event) => {
-            if (!masonry || event.detail.target.id !== 'gallery-grid') {
-                return;
-            }
+                        requestAnimationFrame(() => {
+                            grid.querySelectorAll('.gallery-item').forEach(item => {
+                                item.classList.remove('opacity-0');
+                            });
+                        });
 
-            const items = event.detail.target.querySelectorAll(
-                '.gallery-item.opacity-0'
-            );
+                        this.setupObserver();
+                    });
+                },
 
-            if (!items.length) {
-                return;
-            }
+                setupObserver() {
+                    this.observer = new IntersectionObserver(
+                        entries => {
+                            if (entries[0].isIntersecting) {
+                                this.loadMore();
+                            }
+                        },
+                        {
+                            rootMargin: '300px'
+                        }
+                    );
 
-            imagesLoaded(items, () => {
-                masonry.appended(items);
-                revealItems(items);
+                    this.observer.observe(this.$refs.loader);
+                },
 
-                currentPage++;
-                htmx.trigger('#gallery-loader', 'revealed');
-                console.log("Next request will be made for page: " + currentPage)
-            });
-        });
+                async loadMore() {
+                    if (this.loading || !this.hasMore) {
+                        return;
+                    }
 
-        function revealItems(items) {
-            items.forEach((item, index) => {
-                item.classList.remove('opacity-0');
-            });
+                    this.loading = true;
+
+                    try {
+                        const response = await fetch(
+                            `/api/works?page=${this.page}&size=12`
+                        );
+
+                        if (!response.ok) {
+                            throw new Error(
+                                `Failed to fetch gallery: ${response.status}`
+                            );
+                        }
+
+                        const data = await response.json();
+
+                        this.items.push(...data.content);
+
+                        this.page++;
+                        this.hasMore = this.page < data.totalPages;
+
+                        await this.$nextTick();
+
+                        const newItems = [
+                            ...this.$refs.grid.querySelectorAll('.gallery-item')
+                        ].slice(-data.content.length);
+
+                        imagesLoaded(newItems, () => {
+                            this.masonry.appended(newItems);
+                            this.masonry.layout();
+
+                            requestAnimationFrame(() => {
+                                newItems.forEach(item => {
+                                    item.classList.remove('opacity-0');
+                                });
+                            });
+                        });
+
+                    } catch (error) {
+                        console.error(error);
+                    } finally {
+                        this.loading = false;
+                    }
+                }
+            };
         }
     </script>
 }
@@ -124,7 +196,7 @@ templ head(){
 templ styleSelector(){
     <div
         x-data="{ selected: 'Todos' }"
-        class="flex gap-2 px-[15%] py-5 sticky top-(--spacing-header) z-100 bg-cream/85 backdrop-blur-md"
+        class="flex gap-2 px-8 lg:px-[10%] py-5 sticky top-(--spacing-header) z-100 bg-cream/85 backdrop-blur-md overflow-auto"
     >
         {{
             categories := []string{"Todos", "Fine Line", "Floral", "Blackwork", "Authoral"}
@@ -136,7 +208,7 @@ templ styleSelector(){
                 @click={fmt.Sprintf(`selected = '%s'`, category)}
                 :class={fmt.Sprintf(`selected === '%s' ? "text-white border-cherry bg-cherry hover:cursor-default" : "text-text/50 border-text/50 hover:text-text hover:border-text"`, category)}
             >
-                <span>{category}</span>
+                <span class="whitespace-nowrap block">{category}</span>
             </div>
         }
     </div>

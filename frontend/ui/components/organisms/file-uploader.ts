@@ -5,7 +5,7 @@ import { LightDomMixin } from '../particles/LightDomMixin';
 @customElement('ui-file-uploader')
 export class FileUploader extends LightDomMixin(LitElement) {
 	@property({ type: Boolean }) multiple = true;
-	@property({ type: String }) accept = '.png,.jpg';
+	@property({ type: String }) accept = '.png,.jpg,.jpeg';
 
 	public open() {
 		this._getInput()?.click();
