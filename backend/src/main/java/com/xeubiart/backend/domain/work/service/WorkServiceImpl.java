@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -39,7 +40,7 @@ public class WorkServiceImpl implements WorkService{
         List<PhotoEntity> photos = request.getImages()
                 .stream()
                 .map(this::savePhoto)
-                .toList();
+                .collect(Collectors.toCollection(ArrayList::new));
 
         work.setPhotos(photos);
 
@@ -133,43 +134,44 @@ public class WorkServiceImpl implements WorkService{
     ) {
         Map<String, PhotoEntity> newImages = saveNewImages(images);
 
-        return photoOrder.stream()
-                .map(photo -> {
+        return new ArrayList<>(
+                photoOrder.stream()
+                        .map(photo -> {
+                            if ("new".equals(photo.getType())) {
+                                PhotoEntity savedPhoto =
+                                        newImages.get(photo.getValue());
 
-                    if ("new".equals(photo.getType())) {
+                                if (savedPhoto == null) {
+                                    throw new InvalidPhotoOrderException(
+                                            "Missing uploaded image: "
+                                                    + photo.getValue()
+                                    );
+                                }
 
-                        PhotoEntity savedPhoto =
-                                newImages.get(photo.getValue());
+                                return savedPhoto;
+                            }
 
-                        if (savedPhoto == null) {
-                            throw new InvalidPhotoOrderException(
-                                    "Missing uploaded image: " + photo.getValue()
-                            );
-                        }
-
-                        return savedPhoto;
-                    }
-
-                    if ("existing".equals(photo.getType())) {
-
-                        return oldPhotos.stream()
-                                .filter(existing ->
-                                        existing.getUrl().equals(photo.getValue())
-                                )
-                                .findFirst()
-                                .orElseThrow(() ->
-                                        new InvalidPhotoOrderException(
-                                                "Image does not belong to this work: "
-                                                        + photo.getValue()
+                            if ("existing".equals(photo.getType())) {
+                                return oldPhotos.stream()
+                                        .filter(existing ->
+                                                photo.getValue()
+                                                        .equals(existing.getUrl())
                                         )
-                                );
-                    }
+                                        .findFirst()
+                                        .orElseThrow(() ->
+                                                new InvalidPhotoOrderException(
+                                                        "Image does not belong to this work: "
+                                                                + photo.getValue()
+                                                )
+                                        );
+                            }
 
-                    throw new InvalidPhotoOrderException(
-                            "Invalid photo type: " + photo.getType()
-                    );
-                })
-                .toList();
+                            throw new InvalidPhotoOrderException(
+                                    "Invalid photo type: " + photo.getType()
+                            );
+                        })
+                        .toList()
+        );
     }
 
     private Map<String, PhotoEntity> saveNewImages(

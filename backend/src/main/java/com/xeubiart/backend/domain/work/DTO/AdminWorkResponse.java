@@ -12,7 +12,7 @@ public class AdminWorkResponse {
     private String title;
     private TattooStyle style;
     private String description;
-    private List<String> photosURLs;
+    private List<PhotoResponse> photos;
     private boolean visible;
 
     // Admin specific data like customer identity

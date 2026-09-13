@@ -5,12 +5,18 @@ export type TattooStyle =
 	| 'red-trace'
 	| 'authoral';
 
+export interface PhotoEntity {
+	url: string;
+	width: number;
+	height: number;
+}
+
 export interface WorkEntity {
     id: string;
     title: string;
     description: string;
     style: TattooStyle;
-    photosURLs: string[];
+    photos: PhotoEntity[];
     visible: boolean;
 }
 

@@ -50,9 +50,9 @@ export class ItemPopup implements OnDestroy {
 		this.visible.set(data?.visible ?? true);
 		this.id = data?.id ?? '';
 
-		const files: UploadedFile[] = (data?.photosURLs ?? []).map(url => ({
-			id: url,
-			url,
+		const files: UploadedFile[] = (data?.photos ?? []).map(photo => ({
+			id: photo.url,
+			url: photo.url,
 			isLocal: false
 		}));
 

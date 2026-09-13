@@ -1,7 +1,7 @@
 import { inject, Service, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Page } from '../../../../../../models/page';
-import { CreateWorkDTO, WorkEntity } from '../../../../../../models/work';
+import { WorkEntity } from '../../../../../../models/work';
 import { Subject } from 'rxjs';
 import { UploadedFile } from '../../../../../../models/uploadedFile';
 
@@ -98,16 +98,16 @@ export class GalleryService {
 
     updateWorkVisibility(id: string, visible: boolean) {
         const formData = new FormData();
-        const work = this._works().find(work => work.id === id);
-        if (!work) {
-            console.error(`Work with id ${id} not found.`);
-            return;
-        }
-        work.visible = visible;
-        formData.append('data', new Blob(
-            [JSON.stringify(work)],
-            { type: 'application/json' }
-        ));
+
+        const data = { visible };
+
+        formData.append(
+            'data',
+            new Blob(
+                [JSON.stringify(data)],
+                { type: 'application/json' }
+            )
+        );
 
         return this.http.patch(`/api/works/${id}`, formData);
     }

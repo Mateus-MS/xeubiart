@@ -13,11 +13,4 @@ public class PublicWorkResponse {
     private TattooStyle style;
     private String description;
     private List<PhotoResponse> photos;
-
-    @Getter @Builder @AllArgsConstructor
-    public static class PhotoResponse {
-        private String url;
-        private int width;
-        private int height;
-    }
 }

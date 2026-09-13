@@ -2,10 +2,7 @@ package com.xeubiart.backend.domain.work.mapper;
 
 import com.xeubiart.backend.domain.work.DTO.*;
 import com.xeubiart.backend.domain.work.entity.WorkEntity;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface WorkMapper {
@@ -16,6 +13,13 @@ public interface WorkMapper {
 
     WorkEntity toEntity(CreateWorkRequest request);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateEntity(UpdateWorkRequest request, @MappingTarget WorkEntity work);
+    @Mapping(target = "photos", ignore = true)
+    @BeanMapping(
+            nullValuePropertyMappingStrategy =
+                    NullValuePropertyMappingStrategy.IGNORE
+    )
+    void updateEntity(
+            UpdateWorkRequest request,
+            @MappingTarget WorkEntity work
+    );
 }
