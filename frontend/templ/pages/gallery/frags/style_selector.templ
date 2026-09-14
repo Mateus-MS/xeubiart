@@ -1,0 +1,41 @@
+package frags
+
+import "fmt"
+
+type styleOption struct{
+    ID   string
+    Name string
+}
+
+templ StyleSelector() {
+    <div
+        class="
+            flex gap-2 px-8 lg:px-[10%] py-5 overflow-auto
+        "
+    >
+        // sticky top-(--spacing-header) z-100 bg-cream/85 backdrop-blur-md
+        {{
+            categories := []styleOption {
+                {"ALL", "Todos"},
+                {"FINE_LINE", "Fine Line"},
+                {"FLORAL", "Floral"},
+                {"BLACKWORK", "Blackwork"},
+                {"AUTHORAL", "Authoral"},
+                {"RED_TRACE", "Red Trace"},
+            }
+        }}
+
+        for _, category := range categories {
+            <div
+                class="flex border-1 rounded-full py-[.2rem] px-4 transition-all duration-300 cursor-pointer"
+                @click={fmt.Sprintf(`changeStyle('%s')`, category.ID)}
+                :class={fmt.Sprintf(
+                    `selected === '%s' ? "text-white border-cherry bg-cherry hover:cursor-default" : "text-text/50 border-text/50 hover:text-text hover:border-text"`,
+                    category.ID,
+                )}
+            >
+                <span class="whitespace-nowrap block">{category.Name}</span>
+            </div>
+        }
+    </div>
+}

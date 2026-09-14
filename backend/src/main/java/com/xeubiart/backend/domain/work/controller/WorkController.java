@@ -1,6 +1,7 @@
 package com.xeubiart.backend.domain.work.controller;
 
 import com.xeubiart.backend.domain.work.DTO.*;
+import com.xeubiart.backend.domain.work.model.TattooStyle;
 import com.xeubiart.backend.domain.work.service.WorkService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -54,7 +55,12 @@ public class WorkController {
 //    }
 
     @GetMapping("/works")
-    public Page<PublicWorkResponse> findAll(Pageable pageable) {
-        return workService.findPublic(pageable);
+    public Page<PublicWorkResponse> findAll(@RequestParam(required = false) TattooStyle style, Pageable pageable) {
+        return workService.findPublic(style, pageable);
+    }
+
+    @GetMapping("/works/{id}")
+    public PublicWorkResponse findAll(@PathVariable UUID id, @RequestParam(required = false) TattooStyle style) {
+        return workService.findPublicById(id, style);
     }
 }

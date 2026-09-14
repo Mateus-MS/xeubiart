@@ -11,6 +11,7 @@ import com.xeubiart.backend.domain.work.entity.PhotoEntity;
 import com.xeubiart.backend.domain.work.entity.WorkEntity;
 import com.xeubiart.backend.domain.work.exceptions.InvalidPhotoOrderException;
 import com.xeubiart.backend.domain.work.mapper.WorkMapper;
+import com.xeubiart.backend.domain.work.model.TattooStyle;
 import com.xeubiart.backend.domain.work.repository.WorkRepository;
 import com.xeubiart.backend.domain.fileStorage.service.FileStorageService;
 import jakarta.transaction.Transactional;
@@ -61,11 +62,23 @@ public class WorkServiceImpl implements WorkService{
     }
 
     @Override
-    public Page<PublicWorkResponse> findPublic(Pageable pageable){
-        return workRepository
-                .findByVisibleTrue(pageable)
-                .map(workMapper::toPublicResponse);
+    public Page<PublicWorkResponse> findPublic(TattooStyle style, Pageable pageable){
+        Page<WorkEntity> works = style == null
+                ? workRepository.findByVisibleTrue(pageable)
+                : workRepository.findByVisibleTrueAndStyle(style, pageable);
+
+        return works.map(workMapper::toPublicResponse);
     }
+
+    @Override
+    public PublicWorkResponse findPublicById(UUID id, TattooStyle style){
+        WorkEntity work = style == null
+                ? workRepository.findByIdAndVisibleTrue(id)
+                : workRepository.findByIdAndVisibleTrueAndStyle(id, style);
+
+        return this.workMapper.toPublicResponse(work);
+    }
+
 //    public Page<UserWorkResponse> findForUser(UUID userId, Pageable pageable){
 //        return workRepository
 //                .findByCustomerId(userId, pageable)

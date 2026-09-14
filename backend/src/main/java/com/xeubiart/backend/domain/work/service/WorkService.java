@@ -6,6 +6,7 @@ import com.xeubiart.backend.domain.work.DTO.CreateWorkRequest;
 import com.xeubiart.backend.domain.work.DTO.PublicWorkResponse;
 import com.xeubiart.backend.domain.work.DTO.UpdateWorkRequest;
 import com.xeubiart.backend.domain.work.entity.WorkEntity;
+import com.xeubiart.backend.domain.work.model.TattooStyle;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +18,7 @@ public interface WorkService {
     void create(CreateWorkRequest request);
     void update(UUID id, UpdateWorkRequest request, List<MultipartFile> images) throws ResourceNotFoundException;
 
-    Page<PublicWorkResponse> findPublic(Pageable pageable);
+    Page<PublicWorkResponse> findPublic(TattooStyle style, Pageable pageable);
+    PublicWorkResponse findPublicById(UUID id, TattooStyle style);
     Page<AdminWorkResponse> findForAdmin(Boolean visible, Pageable pageable);
 }

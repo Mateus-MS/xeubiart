@@ -3,7 +3,6 @@ package pages
 import "com.xeubiart/app"
 import "com.xeubiart/pages/gallery/frags"
 import "com.xeubiart/utils"
-import "fmt"
 
 func init(){
     app.GetInstance().Router.GET("/gallery", utils.Render(gallery()))
@@ -30,19 +29,20 @@ templ gallery(){
 
         @head()
     </head>
-    <body class="min-h-[100dvh] h-fit bg-cream">
+    <body 
+        x-data="gallery()"
+        x-init="init()"
+        class="min-h-[100dvh] h-fit bg-cream"
+        :class="{ 'overflow-hidden': modalOpen }"
+    >
         <ui-navbar></ui-navbar>
         <header class="px-8 lg:px-[10%] pt-10">
             <ui-eyebrow type="dash">Portifólio</ui-eyebrow>
             <ui-title level="h1" classes="text-[clamp(2.6rem,10vw,3.5rem)] [&_it]:[-webkit-text-stroke:1.5px_var(--color-cherry)]">Cada traço,<br> uma <it>história.</it></ui-title>
         </header>
-        @styleSelector()
+        @frags.StyleSelector()
 
-        <div
-            x-data="gallery()"
-            x-init="init()"
-            class="px-8 lg:px-[10%]"
-        >
+        <div class="px-8 lg:px-[10%]">
             <div
                 x-ref="grid"
                 id="gallery-grid"
@@ -54,12 +54,14 @@ templ gallery(){
 
                 <template x-for="item in items" :key="item.id">
                     <article
-                        class="gallery-item opacity-0 group cursor-pointer w-[150px] lg:w-[300px] mb-4 overflow-hidden rounded-2xl border border-cherry/20">
+                        class="gallery-item opacity-0 group cursor-pointer w-[150px] lg:w-[300px] mb-4 overflow-hidden rounded-2xl border border-cherry/20"
+                        @click="openModal(item.id)"
+                    >
                         <div class="relative">
                             <img
                                 :src="`/api/files/${item.photos[0].url}`"
                                 :alt="item.title"
-                                class="block w-full h-auto"
+                                class="block w-full h-auto group-hover:scale-[1.03] transition-transform duration-500 ease-out"
                             >
                             <div class="absolute inset-0 flex flex-col justify-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-gradient-to-t from-black/80 via-black/20 to-transparent">
                                 <div class="text-white">
@@ -79,6 +81,8 @@ templ gallery(){
             </div>
 
             <div x-ref="loader" class="h-10"></div>
+
+            @frags.ItemCardModal()
         </div>
 
         <ui-footer></ui-footer>
@@ -92,16 +96,35 @@ templ head(){
     <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
 
+    <style>
+        @keyframes swipeHint {
+            0%, 100% {
+                transform: translate(-50%, -50%);
+            }
+
+            50% {
+                transform: translate(-55%, -50%);
+            }
+        }
+    </style>
+
     <script>
         function gallery() {
             return {
+                selected: 'ALL',
+
                 page: 1,
                 items: [],
                 loading: false,
                 hasMore: true,
-
                 masonry: null,
                 observer: null,
+
+                selectedWork: null,
+                modalOpen: false,
+                currentPhoto: 0,
+                touchStartX: 0,
+                touchStartY: 0,
 
                 init() {
                     const grid = this.$refs.grid;
@@ -123,6 +146,95 @@ templ head(){
 
                         this.setupObserver();
                     });
+                },
+
+                async openModal(id) {
+                    this.modalLoading = true;
+                    this.modalOpen = true;
+                    this.selectedWork = null;
+                    this.currentPhoto = 0;
+
+                    try {
+                        const response = await fetch(`/api/works/${id}`);
+
+                        if (!response.ok) {
+                            throw new Error(
+                                `Failed to fetch work: ${response.status}`
+                            );
+                        }
+
+                        this.selectedWork = await response.json();
+
+                        this.preloadPhoto(1);
+
+                    } catch (error) {
+                        console.error(error);
+                        this.modalOpen = false;
+                    } finally {
+                        this.modalLoading = false;
+                    }
+                },
+
+                closeModal() {
+                    this.modalOpen = false;
+                },
+
+                previousPhoto() {
+                    if (this.currentPhoto > 0) {
+                        this.currentPhoto--;
+                        this.preloadPhoto(this.currentPhoto - 1);
+                    }
+                },
+
+                nextPhoto() {
+                    if (
+                        this.selectedWork &&
+                        this.currentPhoto < this.selectedWork.photos.length - 1
+                    ) {
+                        this.currentPhoto++;
+                        this.preloadPhoto(this.currentPhoto + 1);
+                    }
+                },
+
+                preloadPhoto(index) {
+                    if (
+                        !this.selectedWork ||
+                        index < 0 ||
+                        index >= this.selectedWork.photos.length
+                    ) {
+                        return;
+                    }
+
+                    const image = new Image();
+                    image.src = `/api/files/${this.selectedWork.photos[index].url}`;
+                },
+
+                async changeStyle(style) {
+                    if (this.selected === style) {
+                        return;
+                    }
+
+                    this.selected = style;
+
+                    // Stop the current observer while we rebuild the gallery
+                    this.observer?.disconnect();
+
+                    this.loading = false;
+                    this.hasMore = true;
+                    this.page = 0;
+                    this.items = [];
+
+                    // Remove the SSR cards
+                    this.masonry.remove(
+                        this.$refs.grid.querySelectorAll('.gallery-item')
+                    );
+
+                    this.masonry.layout();
+
+                    // Load the first page for the selected filter
+                    await this.loadMore();
+
+                    this.setupObserver();
                 },
 
                 setupObserver() {
@@ -148,9 +260,16 @@ templ head(){
                     this.loading = true;
 
                     try {
-                        const response = await fetch(
-                            `/api/works?page=${this.page}&size=12`
-                        );
+                        const params = new URLSearchParams({
+                            page: this.page,
+                            size: 12,
+                        });
+
+                        if (this.selected !== 'ALL') {
+                            params.set('style', this.selected);
+                        }
+
+                        const response = await fetch(`/api/works?${params}`);
 
                         if (!response.ok) {
                             throw new Error(
@@ -161,7 +280,6 @@ templ head(){
                         const data = await response.json();
 
                         this.items.push(...data.content);
-
                         this.page++;
                         this.hasMore = this.page < data.totalPages;
 
@@ -191,25 +309,4 @@ templ head(){
             };
         }
     </script>
-}
-
-templ styleSelector(){
-    <div
-        x-data="{ selected: 'Todos' }"
-        class="flex gap-2 px-8 lg:px-[10%] py-5 sticky top-(--spacing-header) z-100 bg-cream/85 backdrop-blur-md overflow-auto"
-    >
-        {{
-            categories := []string{"Todos", "Fine Line", "Floral", "Blackwork", "Authoral"}
-        }}
-
-        for _, category := range categories {
-            <div
-                class="flex border-1 rounded-full py-[.2rem] px-4 transition-all duration-300 cursor-pointer"
-                @click={fmt.Sprintf(`selected = '%s'`, category)}
-                :class={fmt.Sprintf(`selected === '%s' ? "text-white border-cherry bg-cherry hover:cursor-default" : "text-text/50 border-text/50 hover:text-text hover:border-text"`, category)}
-            >
-                <span class="whitespace-nowrap block">{category}</span>
-            </div>
-        }
-    </div>
 }

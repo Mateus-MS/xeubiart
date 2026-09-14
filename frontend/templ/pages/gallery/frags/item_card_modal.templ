@@ -1,0 +1,110 @@
+package frags
+
+
+templ ItemCardModal() {
+    <template x-if="modalOpen">
+        <div
+            class="
+                fixed inset-0 z-[1000]
+                bg-black/90
+                flex items-center justify-center
+            "
+            @click.self="closeModal()"
+        >
+            <!-- Close -->
+            <button
+                type="button"
+                class="
+                    absolute top-6 right-6 z-20 size-10 rounded-full bg-white/10 text-white
+                    cursor-pointer
+                    hover:bg-white/20 transition-colors
+                "
+                @click="modalOpen = false"
+            >
+                <i class="icon-cancel inline-block"></i>
+            </button>
+
+            <!-- Loading -->
+            <template x-if="modalLoading">
+                <div class="text-white">
+                    Loading...
+                </div>
+            </template>
+
+            <!-- Work -->
+            <template x-if="!modalLoading && selectedWork">
+                <div
+                    class="
+                        relative
+                        w-[90vw] h-[85vh] lg:w-[95vw] lg:h-[90vh]
+                        flex items-center justify-center
+                        touch-pan-y
+                    "
+                    @click.self="closeModal()"
+                    @pointerdown="
+                        touchStartX = $event.clientX;
+                        touchStartY = $event.clientY;
+                    "
+                    @pointerup="
+                        const dx = $event.clientX - touchStartX;
+                        const dy = $event.clientY - touchStartY;
+
+                        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+                            dx < 0 ? nextPhoto() : previousPhoto();
+                        }
+                    "
+                >
+
+                    <!-- Previous -->
+                    <template x-if="currentPhoto > 0">
+                        <button
+                            type="button"
+                            class="absolute left-4 z-10 size-12 rounded-full bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 transition-colors cursor-pointer hidden lg:block"
+                            @click="previousPhoto()"
+                        >
+                            <i class="icon-left text-2xl"></i>
+                        </button>
+                    </template>
+
+                    <!-- Image -->
+                    <img
+                        :src="`/api/files/${selectedWork.photos[currentPhoto].url}`"
+                        :alt="selectedWork.title"
+                        class="
+                            max-w-full
+                            max-h-full
+                            object-contain
+                            select-none
+                        "
+                    >
+
+                    <!-- Next -->
+                    <template x-if="currentPhoto < selectedWork.photos.length - 1">
+                        <button
+                            type="button"
+                            class="absolute right-4 z-10 size-12 rounded-full bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 transition-colors cursor-pointer hidden lg:block"
+                            @click="nextPhoto()"
+                        >
+                            <i class="icon-right text-2xl"></i>
+                        </button>
+                    </template>
+
+                    <!-- Pagination dots -->
+                    <template x-if="selectedWork.photos.length > 1">
+                        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 px-3 py-2 rounded-full bg-black/50 backdrop-blur-sm">
+                            <template
+                                x-for="(_, index) in selectedWork.photos"
+                                :key="index"
+                            >
+                                <div
+                                    class="w-2 h-2 rounded-full bg-white/40 transition-all"
+                                    :class="{'!bg-white !w-3': currentPhoto === index}"
+                                ></div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </template>
+}
