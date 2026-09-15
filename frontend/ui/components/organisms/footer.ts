@@ -28,16 +28,16 @@ export class UiFooter extends LitElement {
     }
 
     private linkGroups: LinkGroup[] = [
+        {
+            Title: 'Estúdio',
+            Links: [
+                { 
+                    Label: 'Portifólio', 
+                    RedirectTo: '/gallery' 
+                },
+            ],
+        },
         // Temporaly disabled
-        // {
-        //     Title: 'Estúdio',
-        //     Links: [
-        //         { 
-        //             Label: 'Portifólio', 
-        //             RedirectTo: '/galery' 
-        //         },
-        //     ],
-        // },
         // {
         //     Title: 'Cuidados',
         //     Links: [

@@ -79,6 +79,7 @@ export class Gallery implements OnInit {
 	}
 
 	handleOpenEditPopup(work: WorkEntity) {
+		console.log("Work ID: ", work.id)
 		this.popup()?.open(work);
 	}
 }
