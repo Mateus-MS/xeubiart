@@ -1,169 +1,138 @@
 package frags
 
-import "fmt"
+import (
+	"fmt"
+)
 
-type imageConfig struct {
-    X    string
-    Y    string
-    Zoom string
+// FocalPoint specifies the focal center of the subject in percentage format.
+// Example: X = "50%", Y = "20%" targets 50% across and 20% down from top left.
+type FocalPoint struct {
+	X string
+	Y string
 }
 
 type galleryCardProps struct {
-    ImageName string
-    
-    Title string
-    TattooStyle string
-
-    DesktopImage imageConfig
-    MobileImage imageConfig
+	ImageName   string
+	Title       string
+	TattooStyle string
+	FocalPoint  FocalPoint
 }
 
-templ Gallery(){
-    <section class="block px-10 lg:px-20 py-15 flex flex-col gap-10">
-        // Header
-        <div>
-            <ui-eyebrow type="sparkly" classes="bg-white/15 text-white/75 mb-4 block">Portifólio</ui-eyebrow>
-            <ui-title level="h4" classes="[font-size:clamp(2.2rem,5vw,4rem)] [line-height:1] text-white [&_em]:!text-transparent [&_em]:[-webkit-text-stroke:2px_#ffffff80]">
-                Cada traço,<br> uma <em>história</em>.
-            </ui-title>
-        </div>
-        
-        // Body
-        <div 
-            class="
-                w-full grid gap-4
-                h-[700px] grid-rows-7 grid-cols-3
-                lg:h-[500px] lg:grid-rows-2 lg:grid-cols-12
-            "
-        >
-            @galleryCard(
-                "lg:col-0 lg:col-span-5 lg:row-0 lg:row-span-2 col-0 col-span-3 row-0 row-span-3", 
-                galleryCardProps{
-                    ImageName: "landing_gallery_1.jpeg",
-                    Title: "Moonlit Blossom",
-                    TattooStyle: "Floral",
-                    DesktopImage: imageConfig{
-                        X: "0",
-                        Y: "-6.5",
-                    },
-                    MobileImage: imageConfig{
-                        X: "0",
-                        Y: "-6.7",
-                        Zoom: "1.15",
-                    },
-                },
-            )
-            @galleryCard(
-                "lg:col-5 lg:col-span-3 lg:row-0 lg:row-span-1 row-3 row-span-2", 
-                galleryCardProps{
-                    ImageName: "landing_gallery_2.jpeg",
-                    Title: "Kindred Spirits",
-                    TattooStyle: "Fine Line",
-                    DesktopImage: imageConfig{
-                        X: "0",
-                        Y: "-7",
-                    },
-                    MobileImage: imageConfig{
-                        X: "0",
-                        Y: ".7",
-                        Zoom: "1.6",
-                    },
-                },
-            )
-            @galleryCard(
-                "lg:col-8 lg:col-span-4 lg:row-0 lg:row-span-1 col-span-2 row-span-2", 
-                galleryCardProps{
-                    ImageName: "landing_gallery_3.jpeg",
-                    Title: "Gossamer Dreams",
-                    TattooStyle: "Fine Line",
-                    DesktopImage: imageConfig{
-                        X: "0",
-                        Y: "-11",
-                    },
-                    MobileImage: imageConfig{
-                        X: "0",
-                        Y: "-3",
-                        Zoom: "1.3",
-                    },
-                },
-            )
-            @galleryCard(
-                "lg:col-5 lg:col-span-4 lg:row-1 lg:row-span-1 col-span-2 row-span-2", 
-                galleryCardProps{
-                    ImageName: "landing_gallery_4.jpeg",
-                    Title: "Crimson Petal",
-                    TattooStyle: "Floral",
-                    DesktopImage: imageConfig{
-                        X: "0",
-                        Y: "-11",
-                    },
-                    MobileImage: imageConfig{
-                        X: "0",
-                        Y: "-3.8",
-                    },
-                },
-            )
-            @galleryCard(
-                "lg:col-8 lg:col-span-3 lg:row-0 lg:row-span-1 col-span-1 row-span-2", 
-                galleryCardProps{
-                    ImageName: "landing_gallery_5.jpeg",
-                    Title: "Soft Whisper",
-                    TattooStyle: "Mini Realism",
-                    DesktopImage: imageConfig{
-                        X: "0",
-                        Y: "-5.5",
-                    },
-                    MobileImage: imageConfig{
-                        X: "0",
-                        Y: ".5",
-                        Zoom: "2.5",
-                    },
-                },
-            )
-        </div>
-        
-        // Footer
-        <div class="w-full h-fit flex flex-col-reverse lg:flex-row lg:items-center lg:justify-between">
-            <div class="uppercase text-white/50 text-[.60rem] tracking-widest ml-auto lg:ml-0">Todos os trabalhos são originais 🍒</div>
-            <div class="lg:hidden w-full h-[1px] bg-white/25 my-5"></div>
-            <ui-button goTo="/gallery" type="thin" classes="w-full hover:bg-cherry hidden lg:flex ml-auto">Ver portifólio completo <i class="icon-right-hand"></i></ui-button>
-            <div class="w-full block lg:hidden">
-                <ui-button goTo="/gallery" type="heavy" classes="w-full flex justify-center">Ver portifólio completo <i class="icon-right-hand"></i></ui-button>
-            </div>
-        </div>
-    </section>
+// Helper to provide default center positioning if omitted
+func getFocalPoint(fp FocalPoint) string {
+	x := fp.X
+	y := fp.Y
+	if x == "" {
+		x = "50%"
+	}
+	if y == "" {
+		y = "50%"
+	}
+	return fmt.Sprintf("%s %s", x, y)
 }
 
-templ galleryCard(additionalClasses string, props galleryCardProps){
-    <div 
-        class={fmt.Sprintf(`
-            %s
-            gallery-item group size-full
-            mb-4 overflow-hidden rounded-2xl border border-cherry/20
-        `, additionalClasses)}
-    >
-        <div class="relative h-full">
-            <img
-                src={ fmt.Sprintf("/static/img/%s", props.ImageName) }
-                class="block w-full h-auto object-cover object-[var(--mob-pos-x)_var(--mob-pos-y)] lg:object-[var(--desk-pos-x)_var(--desk-pos-y)] lg:scale-100 scale-(--mob-zoom) transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-                style={ fmt.Sprintf("--desk-pos-x: %srem; --desk-pos-y: %srem; --mob-pos-x: %srem; --mob-pos-y: %srem; --mob-zoom: %s;", props.DesktopImage.X, props.DesktopImage.Y, props.MobileImage.X, props.MobileImage.Y, props.MobileImage.Zoom) }
-            />
+templ Gallery() {
+	<section class="block px-10 lg:px-20 py-15 flex flex-col gap-10">
+		// Header
+		<div>
+			<ui-eyebrow type="sparkly" classes="bg-white/15 text-white/75 mb-4 block">Portifólio</ui-eyebrow>
+			<ui-title level="h4" classes="[font-size:clamp(2.2rem,5vw,4rem)] [line-height:1] text-white [&_em]:!text-transparent [&_em]:[-webkit-text-stroke:2px_#ffffff80]">
+				Cada traço,<br/> uma <em>história</em>.
+			</ui-title>
+		</div>
+		// Body
+		<div
+			class="
+				w-full grid gap-4
+				h-[700px] grid-rows-7 grid-cols-3
+				lg:h-[500px] lg:grid-rows-2 lg:grid-cols-12
+			"
+		>
+			@galleryCard(
+				"lg:col-0 lg:col-span-5 lg:row-0 lg:row-span-2 col-0 col-span-3 row-0 row-span-3",
+				galleryCardProps{
+					ImageName:   "landing_gallery_1.jpeg",
+					Title:       "Moonlit Blossom",
+					TattooStyle: "Floral",
+					FocalPoint:  FocalPoint{X: "50%", Y: "60%"},
+				},
+			)
+			@galleryCard(
+				"lg:col-5 lg:col-span-3 lg:row-0 lg:row-span-1 row-3 row-span-2",
+				galleryCardProps{
+					ImageName:   "landing_gallery_2.jpeg",
+					Title:       "Kindred Spirits",
+					TattooStyle: "Fine Line",
+					FocalPoint:  FocalPoint{X: "50%", Y: "40%"},
+				},
+			)
+			@galleryCard(
+				"lg:col-8 lg:col-span-4 lg:row-0 lg:row-span-1 col-span-2 row-span-2",
+				galleryCardProps{
+					ImageName:   "landing_gallery_3.jpeg",
+					Title:       "Gossamer Dreams",
+					TattooStyle: "Fine Line",
+					FocalPoint:  FocalPoint{X: "50%", Y: "55%"},
+				},
+			)
+			@galleryCard(
+				"lg:col-5 lg:col-span-4 lg:row-1 lg:row-span-1 col-span-2 row-span-2",
+				galleryCardProps{
+					ImageName:   "landing_gallery_4.jpeg",
+					Title:       "Crimson Petal",
+					TattooStyle: "Floral",
+					FocalPoint:  FocalPoint{X: "50%", Y: "58%"},
+				},
+			)
+			@galleryCard(
+				"lg:col-8 lg:col-span-3 lg:row-0 lg:row-span-1 col-span-1 row-span-2",
+				galleryCardProps{
+					ImageName:   "landing_gallery_5.jpeg",
+					Title:       "Soft Whisper",
+					TattooStyle: "Mini Realism",
+					FocalPoint:  FocalPoint{X: "50%", Y: "40%"},
+				},
+			)
+		</div>
+		// Footer
+		<div class="w-full h-fit flex flex-col-reverse lg:flex-row lg:items-center lg:justify-between">
+			<div class="uppercase text-white/50 text-[.60rem] tracking-widest ml-auto lg:ml-0">Todos os trabalhos são originais 🍒</div>
+			<div class="lg:hidden w-full h-[1px] bg-white/25 my-5"></div>
+			<ui-button goTo="/gallery" type="thin" classes="w-full hover:bg-cherry hidden lg:flex ml-auto">Ver portifólio completo <i class="icon-right-hand"></i></ui-button>
+			<div class="w-full block lg:hidden">
+				<ui-button goTo="/gallery" type="heavy" classes="w-full flex justify-center">Ver portifólio completo <i class="icon-right-hand"></i></ui-button>
+			</div>
+		</div>
+	</section>
+}
 
-            <div class="
-                absolute inset-0 flex flex-col justify-end p-4 opacity-0 group-hover:opacity-100
-                transition-opacity duration-200 h-full
-                bg-gradient-to-t from-black/80 via-black/20 to-transparent
-            ">
-                <div class="text-white">
-                    <h2 class="text-xl font-semibold">
-                        { props.Title }
-                    </h2>
-
-                    <span class="text-sm opacity-70">
-                        { props.TattooStyle }
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
+templ galleryCard(additionalClasses string, props galleryCardProps) {
+	<div
+		class={
+			additionalClasses,
+			"gallery-item group size-full mb-4 overflow-hidden rounded-2xl border border-cherry/20 relative",
+		}
+	>
+		<div class="relative size-full overflow-hidden">
+			<img
+				src={ fmt.Sprintf("/static/img/%s", props.ImageName) }
+				class="block size-full object-cover object-[var(--focal-point)] transition-transform duration-500 ease-out group-hover:scale-105"
+				style={ fmt.Sprintf("--focal-point: %s;", getFocalPoint(props.FocalPoint)) }
+			/>
+			<div class="
+				absolute inset-0 flex flex-col justify-end p-4 opacity-0 group-hover:opacity-100
+				transition-opacity duration-200 size-full pointer-events-none
+				bg-gradient-to-t from-black/80 via-black/20 to-transparent
+			">
+				<div class="text-white">
+					<h2 class="text-xl font-semibold">
+						{ props.Title }
+					</h2>
+					<span class="text-sm opacity-70">
+						{ props.TattooStyle }
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
 }
