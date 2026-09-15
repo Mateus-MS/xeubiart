@@ -32,7 +32,7 @@ func getFocalPoint(fp FocalPoint) string {
 }
 
 templ Gallery() {
-	<section class="block px-10 lg:px-20 py-15 flex flex-col gap-10">
+	<section class="block px-10 lg:px-20 py-15 flex flex-col gap-10 !bg-text">
 		// Header
 		<div>
 			<ui-eyebrow type="sparkly" classes="bg-white/15 text-white/75 mb-4 block">Portifólio</ui-eyebrow>
@@ -54,7 +54,7 @@ templ Gallery() {
 					ImageName:   "landing_gallery_1.jpeg",
 					Title:       "Moonlit Blossom",
 					TattooStyle: "Floral",
-					FocalPoint:  FocalPoint{X: "50%", Y: "60%"},
+					FocalPoint:  FocalPoint{X: "50%", Y: "70%"},
 				},
 			)
 			@galleryCard(
@@ -63,7 +63,7 @@ templ Gallery() {
 					ImageName:   "landing_gallery_2.jpeg",
 					Title:       "Kindred Spirits",
 					TattooStyle: "Fine Line",
-					FocalPoint:  FocalPoint{X: "50%", Y: "40%"},
+					FocalPoint:  FocalPoint{X: "50%", Y: "46%"},
 				},
 			)
 			@galleryCard(
@@ -90,7 +90,7 @@ templ Gallery() {
 					ImageName:   "landing_gallery_5.jpeg",
 					Title:       "Soft Whisper",
 					TattooStyle: "Mini Realism",
-					FocalPoint:  FocalPoint{X: "50%", Y: "40%"},
+					FocalPoint:  FocalPoint{X: "50%", Y: "50%"},
 				},
 			)
 		</div>

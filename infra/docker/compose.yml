@@ -6,6 +6,8 @@ services:
       context: ../../frontend/templ
       dockerfile: Dockerfile
     container_name: frontend
+    environment:
+      APP_ENV: ${APP_ENV}
     networks:
       - app-net
     restart: unless-stopped
@@ -45,9 +47,14 @@ services:
       dockerfile: Dockerfile
     container_name: backend
     environment:
+      APP_ENV: ${APP_ENV}
       DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
       DB_USERNAME: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASS}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+    volumes:
+      - ../../backend/uploads:/app/uploads
     depends_on:
       - postgres
     networks:

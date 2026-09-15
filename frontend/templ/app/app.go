@@ -2,6 +2,7 @@ package app
 
 import (
 	"net/http"
+	"os"
 	"sync"
 
 	"com.xeubiart/app/domains/gallery/service"
@@ -31,9 +32,20 @@ func new() *application {
 		Router:     gin.Default(),
 		HTTPClient: httpClient,
 		Services: services{
-			GalleryService: *service.New(httpClient),
+			GalleryService: *service.New(
+				getBaseURL(),
+				httpClient,
+			),
 		},
 	}
+}
+
+func getBaseURL() string {
+	if env := os.Getenv("APP_ENV"); env == "prod" {
+		return "http://infra"
+	}
+
+	return "http://localhost"
 }
 
 func GetInstance() *application {
