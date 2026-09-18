@@ -1,0 +1,69 @@
+<div class="group flex items-center justify-between gap-1 sm:gap-2 px-1 sm:px-2 py-1.5 rounded-xl hover:bg-black/5 transition-colors w-full">
+
+    <!-- Input e Unidade -->
+    <div class="flex items-center gap-1.5 sm:gap-3 flex-1 min-w-0">
+        <input
+            type="number"
+            [ngModel]="size().value"
+            (ngModelChange)="onValueChange($event)"
+            class="w-10 sm:w-16 min-w-0 bg-white border border-gray-200 rounded-lg px-1 sm:px-2 py-1 sm:py-1.5 text-center focus:outline-none focus:border-gray-400 text-md transition-colors"
+        />
+        <span class="text-xs sm:text-sm text-gray-600">cm</span>
+    </div>
+
+    <!-- Botão Flip X -->
+    <button
+        type="button"
+        (click)="toggleFlip('x')"
+        class="w-8 h-8 sm:w-9 sm:h-9 shrink-0 rounded-lg flex items-center justify-center transition-colors border cursor-pointer hover:border-cherry/25 hover:bg-cherry/10 duration-200"
+        [class.bg-cherry]="size().flipX"
+        [class.border-transparent]="size().flipX"
+        [class.text-white]="size().flipX"
+        [class.bg-white]="!size().flipX"
+        [class.border-gray-200]="!size().flipX"
+        [class.text-gray-500]="!size().flipX"
+        title="Espelhar Horizontalmente"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20"/><path d="M8 8l-4 4 4 4"/><path d="M16 8l4 4-4 4"/>
+        </svg>
+    </button>
+
+    <!-- Botão Flip Y -->
+    <button
+        type="button"
+        (click)="toggleFlip('y')"
+        class="w-8 h-8 sm:w-9 sm:h-9 shrink-0 rounded-lg flex items-center justify-center transition-colors border cursor-pointer hover:border-cherry/25 hover:bg-cherry/10 duration-200"
+        [class.bg-cherry]="size().flipY"
+        [class.border-transparent]="size().flipY"
+        [class.text-white]="size().flipY"
+        [class.bg-white]="!size().flipY"
+        [class.border-gray-200]="!size().flipY"
+        [class.text-gray-500]="!size().flipY"
+        title="Espelhar Verticalmente"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 12h20"/><path d="M8 8l4-4 4 4"/><path d="M8 16l4 4 4-4"/>
+        </svg>
+    </button>
+
+    <!-- Botão duplicate -->
+    <button
+        (click)="duplicate()"
+        type="button"
+        class="w-8 h-8 sm:w-9 sm:h-9 shrink-0 rounded-lg flex items-center justify-center transition-colors border text-gray-500 border-gray-200 bg-white cursor-pointer hover:border-cherry/25 hover:bg-cherry/10 duration-200"
+        title="Duplicar"
+    >
+        <i class="icon-docs"></i>
+    </button>
+
+    <!-- Botão Deletar -->
+    <button
+        type="button"
+        (click)="remove()"
+        class="w-8 h-8 sm:w-9 sm:h-9 shrink-0 rounded-lg flex items-center justify-center transition-colors border text-gray-500 border-gray-200 bg-white cursor-pointer hover:border-cherry/25 hover:bg-cherry/10 duration-200"
+        title="Remover Tamanho"
+    >
+        <i class="icon-trash"></i>
+    </button>
+</div>

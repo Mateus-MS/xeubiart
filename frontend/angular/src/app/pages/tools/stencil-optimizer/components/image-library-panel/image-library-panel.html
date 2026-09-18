@@ -1,0 +1,46 @@
+<div class="w-full h-fit flex flex-col gap-4">
+    @for (entry of library.entries(); track entry[0]) {
+        <ui-card classes="w-full h-fit grid grid-cols-[30%_minmax(0,1fr)] p-3 sm:p-4 gap-3 sm:gap-4">
+
+            <!-- Thumbnail com Botão de Crop -->
+            <div class="w-full aspect-square rounded-lg overflow-hidden relative group cursor-pointer" (click)="cropRequested.emit(entry[0])">
+                <img [src]="entry[1].url" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white mb-1">
+                        <path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/>
+                    </svg>
+                    <span class="text-white font-bold text-sm hidden sm:block">Recortar</span>
+                </div>
+            </div>
+
+            <!-- Container de Tamanhos -->
+            <div class="w-full h-full flex flex-col min-w-0">
+
+                <!-- Cabeçalho das Colunas -->
+                <div class="flex items-center gap-1 sm:gap-2 px-1 sm:px-2 mb-2 text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                    <span class="flex-1 truncate">Tamanho</span>
+                </div>
+
+                <!-- Lista de Tamanhos -->
+                <div class="flex flex-col gap-1 w-full">
+                    @for (size of entry[1].sizes; track $index) {
+                        <app-size-editor-row [id]="entry[0]" [index]="$index" [size]="size" />
+                    }
+                </div>
+
+                <!-- Botão Adicionar Tamanho -->
+                <button
+                    type="button"
+                    (click)="addSize(entry[0])"
+                    class="w-full mt-2 py-2 sm:py-2.5 px-2 sm:px-4 rounded-xl border border-dashed border-gray-300 text-gray-500 text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-black/5 hover:border-gray-400 transition-colors cursor-pointer"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span class="truncate">Adicionar tamanho</span>
+                </button>
+
+            </div>
+        </ui-card>
+    }
+</div>

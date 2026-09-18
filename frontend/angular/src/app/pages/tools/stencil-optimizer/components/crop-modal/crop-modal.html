@@ -1,0 +1,70 @@
+@if (imageId()) {
+    <div class="fixed inset-0 bg-black/90 z-[100] flex flex-col items-center justify-center p-4 lg:p-10">
+        <div class="bg-cream rounded-xl p-5 w-full max-w-5xl flex flex-col gap-4 shadow-2xl max-h-full">
+            <div class="flex justify-between items-center shrink-0">
+                <h2 class="text-xl font-bold text-cherry">Recortar Imagem</h2>
+                <button (click)="close()" class="text-4xl text-muted hover:text-text transition-colors leading-none -mt-2">&times;</button>
+            </div>
+
+            <div class="relative w-full flex-1 overflow-hidden flex items-center justify-center bg-gray-200/50 rounded-lg min-h-0 select-none p-4">
+                <div class="relative w-fit h-fit max-w-full max-h-full mx-auto shadow-xl">
+
+                    <img #cropImg
+                         [src]="cropImgUrl()"
+                         (load)="initCropBox(cropImg)"
+                         class="block max-w-full max-h-[60vh] lg:max-h-[65vh]"
+                         draggable="false">
+
+                    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                        <!-- Sombra Escura que preenche o exterior (dim) -->
+                        <div class="absolute pointer-events-auto cursor-move border-2 border-white flex flex-col"
+                             style="box-shadow: 0 0 0 9999px rgba(0,0,0,0.6);"
+                             [style.left.px]="cropBox.x"
+                             [style.top.px]="cropBox.y"
+                             [style.width.px]="cropBox.w"
+                             [style.height.px]="cropBox.h"
+                             (mousedown)="onPointerDown($event, 'move')"
+                             (touchstart)="onPointerDown($event, 'move')">
+
+                            <!-- Grelha -->
+                            <div class="w-full h-1/3 border-b border-white/40 flex-1"></div>
+                            <div class="w-full h-1/3 border-b border-white/40 flex-1"></div>
+                            <div class="w-full h-1/3 flex-1"></div>
+                            <div class="absolute inset-0 flex">
+                                <div class="h-full w-1/3 border-r border-white/40"></div>
+                                <div class="h-full w-1/3 border-r border-white/40"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pegas para arrastar/esticar (Handles) -->
+                    <div class="absolute w-5 h-5 bg-cherry border-[3px] border-white rounded-full cursor-nwse-resize z-10 -translate-x-1/2 -translate-y-1/2"
+                         [style.left.px]="cropBox.x"
+                         [style.top.px]="cropBox.y"
+                         (mousedown)="onPointerDown($event, 'tl')"
+                         (touchstart)="onPointerDown($event, 'tl')"></div>
+                    <div class="absolute w-5 h-5 bg-cherry border-[3px] border-white rounded-full cursor-nesw-resize z-10 -translate-x-1/2 -translate-y-1/2"
+                         [style.left.px]="cropBox.x + cropBox.w"
+                         [style.top.px]="cropBox.y"
+                         (mousedown)="onPointerDown($event, 'tr')"
+                         (touchstart)="onPointerDown($event, 'tr')"></div>
+                    <div class="absolute w-5 h-5 bg-cherry border-[3px] border-white rounded-full cursor-nesw-resize z-10 -translate-x-1/2 -translate-y-1/2"
+                         [style.left.px]="cropBox.x"
+                         [style.top.px]="cropBox.y + cropBox.h"
+                         (mousedown)="onPointerDown($event, 'bl')"
+                         (touchstart)="onPointerDown($event, 'bl')"></div>
+                    <div class="absolute w-5 h-5 bg-cherry border-[3px] border-white rounded-full cursor-nwse-resize z-10 -translate-x-1/2 -translate-y-1/2"
+                         [style.left.px]="cropBox.x + cropBox.w"
+                         [style.top.px]="cropBox.y + cropBox.h"
+                         (mousedown)="onPointerDown($event, 'br')"
+                         (touchstart)="onPointerDown($event, 'br')"></div>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 shrink-0">
+                <ui-button type="light" (click)="close()">Cancelar</ui-button>
+                <ui-button type="heavy" (click)="applyCrop()">Aplicar Recorte</ui-button>
+            </div>
+        </div>
+    </div>
+}

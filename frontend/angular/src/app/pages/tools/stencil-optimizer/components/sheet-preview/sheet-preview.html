@@ -1,0 +1,67 @@
+<ui-card classes="w-full h-full flex flex-col gap-4 p-6 items-center">
+
+    <div class="w-full justify-between flex gap-2 items-center">
+        <span class="text-sm text-muted text-[.60rem]">Formato A4 · 210 × 297mm</span>
+
+        <div class="flex gap-2 items-center">
+            <ui-button
+                (click)="prev()"
+                [disabled]="currentPageIndex() === 0"
+                classes="w-fit !p-0 aspect-square disabled:opacity-30"
+                type="light">
+                <i class="icon-left"></i>
+            </ui-button>
+
+            <span class="text-xs font-semibold">
+                Folha {{ currentPageIndex() + 1 }} de {{ pageCount() }}
+            </span>
+
+            <ui-button
+                (click)="next()"
+                [disabled]="currentPageIndex() >= pageCount() - 1"
+                classes="w-fit !p-0 aspect-square disabled:opacity-30"
+                type="light">
+                <i class="icon-right"></i>
+            </ui-button>
+        </div>
+    </div>
+
+    <div #previewContainer class="relative lg:w-[unset] flex-1 min-h-0 aspect-[210/297] rounded-lg bg-white shadow-xl ring-1 ring-cherry/15 overflow-hidden w-full max-h-full">
+        @for (item of currentPageItems(); track item.id) {
+            <div
+                class="absolute border border-dashed border-red-500/70 overflow-hidden flex items-center justify-center"
+                [style.left.%]="(item.x / 210) * 100"
+                [style.top.%]="(item.y / 297) * 100"
+                [style.width.%]="(item.width / 210) * 100"
+                [style.height.%]="(item.height / 297) * 100"
+            >
+                @if (item.rotated) {
+                    <img
+                        [src]="item.url"
+                        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 object-contain max-w-none"
+                        [class.-scale-x-100]="item.flipX"
+                        [class.-scale-y-100]="item.flipY"
+                        [style.width.px]="rotatedWidth(item)"
+                        [style.height.px]="rotatedHeight(item)"
+                    />
+                } @else {
+                    <img
+                        [src]="item.url"
+                        class="w-full h-full object-contain pointer-events-none transition-transform"
+                        [class.-scale-x-100]="item.flipX"
+                        [class.-scale-y-100]="item.flipY"
+                    />
+                }
+
+                <span class="absolute bottom-0.5 right-0.5 bg-cherry text-white text-[10px] px-1 py-0.5 rounded font-bold z-10 scale-75 origin-bottom-right lg:scale-100">
+                    {{ item.sizeCm }}cm
+                </span>
+            </div>
+        }
+    </div>
+
+    <div class="w-full flex place-content-between text-[.70rem] [&_strong]:text-cherry text-muted [&_strong]:font-black">
+        <span class="block">Aproveitamento: <strong>{{ currentEfficiency() }}%</strong></span>
+        <span class="block"><strong>{{ totalItemCount() }}</strong> artes empacotadas</span>
+    </div>
+</ui-card>
