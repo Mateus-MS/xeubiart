@@ -39,6 +39,16 @@
             <app-item-card [work]="work" (visibilityChange)="handleUpdateVisibility($event)" (openEditPopup)="handleOpenEditPopup($event)" />
         }
     </div>
+
+    <!-- Trigger Element -->
+    <div 
+        appInViewport 
+        (inViewport)="handleScrollEnd()" 
+        class="h-10 w-full flex justify-center items-center py-4">
+        @if (this.galleryService.isLoading()) {
+            <p class="text-sm text-muted">Carregando mais...</p>
+        }
+    </div>
 </div>
 
 <app-item-popup (submitWorkEvent)="handleSubmitWork($event)"></app-item-popup>

@@ -19,19 +19,33 @@ export class GalleryService {
     readonly createWork$ = this._createWork.asObservable();
 
     private http = inject(HttpClient);
+    private page: number = 0;
+
+    readonly  isLoading = signal<boolean>(false);
+  	private hasMore = signal<boolean>(true);
 
     loadWorks() {
+        if(!this.canRequest()) return;
+
         const visibility = this._visibilityQueryMode();
 
-        this.http.get<Page<WorkEntity>>('/api/admin/works', {
+        this.isLoading.set(true);
+
+        this.http.get<Page<WorkEntity>>(`/api/admin/works?page=${this.page}&size=12`, {
             params: visibility !== 'all'
                 ? { visible: visibility === 'visible' }
                 : {}
         }).subscribe({
             next: (response) => {
-                this._works.set(response.content);
+                this._works.update((currentWorks) => [...currentWorks, ...response.content]);
+
+                this.isLoading.set(false);
+                this.hasMore.set(!response.last);
+                this.page ++;
+                console.log("Next page queried will be: " + this.page)
             },
             error: (error) => {
+                this.isLoading.set(false);
                 console.error('Error loading works:', error);
             }
         });
@@ -110,5 +124,16 @@ export class GalleryService {
         );
 
         return this.http.patch(`/api/works/${id}`, formData);
+    }
+
+    canRequest():boolean{
+        return this.hasMore() && !this.isLoading();
+    }
+
+    resetPage(){
+        this.page = 0;
+        this._works.set([]);
+        this.isLoading.set(false);
+        this.hasMore.set(true);
     }
 }

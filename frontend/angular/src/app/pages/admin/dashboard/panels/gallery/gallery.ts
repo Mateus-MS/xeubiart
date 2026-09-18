@@ -5,19 +5,20 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GalleryService, VisibilityQueryMode } from './services/gallery.service';
 import { WorkEntity } from '../../../../../models/work';
 import { UploadedFile } from '../../../../../models/uploadedFile';
+import { InViewportDirective } from '../../../../../directives/inViewportDirective';
 
 @Component({
 	selector: 'app-gallery',
-	imports: [ItemPopup, ItemCard],
+	imports: [ItemPopup, ItemCard, InViewportDirective],
 	templateUrl: './gallery.html',
 	schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class Gallery implements OnInit {
 	private popup = viewChild(ItemPopup);
 
-	private galleryService = inject(GalleryService);
+	readonly galleryService = inject(GalleryService);
 	private destroyRef = inject(DestroyRef);
-	
+
 	works = this.galleryService.works;
 
 	ngOnInit() {
@@ -40,12 +41,14 @@ export class Gallery implements OnInit {
 
 		this.galleryService.setVisibilityQueryMode(activeTab);
 
+		this.galleryService.resetPage();
 		this.galleryService.loadWorks();
 	}
 
 	handleUpdateVisibility(event: { id: string; visible: boolean }) {
 		this.galleryService.updateWorkVisibility(event.id, event.visible)?.subscribe({
 			next: () => {
+				this.galleryService.resetPage();
 				this.galleryService.loadWorks();
 			},
 			error: error => {
@@ -59,6 +62,7 @@ export class Gallery implements OnInit {
 			this.galleryService.updateWork(event.workData.id ?? '', event.workData, event.files).subscribe({
 				next: () => {
 					this.popup()?.close();
+					this.galleryService.resetPage();
 					this.galleryService.loadWorks();
 				},
 				error: error => {
@@ -69,6 +73,7 @@ export class Gallery implements OnInit {
 			this.galleryService.createWork(event.workData, event.files).subscribe({
 				next: () => {
 					this.popup()?.close();
+					this.galleryService.resetPage();
 					this.galleryService.loadWorks();
 				},
 				error: error => {
@@ -81,5 +86,9 @@ export class Gallery implements OnInit {
 	handleOpenEditPopup(work: WorkEntity) {
 		console.log("Work ID: ", work.id)
 		this.popup()?.open(work);
+	}
+
+	handleScrollEnd() {
+		this.galleryService.loadWorks();
 	}
 }
