@@ -1,5 +1,5 @@
-import { LitElement, html } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { LitElement, html, PropertyValues } from 'lit';
+import { customElement, property, state, query, queryAll } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 
 interface Tab {
@@ -15,13 +15,38 @@ export class UiTabSwitcher extends LitElement {
     @state()
     activeTab: string = '';
 
+    @query('.sliding-indicator')
+    private indicator!: HTMLDivElement;
+
+    @queryAll('label')
+    private labels!: NodeListOf<HTMLLabelElement>;
+
     protected createRenderRoot() {
         return this;
     }
 
+    protected updated(changedProperties: PropertyValues) {
+        super.updated(changedProperties);
+        this._updateIndicator();
+    }
+
+    private _updateIndicator() {
+        if (!this.indicator) return;
+
+        const selectedTab = this.activeTab || this.tabs[0]?.value || '';
+        const activeLabelIndex = this.tabs.findIndex((t) => t.value === selectedTab);
+
+        if (activeLabelIndex !== -1 && this.labels[activeLabelIndex]) {
+            const activeEl = this.labels[activeLabelIndex];
+            
+            // activeEl.offsetLeft matches the label's distance from the parent container's left inner edge
+            this.indicator.style.width = `${activeEl.offsetWidth}px`;
+            this.indicator.style.transform = `translateX(${activeEl.offsetLeft}px)`;
+        }
+    }
+
     private _handleTabChange(e: Event) {
         const input = e.target as HTMLInputElement;
-
         this.activeTab = input.value;
 
         this.dispatchEvent(new CustomEvent('tab-change', {
@@ -38,13 +63,9 @@ export class UiTabSwitcher extends LitElement {
 
         return html`
             <div class="relative isolate flex items-center bg-white ring-cherry/15 ring rounded-full p-1 w-fit">
+                <!-- Safe Sliding Indicator with direct element reference class -->
                 <div 
-                    class="absolute bg-cherry rounded-full transition-all duration-300 -z-10 shadow-[0_4px_16px_rgba(139,26,43,0.4)]
-                           [position-anchor:--active-tab] 
-                           [top:anchor(top)] 
-                           [bottom:anchor(bottom)] 
-                           [left:anchor(left)] 
-                           [right:anchor(right)]"
+                    class="sliding-indicator absolute top-1 bottom-1 left-0 bg-cherry rounded-full transition-all duration-300 -z-10 shadow-[0_4px_16px_rgba(139,26,43,0.4)]"
                 ></div>
 
                 ${repeat(
@@ -52,9 +73,8 @@ export class UiTabSwitcher extends LitElement {
                     (tab) => tab.value,
                     (tab, index) => html`
                         <label 
-                            class="cursor-pointer px-4 py-2 bg-transparent select-none text-sm font-medium transition-colors
-                                   has-[:checked]:[anchor-name:--active-tab] 
-                                   has-[:checked]:text-white"
+                            class="cursor-pointer px-4 py-2 bg-transparent select-none text-sm font-medium transition-colors z-10
+                                   ${selectedTab === tab.value ? 'text-white' : 'text-slate-600'}"
                         >
                             <input 
                                 id="tab-${index}" 

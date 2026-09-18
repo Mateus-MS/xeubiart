@@ -26,9 +26,9 @@ export class InViewportDirective implements OnInit, OnDestroy {
 		this.observer.observe(this.el.nativeElement);
 	}
 
-	ngOnDestroy() {
+	ngOnDestroy(){
 		if (this.observer) {
 			this.observer.disconnect();
 		}
-  }
+  	}	
 }
