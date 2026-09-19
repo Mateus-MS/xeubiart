@@ -27,15 +27,19 @@ templ Hero(){
             </div>
         </div>
         <div class="flex w-full h-fit p-9 justify-center">
-            <div 
-                 class="
-                    w-full aspect-[3/4] max-w-[430px] relative
-                    bg-[url(/static/img/pereco_hero.png)] bg-center bg-contain bg-no-repeat
-                 "
-            >
-                // Spinning disk
-                <div class="grid place-items-center w-[75px] aspect-square rounded-full bg-cherry text-white text-center uppercase text-[.65rem] tracking-widest absolute -right-[20px] -bottom-[20px] animate-[spin_15s_linear_infinite]">Arte<br>na<br>pele ✦</div>
-            </div>
+            @pereco()
         </div>
     </section>
+}
+
+templ pereco(){
+    <div 
+        class="
+            w-full aspect-[3/4] max-w-[430px] relative
+            bg-[url(/static/img/pereco_hero.png)] bg-center bg-contain bg-no-repeat
+        "
+    >
+        // Spinning disk
+        <div class="grid place-items-center w-[75px] aspect-square rounded-full bg-cherry text-white text-center uppercase text-[.65rem] tracking-widest absolute -right-[20px] -bottom-[20px] animate-[spin_15s_linear_infinite]">Arte<br>na<br>pele ✦</div>
+    </div>
 }
