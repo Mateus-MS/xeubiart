@@ -21,4 +21,5 @@ public interface WorkService {
     Page<PublicWorkResponse> findPublic(TattooStyle style, Pageable pageable);
     PublicWorkResponse findPublicById(UUID id, TattooStyle style);
     Page<AdminWorkResponse> findForAdmin(Boolean visible, Pageable pageable);
+    PublicWorkResponse findRandomPublic(TattooStyle style);
 }

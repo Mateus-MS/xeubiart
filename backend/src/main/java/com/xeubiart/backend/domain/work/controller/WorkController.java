@@ -63,4 +63,9 @@ public class WorkController {
     public PublicWorkResponse findAll(@PathVariable UUID id, @RequestParam(required = false) TattooStyle style) {
         return workService.findPublicById(id, style);
     }
+
+    @GetMapping("/works/random")
+    public PublicWorkResponse findRandom(@RequestParam(required = false) TattooStyle style) {
+        return workService.findRandomPublic(style);
+    }
 }

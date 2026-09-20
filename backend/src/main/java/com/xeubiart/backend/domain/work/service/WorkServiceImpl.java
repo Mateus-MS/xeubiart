@@ -17,6 +17,7 @@ import com.xeubiart.backend.domain.fileStorage.service.FileStorageService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -96,6 +97,19 @@ public class WorkServiceImpl implements WorkService{
         }
 
         return works.map(workMapper::toAdminResponse);
+    }
+
+    @Override
+    public PublicWorkResponse findRandomPublic(TattooStyle style) {
+        WorkEntity work = workRepository
+                .findRandomVisible(style, PageRequest.of(0, 1))
+                .stream()
+                .findFirst()
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("No public works found")
+                );
+
+        return workMapper.toPublicResponse(work);
     }
 
     @Override

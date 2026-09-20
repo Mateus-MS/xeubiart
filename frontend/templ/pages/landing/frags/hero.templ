@@ -1,5 +1,7 @@
 package frags
 
+import "strings"
+
 templ Hero(){
     <section class="flex lg:grid lg:grid-cols-2 lg:place-items-center lg:py-15 lg:px-35 lg:gap-[20%] flex-col-reverse gap-8 p-10 h-fit">
         <div class="h-fit flex flex-col gap-4">
@@ -33,13 +35,183 @@ templ Hero(){
 }
 
 templ pereco(){
-    <div 
+    <div
+        data-chips
         class="
             w-full aspect-[3/4] max-w-[430px] relative
             bg-[url(/static/img/pereco_hero.png)] bg-center bg-contain bg-no-repeat
         "
     >
+        for _, c := range heroChips {
+            @heroChip(c)
+        }
         // Spinning disk
         <div class="grid place-items-center w-[75px] aspect-square rounded-full bg-cherry text-white text-center uppercase text-[.65rem] tracking-widest absolute -right-[20px] -bottom-[20px] animate-[spin_15s_linear_infinite]">Arte<br>na<br>pele ✦</div>
     </div>
+    @chipsScript()
+}
+
+// ─────────────────────────────────────────────
+// Floating style chips
+// ─────────────────────────────────────────────
+
+type chipData struct {
+    Label string
+    Pos   string // position (mobile → lg) + float animation
+    Pop   string // popover alignment
+}
+
+var heroChips = []chipData{
+    {
+        "Fine Line",   
+        `
+            top-[6%] -left-[10%] 
+            md:top-[12%]
+            lg:top-[19%] 
+            animate-chip-1
+        `,
+        "top-[calc(100%+10px)] -translate-y-2.5 left-0 origin-top-left",
+    },
+    {
+        "Blackwork",   
+        `
+            bottom-[19%] -left-[15%] 
+            md:bottom-[30%] 
+            lg:bottom-[19%]
+            animate-chip-3
+        `,
+        "left-0 origin-bottom-left",
+    },
+    {
+        "Floral",      
+        `
+            top-[12.5%] -right-[15%] 
+            md:top-[20%] 
+            lg:top-[1.5%]
+            animate-chip-4
+        `,
+        "top-[calc(100%+10px)] -translate-y-2.5 right-0 origin-top-right",
+    },
+    {
+        "Red Trace",    
+        `
+            bottom-[22%] -right-[20%]  
+            lg:bottom-[37.5%]
+            animate-chip-6
+        `,
+        "right-0 origin-bottom-right",
+    },
+    {
+        "Minimalista", 
+        `
+            -bottom-[5%] left-[33%] -translate-x-1/2 
+            lg:-bottom-[4%] lg:left-1/2 
+            animate-chip-7
+        `,
+        "left-1/2 -translate-x-1/2 origin-bottom",
+    },
+}
+
+const chipPill = "relative inline-flex cursor-default select-none items-center gap-[7px] whitespace-nowrap rounded-full border-[1.5px] border-cherry/15 bg-chip py-1.5 pr-[11px] pl-[9px] text-[.6rem] font-medium uppercase tracking-[.04em] shadow-chip backdrop-blur-md transition-[border-color,box-shadow,scale] duration-200 active:scale-90 group-hover/chip:border-cherry group-hover/chip:shadow-chip-hover group-data-[open]/chip:border-cherry group-data-[open]/chip:shadow-chip-hover lg:py-2 lg:pr-[15px] lg:pl-[11px] lg:text-[.68rem] lg:tracking-[.06em]"
+
+const chipPopover = "pointer-events-none absolute bottom-[calc(100%+10px)] z-30 w-[170px] translate-y-2.5 scale-[.88] opacity-0 transition-[opacity,translate,scale] duration-200 ease-[cubic-bezier(.34,1.4,.64,1)] group-hover/chip:translate-y-0 group-hover/chip:scale-100 group-hover/chip:opacity-100 group-data-[open]/chip:translate-y-0 group-data-[open]/chip:scale-100 group-data-[open]/chip:opacity-100 lg:w-[200px]"
+
+templ heroChip(c chipData) {
+    <div data-chip data-style={ styleKey(c.Label) } class={ "group/chip absolute z-20 hover:z-40 data-[open]:z-40 hover:[animation-play-state:paused]", c.Pos }>
+        <button type="button" class={ chipPill }>
+            <span class="size-[5px] shrink-0 rounded-full bg-cherry/70 lg:size-1.5"></span>
+            // Expanding ring (plays once on hover / when opened on touch)
+            <span class="pointer-events-none absolute -inset-[7px] rounded-full border-[1.5px] border-cherry opacity-0 group-hover/chip:animate-chip-ring group-data-[open]/chip:animate-chip-ring"></span>
+            { c.Label }
+        </button>
+        <div aria-hidden="true" class={ chipPopover, c.Pop }>
+            <div class="overflow-hidden rounded-lg border-[1.5px] border-cherry/15 bg-chip-pop shadow-chip-pop">
+                <div class="relative h-[110px] bg-cherry/10 lg:h-[130px]">
+                    <img alt="" class="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-300 data-[loaded]:opacity-100"/>
+                </div>
+                <div class="px-3 py-2.5 text-[.6rem] font-bold uppercase tracking-[.16em] text-cherry">{ c.Label }</div>
+            </div>
+        </div>
+    </div>
+}
+
+// Touch devices have no hover, so one chip at a time opens on its own,
+// and tapping a chip opens/closes it. On hover devices CSS does everything.
+templ chipsScript() {
+    <script>
+        (() => {
+            const root = document.querySelector("[data-chips]");
+            if (!root) return;
+
+            // Where the API's photo filenames are served from. Absolute URLs from the API still work.
+            const PHOTO_BASE = "api/files/";
+
+            const chips = [...root.querySelectorAll("[data-chip]")];
+            const touch = window.matchMedia("(hover: none)");
+            let active = null, closeTimer, cycleTimer;
+
+            // One request per chip. A failed request (no works for that style, network error)
+            // leaves the tinted block in place and is retried the next time the chip opens.
+            const load = async (chip) => {
+                if (chip.dataset.photo) return;
+                chip.dataset.photo = "loading";
+                try {
+                    const res = await fetch("/api/works/random?style=" + encodeURIComponent(chip.dataset.style));
+                    if (!res.ok) throw new Error(res.status);
+                    const work = await res.json();
+                    const photo = work.photos && work.photos[0];
+                    if (!photo) throw new Error("no photo");
+
+                    const img = chip.querySelector("img");
+                    img.onload = () => img.setAttribute("data-loaded", "");
+                    img.src = new URL(photo.url, new URL(PHOTO_BASE, location.origin)).href;
+                    chip.dataset.photo = "done";
+                } catch (err) {
+                    delete chip.dataset.photo;
+                }
+            };
+
+            const close = () => { active?.removeAttribute("data-open"); active = null; };
+            const show = (chip) => { close(); chip.setAttribute("data-open", ""); active = chip; load(chip); };
+
+            const next = () => {
+                const pool = chips.filter((c) => c !== active);
+                return pool[Math.floor(Math.random() * pool.length)];
+            };
+
+            const cycle = () => {
+                if (!touch.matches) return;
+                show(next());
+                closeTimer = setTimeout(() => {
+                    close();
+                    cycleTimer = setTimeout(cycle, 2200);
+                }, 3000);
+            };
+
+            const stop = () => { clearTimeout(closeTimer); clearTimeout(cycleTimer); close(); };
+            const start = () => { stop(); if (touch.matches) cycleTimer = setTimeout(cycle, 1800); };
+
+            chips.forEach((chip) => {
+                // Hover devices: CSS opens the popover, this just starts the request.
+                chip.addEventListener("mouseenter", () => load(chip));
+
+                chip.addEventListener("click", () => {
+                    if (!touch.matches) return;
+                    const wasOpen = chip === active;
+                    stop();
+                    if (wasOpen) { start(); return; }
+                    show(chip);
+                    closeTimer = setTimeout(() => { close(); start(); }, 3500);
+                });
+            });
+
+            touch.addEventListener("change", start);
+            start();
+        })();
+    </script>
+}
+
+
+func styleKey(label string) string {
+    return strings.ToUpper(strings.ReplaceAll(label, " ", "_"))
 }
