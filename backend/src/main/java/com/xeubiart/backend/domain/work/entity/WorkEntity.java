@@ -18,7 +18,8 @@ public class WorkEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
     private TattooStyle style;
 
     @Column(nullable = false)
