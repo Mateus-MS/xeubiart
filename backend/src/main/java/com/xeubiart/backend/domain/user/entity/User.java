@@ -13,6 +13,7 @@ public class User {
     @Id
     private UUID id;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
     private UserRoles role;
 }
