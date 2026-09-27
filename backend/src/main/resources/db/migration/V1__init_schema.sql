@@ -30,6 +30,7 @@ CREATE TABLE tb_work_photos (
 -- Index for fast lookup on photos by work ID
 CREATE INDEX idx_tb_work_photos_work_id ON tb_work_photos (work_id);
 
+-- 3. Main users Table
 CREATE TABLE tb_users (
     id UUID PRIMARY KEY,
     role VARCHAR(50) NOT NULL
