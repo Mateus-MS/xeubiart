@@ -14,6 +14,7 @@ public class AdminWorkResponse {
     private String description;
     private List<PhotoResponse> photos;
     private boolean visible;
+    PhotoResponse thumbnail;
 
     // Admin specific data like customer identity
 }

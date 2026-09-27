@@ -3,6 +3,7 @@ package frags
 import "com.xeubiart/app/domains/gallery/models"
 import "fmt"
 import "strconv"
+import "com.xeubiart/utils"
 
 templ ItemCard(props models.GalleryItem) {
     <article 
@@ -16,7 +17,8 @@ templ ItemCard(props models.GalleryItem) {
     >
         <div class="relative">
             <img
-                src={fmt.Sprintf("/api/files/%s", props.Photos[0].Url)}
+                loading="lazy"
+                src={fmt.Sprintf("/api/files/%s", props.Thumbnail.Url)}
                 alt={props.Title}
                 class="block w-full h-auto group-hover:scale-[1.03] transition-transform duration-500 ease-out"
                 width={strconv.Itoa(props.Photos[0].Width)}
@@ -34,7 +36,7 @@ templ ItemCard(props models.GalleryItem) {
                     </h2>
 
                     <span class="text-sm opacity-70">
-                        { props.Style }
+                        { utils.ConvertStyleString(props.Style) }
                     </span>
                 </div>
             </div>

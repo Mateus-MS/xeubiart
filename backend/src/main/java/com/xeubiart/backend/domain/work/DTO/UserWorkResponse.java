@@ -12,6 +12,7 @@ public class UserWorkResponse {
     private String title;
     private TattooStyle style;
     private String description;
+    PhotoResponse thumbnail;
     private List<String> photosURLs;
 
     // User specific data like invoices

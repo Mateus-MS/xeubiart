@@ -17,6 +17,7 @@ export interface WorkEntity {
     description: string;
     style: TattooStyle;
     photos: PhotoEntity[];
+	thumbnail: PhotoEntity;
     visible: boolean;
 }
 

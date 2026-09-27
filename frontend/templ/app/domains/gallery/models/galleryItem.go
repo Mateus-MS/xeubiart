@@ -12,6 +12,7 @@ type GalleryItem struct {
 	Style       string        `json:"style"`
 	Description string        `json:"description"`
 	Photos      []PhotoEntity `json:"photos"`
+	Thumbnail   PhotoEntity   `json:"thumbnail"`
 }
 
 type GalleryResponse struct {

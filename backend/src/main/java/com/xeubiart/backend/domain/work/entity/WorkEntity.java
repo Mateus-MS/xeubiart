@@ -34,4 +34,12 @@ public class WorkEntity {
     )
     @OrderColumn(name = "photo_order")
     private List<PhotoEntity> photos;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "url", column = @Column(name = "thumbnail_url")),
+            @AttributeOverride(name = "width", column = @Column(name = "thumbnail_width")),
+            @AttributeOverride(name = "height", column = @Column(name = "thumbnail_height"))
+    })
+    private PhotoEntity thumbnail;
 }

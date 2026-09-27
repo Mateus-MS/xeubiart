@@ -5,5 +5,6 @@ public enum TattooStyle {
     AUTHORAL,
     RED_TRACE,
     FINE_LINE,
+    MINIMALIST,
     FLORAL;
 }

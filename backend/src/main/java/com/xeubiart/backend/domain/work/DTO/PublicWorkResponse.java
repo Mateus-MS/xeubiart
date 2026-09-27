@@ -13,4 +13,5 @@ public class PublicWorkResponse {
     private TattooStyle style;
     private String description;
     private List<PhotoResponse> photos;
+    PhotoResponse thumbnail;
 }
